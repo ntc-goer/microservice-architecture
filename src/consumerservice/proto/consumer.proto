@@ -1,0 +1,18 @@
+syntax="proto3";
+
+option go_package="./proto";
+
+package consumer_service;
+
+//protoc --go_out=. --go-grpc_out=. proto/consumer.proto
+service ConsumerService {
+  rpc VerifyUser(VerifyUserRequest) returns (VerifyUserResponse);
+}
+
+message VerifyUserRequest {
+  string id = 1;
+}
+
+message VerifyUserResponse {
+  bool is_ok = 1;
+}
