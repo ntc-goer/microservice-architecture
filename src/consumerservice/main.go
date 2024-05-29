@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/ntc-goer/microservice-examples/consumer_service/proto"
+	"github.com/ntc-goer/microservice-examples/consumerservice/proto"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -24,7 +24,7 @@ func (s *Server) VerifyUser(ctx context.Context, req *proto.VerifyUserRequest) (
 }
 
 func main() {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", 8080))
+	lis, err := net.Listen("tcp", ":50000")
 	if err != nil {
 		log.Fatalf("Listen port fail %v", err)
 	}
