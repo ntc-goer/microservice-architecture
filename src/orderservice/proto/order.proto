@@ -3,10 +3,9 @@ import "google/api/annotations.proto";
 
 option go_package="./proto";
 
-package order_service;
+package test;
 
 //----------------------------------------------------Consumer Service--------------------------------------------------------
-//protoc --go_out=. --go-grpc_out=.
 service ConsumerService {
   rpc VerifyUser(VerifyUserRequest) returns (VerifyUserResponse);
 }
@@ -25,7 +24,7 @@ message VerifyUserResponse {
 message Empty {}
 
 service OrderService {
-  rpc Order(Empty) returns (OrderResponse) {
+  rpc Order(OrderRequest) returns (OrderResponse) {
     option (google.api.http) = {
       get: "/create/order"
     };

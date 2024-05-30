@@ -107,7 +107,7 @@ func RegisterConsumerServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/order_service.ConsumerService/VerifyUser", runtime.WithHTTPPathPattern("/order_service.ConsumerService/VerifyUser"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/test.ConsumerService/VerifyUser", runtime.WithHTTPPathPattern("/test.ConsumerService/VerifyUser"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -141,7 +141,7 @@ func RegisterOrderServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/order_service.OrderService/Order", runtime.WithHTTPPathPattern("/create/order"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/test.OrderService/Order", runtime.WithHTTPPathPattern("/create/order"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -205,7 +205,7 @@ func RegisterConsumerServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/order_service.ConsumerService/VerifyUser", runtime.WithHTTPPathPattern("/order_service.ConsumerService/VerifyUser"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/test.ConsumerService/VerifyUser", runtime.WithHTTPPathPattern("/test.ConsumerService/VerifyUser"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -225,7 +225,7 @@ func RegisterConsumerServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 }
 
 var (
-	pattern_ConsumerService_VerifyUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"order_service.ConsumerService", "VerifyUser"}, ""))
+	pattern_ConsumerService_VerifyUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"test.ConsumerService", "VerifyUser"}, ""))
 )
 
 var (
@@ -276,7 +276,7 @@ func RegisterOrderServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/order_service.OrderService/Order", runtime.WithHTTPPathPattern("/create/order"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/test.OrderService/Order", runtime.WithHTTPPathPattern("/create/order"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

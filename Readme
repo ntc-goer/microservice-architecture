@@ -4,3 +4,11 @@ Kitchen Service — Xác thực chi tiết đơn hàng và tạo một Ticket �
 Accounting Service — Phê duyệt thẻ tín dụng của người tiêu dùng.
 Kitchen Service — Thay đổi trạng thái của Ticket thành AWAITING_ACCEPTANCE.
 Order Service — Thay đổi trạng thái của Order thành APPROVED.
+
+
+viper
+grpc
+grpc-gateway
+consul
+saga
+circuit-breaker
