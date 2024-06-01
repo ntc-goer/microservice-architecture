@@ -2,9 +2,8 @@ syntax="proto3";
 
 option go_package="./proto";
 
-package test;
+package micro_pj;
 
-//protoc --go_out=. --go-grpc_out=. proto/consumer.proto
 service ConsumerService {
   rpc VerifyUser(VerifyUserRequest) returns (VerifyUserResponse);
 }

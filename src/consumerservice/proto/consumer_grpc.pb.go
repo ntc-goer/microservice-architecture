@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v5.26.1
-// source: proto/consumer.proto
+// source: consumer.proto
 
 package proto
 
@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ConsumerService_VerifyUser_FullMethodName = "/test.ConsumerService/VerifyUser"
+	ConsumerService_VerifyUser_FullMethodName = "/micro_pj.ConsumerService/VerifyUser"
 )
 
 // ConsumerServiceClient is the client API for ConsumerService service.
@@ -96,7 +96,7 @@ func _ConsumerService_VerifyUser_Handler(srv interface{}, ctx context.Context, d
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ConsumerService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "test.ConsumerService",
+	ServiceName: "micro_pj.ConsumerService",
 	HandlerType: (*ConsumerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -105,5 +105,5 @@ var ConsumerService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/consumer.proto",
+	Metadata: "consumer.proto",
 }

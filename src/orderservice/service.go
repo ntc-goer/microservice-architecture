@@ -33,9 +33,8 @@ func NewServiceImpl() (*ServiceImpl, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer consumerConn.Close()
-
+	consumerClient := proto.NewConsumerServiceClient(consumerConn)
 	return &ServiceImpl{
-		consumerService: consumerConn,
+		consumerService: consumerClient,
 	}, nil
 }

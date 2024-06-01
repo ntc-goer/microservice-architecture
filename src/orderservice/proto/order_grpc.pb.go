@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ConsumerService_VerifyUser_FullMethodName = "/test.ConsumerService/VerifyUser"
+	ConsumerService_VerifyUser_FullMethodName = "/micro_pj.ConsumerService/VerifyUser"
 )
 
 // ConsumerServiceClient is the client API for ConsumerService service.
@@ -96,7 +96,7 @@ func _ConsumerService_VerifyUser_Handler(srv interface{}, ctx context.Context, d
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ConsumerService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "test.ConsumerService",
+	ServiceName: "micro_pj.ConsumerService",
 	HandlerType: (*ConsumerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -109,7 +109,7 @@ var ConsumerService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	OrderService_Order_FullMethodName = "/test.OrderService/Order"
+	OrderService_Order_FullMethodName = "/micro_pj.OrderService/Order"
 )
 
 // OrderServiceClient is the client API for OrderService service.
@@ -186,7 +186,7 @@ func _OrderService_Order_Handler(srv interface{}, ctx context.Context, dec func(
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var OrderService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "test.OrderService",
+	ServiceName: "micro_pj.OrderService",
 	HandlerType: (*OrderServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

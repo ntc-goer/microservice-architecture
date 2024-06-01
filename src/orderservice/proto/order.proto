@@ -3,7 +3,7 @@ import "google/api/annotations.proto";
 
 option go_package="./proto";
 
-package test;
+package micro_pj;
 
 //----------------------------------------------------Consumer Service--------------------------------------------------------
 service ConsumerService {
@@ -19,14 +19,14 @@ message VerifyUserResponse {
 }
 
 //-----------------------------------------------------Order Service-----------------------------------------------------------
-//protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --grpc-gateway_out=. --grpc-gateway_opt paths=source_relative --grpc-gateway_opt generate_unbound_methods=true proto/order.proto
 
 message Empty {}
 
 service OrderService {
   rpc Order(OrderRequest) returns (OrderResponse) {
     option (google.api.http) = {
-      get: "/create/order"
+      post: "/create/order",
+      body: "*"
     };
   };
 }

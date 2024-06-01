@@ -57,18 +57,11 @@ func local_request_ConsumerService_VerifyUser_0(ctx context.Context, marshaler r
 
 }
 
-var (
-	filter_OrderService_Order_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
-
 func request_OrderService_Order_0(ctx context.Context, marshaler runtime.Marshaler, client OrderServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq OrderRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrderService_Order_0); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -81,10 +74,7 @@ func local_request_OrderService_Order_0(ctx context.Context, marshaler runtime.M
 	var protoReq OrderRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OrderService_Order_0); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -107,7 +97,7 @@ func RegisterConsumerServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/test.ConsumerService/VerifyUser", runtime.WithHTTPPathPattern("/test.ConsumerService/VerifyUser"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/micro_pj.ConsumerService/VerifyUser", runtime.WithHTTPPathPattern("/micro_pj.ConsumerService/VerifyUser"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -133,7 +123,7 @@ func RegisterConsumerServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterOrderServiceHandlerFromEndpoint instead.
 func RegisterOrderServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server OrderServiceServer) error {
 
-	mux.Handle("GET", pattern_OrderService_Order_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_OrderService_Order_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -141,7 +131,7 @@ func RegisterOrderServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/test.OrderService/Order", runtime.WithHTTPPathPattern("/create/order"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/micro_pj.OrderService/Order", runtime.WithHTTPPathPattern("/create/order"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -205,7 +195,7 @@ func RegisterConsumerServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/test.ConsumerService/VerifyUser", runtime.WithHTTPPathPattern("/test.ConsumerService/VerifyUser"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/micro_pj.ConsumerService/VerifyUser", runtime.WithHTTPPathPattern("/micro_pj.ConsumerService/VerifyUser"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -225,7 +215,7 @@ func RegisterConsumerServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 }
 
 var (
-	pattern_ConsumerService_VerifyUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"test.ConsumerService", "VerifyUser"}, ""))
+	pattern_ConsumerService_VerifyUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"micro_pj.ConsumerService", "VerifyUser"}, ""))
 )
 
 var (
@@ -270,13 +260,13 @@ func RegisterOrderServiceHandler(ctx context.Context, mux *runtime.ServeMux, con
 // "OrderServiceClient" to call the correct interceptors.
 func RegisterOrderServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client OrderServiceClient) error {
 
-	mux.Handle("GET", pattern_OrderService_Order_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_OrderService_Order_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/test.OrderService/Order", runtime.WithHTTPPathPattern("/create/order"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/micro_pj.OrderService/Order", runtime.WithHTTPPathPattern("/create/order"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
