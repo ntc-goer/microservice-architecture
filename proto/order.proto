@@ -1,24 +1,9 @@
 syntax="proto3";
 import "google/api/annotations.proto";
 
-option go_package="./proto";
+option go_package="./proto;micro_pj";
 
 package micro_pj;
-
-//----------------------------------------------------Consumer Service--------------------------------------------------------
-service ConsumerService {
-  rpc VerifyUser(VerifyUserRequest) returns (VerifyUserResponse);
-}
-
-message VerifyUserRequest {
-  string id = 1;
-}
-
-message VerifyUserResponse {
-  bool is_ok = 1;
-}
-
-//-----------------------------------------------------Order Service-----------------------------------------------------------
 
 message Empty {}
 

@@ -3,24 +3,24 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/ntc-goer/microservice-examples/consumerservice/proto"
+	pb "github.com/ntc-goer/microservice-examples/proto"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 	"time"
 )
 
-const _SERVICENAME = "consumerservice"
+const _SERVICENAME = "consumer"
 
 type ServerImpl struct {
-	proto.UnimplementedConsumerServiceServer
+	pb.UnimplementedConsumerServiceServer
 }
 
-func (s *ServerImpl) VerifyUser(ctx context.Context, req *proto.VerifyUserRequest) (*proto.VerifyUserResponse, error) {
+func (s *ServerImpl) VerifyUser(ctx context.Context, req *pb.VerifyUserRequest) (*pb.VerifyUserResponse, error) {
 	fmt.Printf("Verifing user with ID %s", req.Id)
 	time.Sleep(5 * time.Second)
 	fmt.Printf("Verify user with ID %s valid", req.Id)
-	return &proto.VerifyUserResponse{
+	return &pb.VerifyUserResponse{
 		IsOk: true,
 	}, nil
 }
@@ -31,7 +31,7 @@ func main() {
 		log.Fatalf("Listen port fail %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	proto.RegisterConsumerServiceServer(grpcServer, &ServerImpl{})
+	pb.RegisterConsumerServiceServer(grpcServer, &ServerImpl{})
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Start server fail")
 	}
