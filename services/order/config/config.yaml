@@ -1,7 +1,6 @@
-host:
-  grpc_host: http://localhost
-  grpc_port: 50000
-  http_host: http://localhost
-  http_port: 8080
-  service_id: order
-  service_name: order
+grpc_host: http://localhost
+grpc_port: 50000
+http_host: http://localhost
+http_port: 8080
+service_id: order
+service_name: order

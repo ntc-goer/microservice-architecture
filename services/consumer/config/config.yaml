@@ -1,0 +1,3 @@
+grpc_host: http://localhost
+grpc_port: 50001
+service_name: consumer

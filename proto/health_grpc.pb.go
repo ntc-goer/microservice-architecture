@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -22,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HealthClient interface {
-	Check(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error)
+	Check(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*HealthCheckResponse, error)
 	Watch(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (Health_WatchClient, error)
 }
 
@@ -34,7 +35,7 @@ func NewHealthClient(cc grpc.ClientConnInterface) HealthClient {
 	return &healthClient{cc}
 }
 
-func (c *healthClient) Check(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
+func (c *healthClient) Check(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
 	out := new(HealthCheckResponse)
 	err := c.cc.Invoke(ctx, "/micro_pj.Health/Check", in, out, opts...)
 	if err != nil {
@@ -79,7 +80,7 @@ func (x *healthWatchClient) Recv() (*HealthCheckResponse, error) {
 // All implementations must embed UnimplementedHealthServer
 // for forward compatibility
 type HealthServer interface {
-	Check(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error)
+	Check(context.Context, *emptypb.Empty) (*HealthCheckResponse, error)
 	Watch(*HealthCheckRequest, Health_WatchServer) error
 	mustEmbedUnimplementedHealthServer()
 }
@@ -88,7 +89,7 @@ type HealthServer interface {
 type UnimplementedHealthServer struct {
 }
 
-func (UnimplementedHealthServer) Check(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error) {
+func (UnimplementedHealthServer) Check(context.Context, *emptypb.Empty) (*HealthCheckResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Check not implemented")
 }
 func (UnimplementedHealthServer) Watch(*HealthCheckRequest, Health_WatchServer) error {
@@ -108,7 +109,7 @@ func RegisterHealthServer(s grpc.ServiceRegistrar, srv HealthServer) {
 }
 
 func _Health_Check_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HealthCheckRequest)
+	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -120,7 +121,7 @@ func _Health_Check_Handler(srv interface{}, ctx context.Context, dec func(interf
 		FullMethod: "/micro_pj.Health/Check",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HealthServer).Check(ctx, req.(*HealthCheckRequest))
+		return srv.(HealthServer).Check(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }

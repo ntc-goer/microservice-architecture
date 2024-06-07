@@ -1,6 +1,7 @@
 syntax = "proto3";
 option go_package="./proto;micro_pj";
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 package micro_pj;
 
 message HealthCheckRequest {
@@ -18,7 +19,7 @@ message HealthCheckResponse {
 }
 
 service Health {
-  rpc Check(HealthCheckRequest) returns (HealthCheckResponse) {
+  rpc Check(google.protobuf.Empty) returns (HealthCheckResponse) {
     option (google.api.http) = {
       get: "/health",
     };

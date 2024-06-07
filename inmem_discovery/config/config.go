@@ -7,12 +7,8 @@ import (
 )
 
 type Config struct {
-	GRPCHost    string `json:"grpc_host"`
-	GRPCPort    string `json:"grpc_port"`
-	HTTPHost    string `json:"http_host"`
-	HTTPPort    string `json:"http_port"`
-	ServiceId   string `json:"service_id"`
-	ServiceName string `json:"service_name"`
+	Address string `json:"address"`
+	Port    string `json:"port"`
 }
 
 func Load() (*Config, error) {
@@ -28,11 +24,6 @@ func Load() (*Config, error) {
 	if err := viper.Unmarshal(&cfg, func(decoderConfig *mapstructure.DecoderConfig) {
 		decoderConfig.TagName = "json"
 	}); err != nil {
-		log.Fatalf("Unable to unmarshal config into struct: %v", err)
-	}
-	// Accept to override os env if you need
-	viper.AutomaticEnv()
-	if err := viper.Unmarshal(&cfg); err != nil {
 		log.Fatalf("Unable to unmarshal config into struct: %v", err)
 	}
 	return &cfg, nil

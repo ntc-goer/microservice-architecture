@@ -7,8 +7,10 @@ Order Service — Thay đổi trạng thái của Order thành APPROVED.
 
 
 viper
+wire
 grpc
 grpc-gateway
 consul
+Resty
 saga
 circuit-breaker

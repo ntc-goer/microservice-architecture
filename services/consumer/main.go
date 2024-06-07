@@ -3,14 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/ntc-goer/microservice-examples/consumerservice/config"
 	pb "github.com/ntc-goer/microservice-examples/proto"
+	"github.com/ntc-goer/microservice-examples/registry/servicediscovery"
+	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/consul"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 	"time"
 )
-
-const _SERVICENAME = "consumer"
 
 type ServerImpl struct {
 	pb.UnimplementedConsumerServiceServer
@@ -26,12 +27,41 @@ func (s *ServerImpl) VerifyUser(ctx context.Context, req *pb.VerifyUserRequest) 
 }
 
 func main() {
-	lis, err := net.Listen("tcp", ":50001")
+	// Setup http server
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("Load fail")
+	}
+	lis, err := net.Listen("tcp", ":"+cfg.GRPCPort)
 	if err != nil {
 		log.Fatalf("Listen port fail %v", err)
 	}
 	grpcServer := grpc.NewServer()
 	pb.RegisterConsumerServiceServer(grpcServer, &ServerImpl{})
+
+	// Register to discovery service
+	instanceId := servicediscovery.GenerateInstanceId(cfg.ServiceName)
+	srvDiscovery, err := consul.NewRegistry()
+	if err != nil {
+		log.Fatalf("Error %v", err)
+	}
+	if err := srvDiscovery.RegisterService(instanceId, cfg.ServiceName, cfg.GRPCHost, cfg.GRPCPort); err != nil {
+		log.Fatalf("RegisterService fail: %v", err)
+	}
+	go func() {
+		ticker := time.NewTicker(3 * time.Second)
+		for {
+			select {
+			case <-ticker.C:
+				srvDiscovery.HealthCheck(instanceId)
+			}
+		}
+	}()
+	defer srvDiscovery.Deregister(ctx, instanceId)
+
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Start server fail")
 	}
