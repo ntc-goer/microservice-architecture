@@ -6,6 +6,7 @@ package main
 import (
 	"github.com/google/wire"
 	"github.com/ntc-goer/microservice-examples/orderservice/config"
+	"github.com/ntc-goer/microservice-examples/orderservice/repository"
 	"github.com/ntc-goer/microservice-examples/orderservice/service"
 	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/common"
 	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/consul"
@@ -25,7 +26,7 @@ func NewCoreDependency(cfg *config.Config, srvImpl *service.ServiceImpl, srvDis 
 	}
 }
 
-//go:generate go run github.com/google/wire/cmd/wire
+//go:generate wire
 func InitializeDependency(dcType string) (*CoreDependency, error) {
 	wire.Build(
 		config.Load,
@@ -34,6 +35,7 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 		//inmem.NewRegistry
 		wire.Bind(new(common.DiscoveryI), new(*consul.Registry)),
 		consul.NewRegistry,
+		repository.NewRepository,
 		NewCoreDependency)
 	return &CoreDependency{}, nil
 }

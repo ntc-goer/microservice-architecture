@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/ntc-goer/microservice-examples/orderservice/repository"
 	pb "github.com/ntc-goer/microservice-examples/proto"
 	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/common"
 	"google.golang.org/grpc"
@@ -17,11 +18,13 @@ type ServiceImpl struct {
 	pb.UnimplementedOrderServiceServer
 	pb.UnimplementedHealthServer
 	SrvDis common.DiscoveryI
+	Repo   *repository.Repository
 }
 
-func NewServiceImpl(srvDis common.DiscoveryI) (*ServiceImpl, error) {
+func NewServiceImpl(srvDis common.DiscoveryI, repo *repository.Repository) (*ServiceImpl, error) {
 	return &ServiceImpl{
 		SrvDis: srvDis,
+		Repo:   repo,
 	}, nil
 }
 

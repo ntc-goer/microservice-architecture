@@ -8,6 +8,7 @@ package main
 
 import (
 	"github.com/ntc-goer/microservice-examples/orderservice/config"
+	"github.com/ntc-goer/microservice-examples/orderservice/repository"
 	"github.com/ntc-goer/microservice-examples/orderservice/service"
 	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/common"
 	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/consul"
@@ -15,7 +16,7 @@ import (
 
 // Injectors from wire.go:
 
-//go:generate go run github.com/google/wire/cmd/wire
+//go:generate wire
 func InitializeDependency(dcType string) (*CoreDependency, error) {
 	configConfig, err := config.Load()
 	if err != nil {
@@ -25,7 +26,8 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 	if err != nil {
 		return nil, err
 	}
-	serviceImpl, err := service.NewServiceImpl(registry)
+	repositoryRepository := repository.NewRepository()
+	serviceImpl, err := service.NewServiceImpl(registry, repositoryRepository)
 	if err != nil {
 		return nil, err
 	}
