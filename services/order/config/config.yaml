@@ -1,4 +1,3 @@
-grpc_host: http://localhost
 grpc_port: 50000
 service_id: order
 service_name: order

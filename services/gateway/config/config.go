@@ -4,12 +4,10 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 	"log"
-	"os"
 )
 
 type Config struct {
-	GRPCPort    string `json:"grpc_port"`
-	ServiceId   string `json:"service_id"`
+	HttpPort    string `json:"http_port"`
 	ServiceName string `json:"service_name"`
 }
 
@@ -29,8 +27,9 @@ func Load() (*Config, error) {
 		log.Fatalf("Unable to unmarshal config into struct: %v", err)
 	}
 	// Accept to override os env if you need
-	if port := os.Getenv("GRPC_PORT"); port != "" {
-		cfg.GRPCPort = port
+	viper.AutomaticEnv()
+	if err := viper.Unmarshal(&cfg); err != nil {
+		log.Fatalf("Unable to unmarshal config into struct: %v", err)
 	}
 	return &cfg, nil
 }

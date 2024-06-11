@@ -4,7 +4,6 @@ go 1.21.1
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0
-	github.com/ntc-goer/microservice-examples/proto v0.0.0-20240607023340-20b73bcffbe6
 	google.golang.org/grpc v1.64.0
 )
 

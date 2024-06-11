@@ -2,9 +2,9 @@ syntax="proto3";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
-option go_package="./proto;consumer";
+option go_package="github.com/ntc-goer/microservice-examples/consumerservice/proto;consumerproto";
 
-package proto;
+package consumer;
 
 message HealthCheckRequest {
   string service = 1;
@@ -27,7 +27,6 @@ service ConsumerService {
       get: "/consumer/health",
     };
   };
-
   rpc Watch(HealthCheckRequest) returns (stream HealthCheckResponse);
 }
 

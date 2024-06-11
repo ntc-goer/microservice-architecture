@@ -4,7 +4,7 @@
 // - protoc             v5.27.1
 // source: order.proto
 
-package micro_pj
+package orderproto
 
 import (
 	context "context"
@@ -20,9 +20,9 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	OrderService_Order_FullMethodName = "/proto.OrderService/Order"
-	OrderService_Check_FullMethodName = "/proto.OrderService/Check"
-	OrderService_Watch_FullMethodName = "/proto.OrderService/Watch"
+	OrderService_Order_FullMethodName = "/order.OrderService/Order"
+	OrderService_Check_FullMethodName = "/order.OrderService/Check"
+	OrderService_Watch_FullMethodName = "/order.OrderService/Watch"
 )
 
 // OrderServiceClient is the client API for OrderService service.
@@ -192,7 +192,7 @@ func (x *orderServiceWatchServer) Send(m *HealthCheckResponse) error {
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var OrderService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.OrderService",
+	ServiceName: "order.OrderService",
 	HandlerType: (*OrderServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -4,7 +4,7 @@
 // - protoc             v5.27.1
 // source: consumer.proto
 
-package consumer
+package consumerproto
 
 import (
 	context "context"
@@ -20,9 +20,9 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	ConsumerService_VerifyUser_FullMethodName = "/proto.ConsumerService/VerifyUser"
-	ConsumerService_Check_FullMethodName      = "/proto.ConsumerService/Check"
-	ConsumerService_Watch_FullMethodName      = "/proto.ConsumerService/Watch"
+	ConsumerService_VerifyUser_FullMethodName = "/consumer.ConsumerService/VerifyUser"
+	ConsumerService_Check_FullMethodName      = "/consumer.ConsumerService/Check"
+	ConsumerService_Watch_FullMethodName      = "/consumer.ConsumerService/Watch"
 )
 
 // ConsumerServiceClient is the client API for ConsumerService service.
@@ -192,7 +192,7 @@ func (x *consumerServiceWatchServer) Send(m *HealthCheckResponse) error {
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ConsumerService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.ConsumerService",
+	ServiceName: "consumer.ConsumerService",
 	HandlerType: (*ConsumerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

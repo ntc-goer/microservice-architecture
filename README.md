@@ -10,11 +10,12 @@ Tech Stack
   + Load Config file
 - wire
   + Dependency injection 
-- grpc // git clone https://github.com/protocolbuffers/protobuf.git
+  - grpc 
+  + Consider to git clone https://github.com/protocolbuffers/protobuf.git
 - grpc-gateway
   + Expose HTTP connection to service
 - consul
-  + Service Registration
+  + Service Registration/Discovery
   + Service Discovery
 - Resty
 - saga

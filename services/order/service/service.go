@@ -3,8 +3,9 @@ package service
 import (
 	"context"
 	"errors"
+	consumerpb "github.com/ntc-goer/microservice-examples/consumerservice/proto"
+	orderpb "github.com/ntc-goer/microservice-examples/orderservice/proto"
 	"github.com/ntc-goer/microservice-examples/orderservice/repository"
-	pb "github.com/ntc-goer/microservice-examples/proto"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -15,8 +16,7 @@ import (
 )
 
 type ServiceImpl struct {
-	pb.UnimplementedOrderServiceServer
-	pb.UnimplementedHealthServer
+	orderpb.UnimplementedOrderServiceServer
 	SrvDis common.DiscoveryI
 	Repo   *repository.Repository
 }
@@ -47,27 +47,27 @@ func (s *ServiceImpl) GetActiveService(ctx context.Context, serviceName string) 
 	return consumerConn, nil
 
 }
-func (s *ServiceImpl) Order(ctx context.Context, orderReq *pb.OrderRequest) (*pb.OrderResponse, error) {
+func (s *ServiceImpl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orderpb.OrderResponse, error) {
 	conn, err := s.GetActiveService(ctx, "consumer")
 	if err != nil {
 		return nil, err
 	}
-	client := pb.NewConsumerServiceClient(conn)
-	result, err := client.VerifyUser(ctx, &pb.VerifyUserRequest{Id: orderReq.UserId})
+	client := consumerpb.NewConsumerServiceClient(conn)
+	result, err := client.VerifyUser(ctx, &consumerpb.VerifyUserRequest{Id: orderReq.UserId})
 	if err != nil {
 		log.Printf("Error when calling the consumer service %v", err)
 		return nil, err
 	}
 	log.Printf("Verify data done with result %v", result.IsOk)
-	return &pb.OrderResponse{
+	return &orderpb.OrderResponse{
 		IsOk: result.IsOk,
 	}, nil
 }
 
-func (s *ServiceImpl) Check(ctx context.Context, e *emptypb.Empty) (*pb.HealthCheckResponse, error) {
-	return &pb.HealthCheckResponse{Status: pb.HealthCheckResponse_SERVING}, nil
+func (s *ServiceImpl) Check(ctx context.Context, e *emptypb.Empty) (*orderpb.HealthCheckResponse, error) {
+	return &orderpb.HealthCheckResponse{Status: orderpb.HealthCheckResponse_SERVING}, nil
 }
 
-func (s *ServiceImpl) Watch(req *pb.HealthCheckRequest, server pb.Health_WatchServer) error {
+func (s *ServiceImpl) Watch(req *orderpb.HealthCheckRequest, server orderpb.OrderService_WatchServer) error {
 	return status.Errorf(codes.Unimplemented, "health check via Watch not implemented")
 }

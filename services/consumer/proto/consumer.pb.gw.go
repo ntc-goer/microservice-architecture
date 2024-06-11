@@ -2,11 +2,11 @@
 // source: consumer.proto
 
 /*
-Package consumer is a reverse proxy.
+Package consumerproto is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package consumer
+package consumerproto
 
 import (
 	"context"
@@ -111,7 +111,7 @@ func RegisterConsumerServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.ConsumerService/VerifyUser", runtime.WithHTTPPathPattern("/proto.ConsumerService/VerifyUser"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/consumer.ConsumerService/VerifyUser", runtime.WithHTTPPathPattern("/consumer.ConsumerService/VerifyUser"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -136,7 +136,7 @@ func RegisterConsumerServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.ConsumerService/Check", runtime.WithHTTPPathPattern("/consumer/health"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/consumer.ConsumerService/Check", runtime.WithHTTPPathPattern("/consumer/health"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -207,7 +207,7 @@ func RegisterConsumerServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.ConsumerService/VerifyUser", runtime.WithHTTPPathPattern("/proto.ConsumerService/VerifyUser"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/consumer.ConsumerService/VerifyUser", runtime.WithHTTPPathPattern("/consumer.ConsumerService/VerifyUser"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -229,7 +229,7 @@ func RegisterConsumerServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.ConsumerService/Check", runtime.WithHTTPPathPattern("/consumer/health"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/consumer.ConsumerService/Check", runtime.WithHTTPPathPattern("/consumer/health"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -251,7 +251,7 @@ func RegisterConsumerServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.ConsumerService/Watch", runtime.WithHTTPPathPattern("/proto.ConsumerService/Watch"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/consumer.ConsumerService/Watch", runtime.WithHTTPPathPattern("/consumer.ConsumerService/Watch"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -271,11 +271,11 @@ func RegisterConsumerServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 }
 
 var (
-	pattern_ConsumerService_VerifyUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"proto.ConsumerService", "VerifyUser"}, ""))
+	pattern_ConsumerService_VerifyUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"consumer.ConsumerService", "VerifyUser"}, ""))
 
 	pattern_ConsumerService_Check_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"consumer", "health"}, ""))
 
-	pattern_ConsumerService_Watch_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"proto.ConsumerService", "Watch"}, ""))
+	pattern_ConsumerService_Watch_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"consumer.ConsumerService", "Watch"}, ""))
 )
 
 var (

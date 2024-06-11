@@ -2,11 +2,11 @@
 // source: order.proto
 
 /*
-Package micro_pj is a reverse proxy.
+Package orderproto is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package micro_pj
+package orderproto
 
 import (
 	"context"
@@ -111,7 +111,7 @@ func RegisterOrderServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.OrderService/Order", runtime.WithHTTPPathPattern("/create/order"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/order.OrderService/Order", runtime.WithHTTPPathPattern("/create/order"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -136,7 +136,7 @@ func RegisterOrderServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.OrderService/Check", runtime.WithHTTPPathPattern("/health"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/order.OrderService/Check", runtime.WithHTTPPathPattern("/order/health"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -207,7 +207,7 @@ func RegisterOrderServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.OrderService/Order", runtime.WithHTTPPathPattern("/create/order"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/order.OrderService/Order", runtime.WithHTTPPathPattern("/create/order"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -229,7 +229,7 @@ func RegisterOrderServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.OrderService/Check", runtime.WithHTTPPathPattern("/health"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/order.OrderService/Check", runtime.WithHTTPPathPattern("/order/health"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -251,7 +251,7 @@ func RegisterOrderServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.OrderService/Watch", runtime.WithHTTPPathPattern("/proto.OrderService/Watch"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/order.OrderService/Watch", runtime.WithHTTPPathPattern("/order.OrderService/Watch"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -273,9 +273,9 @@ func RegisterOrderServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 var (
 	pattern_OrderService_Order_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"create", "order"}, ""))
 
-	pattern_OrderService_Check_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"health"}, ""))
+	pattern_OrderService_Check_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"order", "health"}, ""))
 
-	pattern_OrderService_Watch_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"proto.OrderService", "Watch"}, ""))
+	pattern_OrderService_Watch_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"order.OrderService", "Watch"}, ""))
 )
 
 var (

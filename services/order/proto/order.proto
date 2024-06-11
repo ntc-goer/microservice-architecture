@@ -2,9 +2,9 @@ syntax="proto3";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
-option go_package="./proto;micro_pj";
+option go_package="github.com/ntc-goer/microservice-examples/orderservice/proto;orderproto";
 
-package proto;
+package order;
 
 message HealthCheckRequest {
   string service = 1;
@@ -29,7 +29,7 @@ service OrderService {
   };
   rpc Check(google.protobuf.Empty) returns (HealthCheckResponse) {
     option (google.api.http) = {
-      get: "/health",
+      get: "/order/health",
     };
   };
 
