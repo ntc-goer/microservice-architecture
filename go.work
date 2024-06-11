@@ -3,7 +3,6 @@ go 1.21.1
 use (
 	./services/gateway
 	./inmem_discovery
-	./proto
 	./registry
 	./services/consumer
 	./services/order

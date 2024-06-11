@@ -9,8 +9,6 @@ import (
 type Config struct {
 	GRPCHost    string `json:"grpc_host"`
 	GRPCPort    string `json:"grpc_port"`
-	HTTPHost    string `json:"http_host"`
-	HTTPPort    string `json:"http_port"`
 	ServiceId   string `json:"service_id"`
 	ServiceName string `json:"service_name"`
 }

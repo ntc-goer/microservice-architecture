@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/ntc-goer/microservice-examples/orderservice/repository"
 	pb "github.com/ntc-goer/microservice-examples/proto"
-	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/common"
+	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"

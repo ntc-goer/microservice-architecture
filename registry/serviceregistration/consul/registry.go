@@ -3,7 +3,7 @@ package consul
 import (
 	"context"
 	consultapi "github.com/hashicorp/consul/api"
-	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/common"
+	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"log"
 	"strconv"
 )
@@ -23,7 +23,7 @@ func NewRegistry() (*Registry, error) {
 	}, nil
 }
 
-func (reg *Registry) RegisterService(instanceId string, srvName string, srvAddr string, srvPort string) error {
+func (reg *Registry) RegisterService(instanceId string, srvName string, srvAddr string, srvPort string, httpCheckUrl string) error {
 	portInt, err := strconv.Atoi(srvPort)
 	if err != nil {
 		return err
@@ -34,7 +34,7 @@ func (reg *Registry) RegisterService(instanceId string, srvName string, srvAddr 
 		Address: srvAddr,
 		Port:    portInt,
 		Check: &consultapi.AgentServiceCheck{
-			HTTP: "http://host.docker.internal:8080/health",
+			HTTP: httpCheckUrl,
 			//CheckID: instanceId,
 			//TLSSkipVerify: true,
 			//TTL:                            "30s",

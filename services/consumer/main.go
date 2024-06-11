@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/ntc-goer/microservice-examples/consumerservice/config"
 	pb "github.com/ntc-goer/microservice-examples/proto"
-	"github.com/ntc-goer/microservice-examples/registry/servicediscovery"
-	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/consul"
+	"github.com/ntc-goer/microservice-examples/registry/serviceregistration"
+	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -43,12 +43,12 @@ func main() {
 	pb.RegisterConsumerServiceServer(grpcServer, &ServerImpl{})
 
 	// Register to discovery service
-	instanceId := servicediscovery.GenerateInstanceId(cfg.ServiceName)
+	instanceId := serviceregistration.GenerateInstanceId(cfg.ServiceName)
 	srvDiscovery, err := consul.NewRegistry()
 	if err != nil {
 		log.Fatalf("Error %v", err)
 	}
-	if err := srvDiscovery.RegisterService(instanceId, cfg.ServiceName, cfg.GRPCHost, cfg.GRPCPort); err != nil {
+	if err := srvDiscovery.RegisterService(instanceId, cfg.ServiceName, cfg.GRPCHost, cfg.GRPCPort, "http://host.docker.internal:8080/consumer/health"); err != nil {
 		log.Fatalf("RegisterService fail: %v", err)
 	}
 	go func() {

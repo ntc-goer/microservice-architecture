@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	pb "github.com/ntc-goer/microservice-examples/proto"
-	"github.com/ntc-goer/microservice-examples/registry/servicediscovery"
+	"github.com/ntc-goer/microservice-examples/registry/serviceregistration"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -25,8 +25,8 @@ func main() {
 	pb.RegisterOrderServiceServer(grpcServer, dp.ServiceImpl)
 	pb.RegisterHealthServer(grpcServer, dp.ServiceImpl)
 	// Register to discovery service
-	instanceId := servicediscovery.GenerateInstanceId(dp.Config.ServiceName)
-	if err := dp.ServiceDiscovery.RegisterService(instanceId, dp.Config.ServiceName, dp.Config.GRPCHost, dp.Config.GRPCPort); err != nil {
+	instanceId := serviceregistration.GenerateInstanceId(dp.Config.ServiceName)
+	if err := dp.ServiceDiscovery.RegisterService(instanceId, dp.Config.ServiceName, dp.Config.GRPCHost, dp.Config.GRPCPort, "http://host.docker.internal:8080/order/health"); err != nil {
 		log.Fatalf("RegisterService fail: %v", err)
 	}
 	defer dp.ServiceDiscovery.Deregister(ctx, instanceId)

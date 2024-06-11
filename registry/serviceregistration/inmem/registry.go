@@ -2,7 +2,7 @@ package inmem
 
 import (
 	"context"
-	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/common"
+	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 )
 
 type Registry struct{}
@@ -11,7 +11,7 @@ func NewRegistry() (*Registry, error) {
 	return &Registry{}, nil
 }
 
-func (reg *Registry) RegisterService(instanceId string, srvName string, srvAddr string, srvPort string) error {
+func (reg *Registry) RegisterService(instanceId string, srvName string, srvAddr string, srvPort string, httpCheckUrl string) error {
 
 	return nil
 }

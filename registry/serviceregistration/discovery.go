@@ -1,10 +1,10 @@
-package servicediscovery
+package serviceregistration
 
 import (
 	"fmt"
-	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/common"
-	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/consul"
-	"github.com/ntc-goer/microservice-examples/registry/servicediscovery/inmem"
+	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
+	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
+	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/inmem"
 	"time"
 )
 

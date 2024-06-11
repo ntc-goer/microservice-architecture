@@ -1,8 +1,10 @@
-syntax = "proto3";
-option go_package="./proto;micro_pj";
+syntax="proto3";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
-package micro_pj;
+
+option go_package="./proto;consumer";
+
+package proto;
 
 message HealthCheckRequest {
   string service = 1;
@@ -18,12 +20,21 @@ message HealthCheckResponse {
   ServingStatus status = 1;
 }
 
-service Health {
+service ConsumerService {
+  rpc VerifyUser(VerifyUserRequest) returns (VerifyUserResponse);
   rpc Check(google.protobuf.Empty) returns (HealthCheckResponse) {
     option (google.api.http) = {
-      get: "/health",
+      get: "/consumer/health",
     };
   };
 
   rpc Watch(HealthCheckRequest) returns (stream HealthCheckResponse);
+}
+
+message VerifyUserRequest {
+  string id = 1;
+}
+
+message VerifyUserResponse {
+  bool is_ok = 1;
 }

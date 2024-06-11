@@ -1,0 +1,53 @@
+syntax="proto3";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package="./proto;micro_pj";
+
+package proto;
+
+message HealthCheckRequest {
+  string service = 1;
+}
+
+message HealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    SERVICE_UNKNOWN = 3;  // Used only by the Watch method.
+  }
+  ServingStatus status = 1;
+}
+
+service OrderService {
+  rpc Order(OrderRequest) returns (OrderResponse) {
+    option (google.api.http) = {
+      post: "/create/order",
+      body: "*"
+    };
+  };
+  rpc Check(google.protobuf.Empty) returns (HealthCheckResponse) {
+    option (google.api.http) = {
+      get: "/health",
+    };
+  };
+
+  rpc Watch(HealthCheckRequest) returns (stream HealthCheckResponse);
+}
+
+message OrderItem {
+  string dish = 1;
+  int32 total = 2;
+}
+
+message OrderRequest {
+  string user_id = 1;
+  string location =2;
+  string store_id = 3;
+  repeated OrderItem orders = 4;
+}
+
+message OrderResponse {
+  bool is_ok = 1;
+}

@@ -17,7 +17,7 @@ type ActiveService struct {
 }
 
 type DiscoveryI interface {
-	RegisterService(instanceId string, srvName string, srvAddr string, srvPort string) error
+	RegisterService(instanceId string, srvName string, srvAddr string, srvPort string, httpCheckUrl string) error
 	Deregister(ctx context.Context, instanceID string) error
 	HealthCheck(instanceID string) error
 	Discover(ctx context.Context, serviceName string) ([]ActiveService, error)
