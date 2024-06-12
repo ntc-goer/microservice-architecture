@@ -2,6 +2,7 @@ package consul
 
 import (
 	"context"
+	"fmt"
 	consultapi "github.com/hashicorp/consul/api"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"log"
@@ -23,25 +24,27 @@ func NewRegistry() (*Registry, error) {
 	}, nil
 }
 
-func (reg *Registry) RegisterService(instanceId string, srvName string, srvAddr string, srvPort string, httpCheckUrl string) error {
+func (reg *Registry) RegisterService(instanceId string, srvName string, srvAddr string, srvPort string, checkType common.CheckType) error {
 	portInt, err := strconv.Atoi(srvPort)
+	agentServiceCheck := &consultapi.AgentServiceCheck{
+		Interval:                       "10s",
+		DeregisterCriticalServiceAfter: "5s",
+	}
+	if checkType == common.HTTP_CHECK_TYPE {
+		agentServiceCheck.HTTP = fmt.Sprintf("http://%s:%s/health", srvAddr, srvPort)
+	} else {
+		agentServiceCheck.GRPC = fmt.Sprintf("%s:%s", srvAddr, srvPort)
+	}
 	if err != nil {
 		return err
 	}
 	registration := &consultapi.AgentServiceRegistration{
-		ID:      instanceId,
+		ID: instanceId,
+		//Tags:    []string{fmt.Sprintf("urlprefix-/%s proto=grpc", srvName), fmt.Sprintf("urlprefix-%s/", srvName)},
 		Name:    srvName,
 		Address: srvAddr,
 		Port:    portInt,
-		Check: &consultapi.AgentServiceCheck{
-			HTTP: httpCheckUrl,
-			//CheckID: instanceId,
-			//TLSSkipVerify: true,
-			//TTL:                            "30s",
-			Timeout:                        "1s",
-			Interval:                       "10s",
-			DeregisterCriticalServiceAfter: "60s",
-		},
+		Check:   agentServiceCheck,
 	}
 	err = reg.Client.Agent().ServiceRegister(registration)
 	if err != nil {

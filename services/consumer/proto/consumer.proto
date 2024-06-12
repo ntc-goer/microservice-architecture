@@ -1,6 +1,4 @@
 syntax="proto3";
-import "google/api/annotations.proto";
-import "google/protobuf/empty.proto";
 
 option go_package="github.com/ntc-goer/microservice-examples/consumerservice/proto;consumerproto";
 
@@ -22,12 +20,6 @@ message HealthCheckResponse {
 
 service ConsumerService {
   rpc VerifyUser(VerifyUserRequest) returns (VerifyUserResponse);
-  rpc Check(google.protobuf.Empty) returns (HealthCheckResponse) {
-    option (google.api.http) = {
-      get: "/consumer/health",
-    };
-  };
-  rpc Watch(HealthCheckRequest) returns (stream HealthCheckResponse);
 }
 
 message VerifyUserRequest {

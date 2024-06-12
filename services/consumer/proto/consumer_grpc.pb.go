@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -21,8 +20,6 @@ const _ = grpc.SupportPackageIsVersion8
 
 const (
 	ConsumerService_VerifyUser_FullMethodName = "/consumer.ConsumerService/VerifyUser"
-	ConsumerService_Check_FullMethodName      = "/consumer.ConsumerService/Check"
-	ConsumerService_Watch_FullMethodName      = "/consumer.ConsumerService/Watch"
 )
 
 // ConsumerServiceClient is the client API for ConsumerService service.
@@ -30,8 +27,6 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ConsumerServiceClient interface {
 	VerifyUser(ctx context.Context, in *VerifyUserRequest, opts ...grpc.CallOption) (*VerifyUserResponse, error)
-	Check(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*HealthCheckResponse, error)
-	Watch(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (ConsumerService_WatchClient, error)
 }
 
 type consumerServiceClient struct {
@@ -52,56 +47,11 @@ func (c *consumerServiceClient) VerifyUser(ctx context.Context, in *VerifyUserRe
 	return out, nil
 }
 
-func (c *consumerServiceClient) Check(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(HealthCheckResponse)
-	err := c.cc.Invoke(ctx, ConsumerService_Check_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *consumerServiceClient) Watch(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (ConsumerService_WatchClient, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &ConsumerService_ServiceDesc.Streams[0], ConsumerService_Watch_FullMethodName, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &consumerServiceWatchClient{ClientStream: stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type ConsumerService_WatchClient interface {
-	Recv() (*HealthCheckResponse, error)
-	grpc.ClientStream
-}
-
-type consumerServiceWatchClient struct {
-	grpc.ClientStream
-}
-
-func (x *consumerServiceWatchClient) Recv() (*HealthCheckResponse, error) {
-	m := new(HealthCheckResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 // ConsumerServiceServer is the server API for ConsumerService service.
 // All implementations must embed UnimplementedConsumerServiceServer
 // for forward compatibility
 type ConsumerServiceServer interface {
 	VerifyUser(context.Context, *VerifyUserRequest) (*VerifyUserResponse, error)
-	Check(context.Context, *emptypb.Empty) (*HealthCheckResponse, error)
-	Watch(*HealthCheckRequest, ConsumerService_WatchServer) error
 	mustEmbedUnimplementedConsumerServiceServer()
 }
 
@@ -111,12 +61,6 @@ type UnimplementedConsumerServiceServer struct {
 
 func (UnimplementedConsumerServiceServer) VerifyUser(context.Context, *VerifyUserRequest) (*VerifyUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyUser not implemented")
-}
-func (UnimplementedConsumerServiceServer) Check(context.Context, *emptypb.Empty) (*HealthCheckResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Check not implemented")
-}
-func (UnimplementedConsumerServiceServer) Watch(*HealthCheckRequest, ConsumerService_WatchServer) error {
-	return status.Errorf(codes.Unimplemented, "method Watch not implemented")
 }
 func (UnimplementedConsumerServiceServer) mustEmbedUnimplementedConsumerServiceServer() {}
 
@@ -149,45 +93,6 @@ func _ConsumerService_VerifyUser_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ConsumerService_Check_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConsumerServiceServer).Check(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ConsumerService_Check_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConsumerServiceServer).Check(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ConsumerService_Watch_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(HealthCheckRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ConsumerServiceServer).Watch(m, &consumerServiceWatchServer{ServerStream: stream})
-}
-
-type ConsumerService_WatchServer interface {
-	Send(*HealthCheckResponse) error
-	grpc.ServerStream
-}
-
-type consumerServiceWatchServer struct {
-	grpc.ServerStream
-}
-
-func (x *consumerServiceWatchServer) Send(m *HealthCheckResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
 // ConsumerService_ServiceDesc is the grpc.ServiceDesc for ConsumerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -199,17 +104,7 @@ var ConsumerService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "VerifyUser",
 			Handler:    _ConsumerService_VerifyUser_Handler,
 		},
-		{
-			MethodName: "Check",
-			Handler:    _ConsumerService_Check_Handler,
-		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "Watch",
-			Handler:       _ConsumerService_Watch_Handler,
-			ServerStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "consumer.proto",
 }

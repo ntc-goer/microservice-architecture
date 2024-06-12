@@ -1,2 +1,6 @@
 grpc_port: 50001
-service_name: consumer
+
+# Service Name
+lb_service_host: "localhost:9999"
+order_service_name: order
+consumer_service_name: consumer

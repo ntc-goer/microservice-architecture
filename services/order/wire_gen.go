@@ -27,7 +27,7 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 		return nil, err
 	}
 	repositoryRepository := repository.NewRepository()
-	serviceImpl, err := service.NewServiceImpl(registry, repositoryRepository)
+	serviceImpl, err := service.NewServiceImpl(registry, repositoryRepository, configConfig)
 	if err != nil {
 		return nil, err
 	}

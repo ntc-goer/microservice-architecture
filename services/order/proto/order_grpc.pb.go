@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -21,8 +20,6 @@ const _ = grpc.SupportPackageIsVersion8
 
 const (
 	OrderService_Order_FullMethodName = "/order.OrderService/Order"
-	OrderService_Check_FullMethodName = "/order.OrderService/Check"
-	OrderService_Watch_FullMethodName = "/order.OrderService/Watch"
 )
 
 // OrderServiceClient is the client API for OrderService service.
@@ -30,8 +27,6 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OrderServiceClient interface {
 	Order(ctx context.Context, in *OrderRequest, opts ...grpc.CallOption) (*OrderResponse, error)
-	Check(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*HealthCheckResponse, error)
-	Watch(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (OrderService_WatchClient, error)
 }
 
 type orderServiceClient struct {
@@ -52,56 +47,11 @@ func (c *orderServiceClient) Order(ctx context.Context, in *OrderRequest, opts .
 	return out, nil
 }
 
-func (c *orderServiceClient) Check(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(HealthCheckResponse)
-	err := c.cc.Invoke(ctx, OrderService_Check_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *orderServiceClient) Watch(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (OrderService_WatchClient, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &OrderService_ServiceDesc.Streams[0], OrderService_Watch_FullMethodName, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &orderServiceWatchClient{ClientStream: stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type OrderService_WatchClient interface {
-	Recv() (*HealthCheckResponse, error)
-	grpc.ClientStream
-}
-
-type orderServiceWatchClient struct {
-	grpc.ClientStream
-}
-
-func (x *orderServiceWatchClient) Recv() (*HealthCheckResponse, error) {
-	m := new(HealthCheckResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 // OrderServiceServer is the server API for OrderService service.
 // All implementations must embed UnimplementedOrderServiceServer
 // for forward compatibility
 type OrderServiceServer interface {
 	Order(context.Context, *OrderRequest) (*OrderResponse, error)
-	Check(context.Context, *emptypb.Empty) (*HealthCheckResponse, error)
-	Watch(*HealthCheckRequest, OrderService_WatchServer) error
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -111,12 +61,6 @@ type UnimplementedOrderServiceServer struct {
 
 func (UnimplementedOrderServiceServer) Order(context.Context, *OrderRequest) (*OrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Order not implemented")
-}
-func (UnimplementedOrderServiceServer) Check(context.Context, *emptypb.Empty) (*HealthCheckResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Check not implemented")
-}
-func (UnimplementedOrderServiceServer) Watch(*HealthCheckRequest, OrderService_WatchServer) error {
-	return status.Errorf(codes.Unimplemented, "method Watch not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}
 
@@ -149,45 +93,6 @@ func _OrderService_Order_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OrderService_Check_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(OrderServiceServer).Check(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: OrderService_Check_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrderServiceServer).Check(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _OrderService_Watch_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(HealthCheckRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(OrderServiceServer).Watch(m, &orderServiceWatchServer{ServerStream: stream})
-}
-
-type OrderService_WatchServer interface {
-	Send(*HealthCheckResponse) error
-	grpc.ServerStream
-}
-
-type orderServiceWatchServer struct {
-	grpc.ServerStream
-}
-
-func (x *orderServiceWatchServer) Send(m *HealthCheckResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
 // OrderService_ServiceDesc is the grpc.ServiceDesc for OrderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -199,17 +104,7 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "Order",
 			Handler:    _OrderService_Order_Handler,
 		},
-		{
-			MethodName: "Check",
-			Handler:    _OrderService_Check_Handler,
-		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "Watch",
-			Handler:       _OrderService_Watch_Handler,
-			ServerStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "order.proto",
 }

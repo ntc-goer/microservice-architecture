@@ -6,11 +6,12 @@ import (
 	"github.com/ntc-goer/microservice-examples/consumerservice/config"
 	consumerpb "github.com/ntc-goer/microservice-examples/consumerservice/proto"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration"
+	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/emptypb"
 	"log"
 	"net"
 	"time"
@@ -29,11 +30,11 @@ func (s *ServiceImpl) VerifyUser(ctx context.Context, req *consumerpb.VerifyUser
 	}, nil
 }
 
-func (s *ServiceImpl) Check(ctx context.Context, e *emptypb.Empty) (*consumerpb.HealthCheckResponse, error) {
-	return &consumerpb.HealthCheckResponse{Status: consumerpb.HealthCheckResponse_SERVING}, nil
+func (s *ServiceImpl) Check(context.Context, *grpc_health_v1.HealthCheckRequest) (*grpc_health_v1.HealthCheckResponse, error) {
+	return &grpc_health_v1.HealthCheckResponse{Status: grpc_health_v1.HealthCheckResponse_SERVING}, nil
 }
 
-func (s *ServiceImpl) Watch(req *consumerpb.HealthCheckRequest, server consumerpb.ConsumerService_WatchServer) error {
+func (s *ServiceImpl) Watch(in *grpc_health_v1.HealthCheckRequest, stream grpc_health_v1.Health_WatchServer) error {
 	return status.Errorf(codes.Unimplemented, "health check via Watch not implemented")
 }
 
@@ -52,14 +53,14 @@ func main() {
 	}
 	grpcServer := grpc.NewServer()
 	consumerpb.RegisterConsumerServiceServer(grpcServer, &ServiceImpl{})
-
+	grpc_health_v1.RegisterHealthServer(grpcServer, &ServiceImpl{})
 	// Register to discovery service
-	instanceId := serviceregistration.GenerateInstanceId(cfg.ServiceName)
+	instanceId := serviceregistration.GenerateInstanceId(cfg.ConsumerServiceName)
 	srvDiscovery, err := consul.NewRegistry()
 	if err != nil {
 		log.Fatalf("Error %v", err)
 	}
-	if err := srvDiscovery.RegisterService(instanceId, cfg.ServiceName, serviceregistration.GetCurrentIP(), cfg.GRPCPort, "http://host.docker.internal:8080/consumer/health"); err != nil {
+	if err := srvDiscovery.RegisterService(instanceId, cfg.ConsumerServiceName, serviceregistration.GetCurrentIP(), cfg.GRPCPort, common.GRPC_CHECK_TYPE); err != nil {
 		log.Fatalf("RegisterService fail: %v", err)
 	}
 	defer srvDiscovery.Deregister(ctx, instanceId)

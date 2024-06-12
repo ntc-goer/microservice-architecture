@@ -7,9 +7,10 @@ import (
 )
 
 type Config struct {
-	GRPCPort    string `json:"grpc_port"`
-	ServiceId   string `json:"service_id"`
-	ServiceName string `json:"service_name"`
+	GRPCPort            string `json:"grpc_port"`
+	OrderServiceName    string `json:"order_service_name"`
+	ConsumerServiceName string `json:"consumer_service_name"`
+	LBServiceHost       string `json:"lb_service_host"`
 }
 
 func Load() (*Config, error) {

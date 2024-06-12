@@ -7,8 +7,11 @@ import (
 )
 
 type Config struct {
-	HttpPort    string `json:"http_port"`
-	ServiceName string `json:"service_name"`
+	HttpPort            string `json:"http_port"`
+	GatewayServiceName  string `json:"gateway_service_name"`
+	OrderServiceName    string `json:"order_service_name"`
+	ConsumerServiceName string `json:"consumer_service_name"`
+	LBServiceHost       string `json:"lb_service_host"`
 }
 
 func Load() (*Config, error) {

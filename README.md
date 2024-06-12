@@ -5,18 +5,26 @@ Accounting Service — Phê duyệt thẻ tín dụng của người tiêu dùng
 Kitchen Service — Thay đổi trạng thái của Ticket thành AWAITING_ACCEPTANCE.\
 Order Service — Thay đổi trạng thái của Order thành APPROVED.
 
-Tech Stack
-- viper
+## Tech Stack
+### viper
   + Load Config file
-- wire
+### wire
   + Dependency injection 
-  - grpc 
+### grpc 
   + Consider to git clone https://github.com/protocolbuffers/protobuf.git
-- grpc-gateway
+### grpc-gateway
   + Expose HTTP connection to service
-- consul
+### consul
   + Service Registration/Discovery
-  + Service Discovery
-- Resty
-- saga
-- circuit-breaker
+### fabio
+  + go install github.com/fabiolb/fabio@latest
+  + Server Load Balancing
+### Resty
+### saga
+### circuit-breaker
+
+## Prerequisite
+### consul
+   + Installing consul: https://developer.hashicorp.com/consul/docs/install#precompiled-binaries
+   + Start consul agent : consul agent -dev
+   + Visit localhost:8500 for UI

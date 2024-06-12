@@ -11,7 +11,7 @@ func NewRegistry() (*Registry, error) {
 	return &Registry{}, nil
 }
 
-func (reg *Registry) RegisterService(instanceId string, srvName string, srvAddr string, srvPort string, httpCheckUrl string) error {
+func (reg *Registry) RegisterService(instanceId string, srvName string, srvAddr string, srvPort string, checkType common.CheckType) error {
 
 	return nil
 }

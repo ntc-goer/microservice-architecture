@@ -1,2 +1,7 @@
 http_port: 8080
-service_name: gateway
+
+# Service Name
+lb_service_host: "http://localhost:9999"
+gateway_service_name: gateway
+order_service_name: order
+consumer_service_name: consumer
