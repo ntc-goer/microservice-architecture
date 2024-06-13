@@ -7,6 +7,8 @@ services:
     image: consul:1.15.4
     ports:
       - "8500:8500"
+    volumes:
+      - ./consul_data/:/consul/data
   fabio:
     container_name: fabio
     image: fabiolb/fabio

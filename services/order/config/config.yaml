@@ -3,7 +3,7 @@ database_server_host: localhost
 database_server_port: 5433
 database_name: orderdb
 database_user: orderuser
-database_pwd: orderdbpwd
+database_pwd: orderpwd
 # Service Name
 lb_service_host: "localhost:9999"
 order_service_name: order

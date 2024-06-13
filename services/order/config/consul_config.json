@@ -3,8 +3,8 @@
   "database_server_host": "localhost",
   "database_server_port": 5433,
   "database_name": "orderdb",
-  "database_user": "admin",
-  "database_pwd": "orderdb_pwd",
+  "database_user": "orderuser",
+  "database_pwd": "orderpwd",
   "lb_service_host": "localhost:9999",
   "order_service_name": "order",
   "consumer_service_name": "consumer"

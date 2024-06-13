@@ -15,6 +15,7 @@ type Registry struct {
 
 func NewRegistry() (*Registry, error) {
 	cfg := consultapi.DefaultConfig()
+	cfg.Address = "localhost:8500"
 	client, err := consultapi.NewClient(cfg)
 	if err != nil {
 		return nil, err
@@ -39,8 +40,8 @@ func (reg *Registry) RegisterService(instanceId string, srvName string, srvAddr 
 		return err
 	}
 	registration := &consultapi.AgentServiceRegistration{
-		ID: instanceId,
-		//Tags:    []string{fmt.Sprintf("urlprefix-/%s proto=grpc", srvName), fmt.Sprintf("urlprefix-%s/", srvName)},
+		ID:      instanceId,
+		Tags:    []string{fmt.Sprintf("urlprefix-/%s proto=grpc", srvName)},
 		Name:    srvName,
 		Address: srvAddr,
 		Port:    portInt,

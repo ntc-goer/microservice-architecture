@@ -17,11 +17,13 @@ func main() {
 		log.Fatalf("fail to init dependency %v", err)
 	}
 	ctx := context.Background()
+
 	// Migrate database
 	err = dp.DB.MigrateDatabase()
 	if err != nil {
 		log.Fatalf("fail to init dependency %v", err)
 	}
+
 	// Setup grpc server
 	lis, err := net.Listen("tcp", ":"+dp.Config.GRPCPort)
 	if err != nil {
