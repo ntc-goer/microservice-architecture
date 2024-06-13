@@ -3,21 +3,18 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/ntc-goer/microservice-examples/consumerservice/config"
 	consumerpb "github.com/ntc-goer/microservice-examples/consumerservice/proto"
-	"github.com/ntc-goer/microservice-examples/orderservice/config"
-	orderpb "github.com/ntc-goer/microservice-examples/orderservice/proto"
 	"github.com/ntc-goer/microservice-examples/orderservice/repository"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
-	"log"
+	"time"
 )
 
 type Impl struct {
-	orderpb.UnimplementedOrderServiceServer
+	consumerpb.UnimplementedConsumerServiceServer
 	SrvDis common.DiscoveryI
 	Repo   *repository.Repository
 	Config *config.Config
@@ -31,20 +28,12 @@ func NewServiceImpl(srvDis common.DiscoveryI, repo *repository.Repository, cfg *
 	}, nil
 }
 
-func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orderpb.OrderResponse, error) {
-	conn, err := grpc.NewClient(fmt.Sprintf("%s/%s", s.Config.LBServiceHost, s.Config.ConsumerServiceName), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		return nil, err
-	}
-	client := consumerpb.NewConsumerServiceClient(conn)
-	result, err := client.VerifyUser(ctx, &consumerpb.VerifyUserRequest{Id: orderReq.UserId})
-	if err != nil {
-		log.Printf("Error when calling the consumer service %v", err)
-		return nil, err
-	}
-	log.Printf("Verify data done with result %v", result.IsOk)
-	return &orderpb.OrderResponse{
-		IsOk: result.IsOk,
+func (s *Impl) VerifyUser(ctx context.Context, req *consumerpb.VerifyUserRequest) (*consumerpb.VerifyUserResponse, error) {
+	fmt.Printf("Verifing user with ID %s", req.Id)
+	time.Sleep(5 * time.Second)
+	fmt.Printf("Verify user with ID %s valid", req.Id)
+	return &consumerpb.VerifyUserResponse{
+		IsOk: true,
 	}, nil
 }
 

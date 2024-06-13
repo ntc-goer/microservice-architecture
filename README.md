@@ -16,8 +16,11 @@ Order Service — Thay đổi trạng thái của Order thành APPROVED.
   + Expose HTTP connection to service
 ### consul
   + Service Registration/Discovery
+### Database
+  + Postgres
+  + etc -> ORM
+  + Refer https://entgo.io/
 ### fabio
-  + go install github.com/fabiolb/fabio@latest
   + Server Load Balancing
 ### Resty
 ### saga
@@ -28,3 +31,7 @@ Order Service — Thay đổi trạng thái của Order thành APPROVED.
    + Installing consul: https://developer.hashicorp.com/consul/docs/install#precompiled-binaries
    + Start consul agent : consul agent -dev
    + Visit localhost:8500 for UI
+### fabio
+   + go install github.com/fabiolb/fabio@latest
+### postgres
+   + Run docker-compose: docker-compose up db db_admin

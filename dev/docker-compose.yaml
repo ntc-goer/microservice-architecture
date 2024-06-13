@@ -1,0 +1,58 @@
+version: "2"
+services:
+  # Can't be used to test services running on localhost
+  consul:
+    image: consul:1.15.4
+    ports:
+      - "8500:8500"
+  fabio:
+    image: fabiolb/fabio
+    depends_on:
+      - consul
+    volumes:
+      - ./fabio.properties:/etc/fabio/fabio.properties
+    links:
+      - consul
+    ports:
+      - "9999:9999"
+      - "9998:9998"
+    environment:
+      - FABIO_OPTS=-cfg /etc/fabio/fabio.properties
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: UGP82fkcWU
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  db_admin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: 0SwSy1QIV7
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+    ports:
+      - "5050:5050"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
+

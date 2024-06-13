@@ -6,7 +6,6 @@ import (
 )
 
 func TestGetCurrentIP(t *testing.T) {
-	ip, err := GetCurrentIP()
-	assert.Nil(t, err)
+	ip := GetCurrentIP()
 	assert.NotEmpty(t, ip)
 }
