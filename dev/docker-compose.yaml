@@ -1,11 +1,14 @@
-version: "2"
+version: "3.9"
+name: microservice-examples
 services:
   # Can't be used to test services running on localhost
   consul:
+    container_name: consul
     image: consul:1.15.4
     ports:
       - "8500:8500"
   fabio:
+    container_name: fabio
     image: fabiolb/fabio
     depends_on:
       - consul
@@ -20,6 +23,7 @@ services:
       - FABIO_OPTS=-cfg /etc/fabio/fabio.properties
   db:
     image: postgres
+    container_name: db
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: UGP82fkcWU
@@ -27,13 +31,13 @@ services:
     volumes:
       - postgres:/data/postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - postgres
     restart: unless-stopped
-
+#  pgAdmin web-based
   db_admin:
-    container_name: pgadmin_container
+    container_name: db_admin
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@pgadmin.org
@@ -43,7 +47,7 @@ services:
       - pgadmin:/var/lib/pgadmin
 
     ports:
-      - "5050:5050"
+      - "5050:80"
     networks:
       - postgres
     restart: unless-stopped

@@ -2,6 +2,8 @@ package pkg
 
 import (
 	"context"
+	"fmt"
+	_ "github.com/lib/pq"
 	"github.com/ntc-goer/microservice-examples/orderservice/config"
 	"github.com/ntc-goer/microservice-examples/orderservice/ent"
 )
@@ -12,7 +14,14 @@ type DB struct {
 }
 
 func NewDB(cfg *config.Config) (*DB, error) {
-	client, err := ent.Open("postgres", "host=<host> port=<port> user=<user> dbname=<database> password=<pass>")
+	client, err := ent.Open("postgres",
+		fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+			cfg.DatabaseServerHost,
+			cfg.DatabaseServerPort,
+			cfg.DatabaseUser,
+			cfg.DatabasePwd,
+			cfg.DatabaseName,
+		))
 	if err != nil {
 		return nil, err
 	}

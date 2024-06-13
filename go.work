@@ -1,9 +1,9 @@
 go 1.21.1
 
 use (
-	./services/gateway
 	./inmem_discovery
 	./registry
 	./services/consumer
+	./services/gateway
 	./services/order
 )

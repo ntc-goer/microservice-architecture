@@ -6,22 +6,24 @@ Kitchen Service — Thay đổi trạng thái của Ticket thành AWAITING_ACCEP
 Order Service — Thay đổi trạng thái của Order thành APPROVED.
 
 ## Tech Stack
-### viper
-  + Load Config file
-### wire
-  + Dependency injection 
-### grpc 
+### Load Config
+  + Viper
+  + Remote key/value Storage Consul
+### Dependency injection 
+  + wire
+### Service Communication
+  + grpc 
   + Consider to git clone https://github.com/protocolbuffers/protobuf.git
-### grpc-gateway
-  + Expose HTTP connection to service
-### consul
-  + Service Registration/Discovery
+  + nats
+### Gateway
+  + grpc-gateway
+### Service Registration/
+  + consul
 ### Database
   + Postgres
-  + etc -> ORM
-  + Refer https://entgo.io/
-### fabio
-  + Server Load Balancing
+  + ent ORM -> Refer https://entgo.io/
+### Server Load Balancing / Discovery
+  + fabio
 ### Resty
 ### saga
 ### circuit-breaker
