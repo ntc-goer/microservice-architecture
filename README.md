@@ -5,6 +5,10 @@ Accounting Service — Verify user's credit card.\
 Kitchen Service — Change ticket's state to AWAITING_ACCEPTANCE.\
 Order Service — Change order state to APPROVED.
 
+# This project give you the specific view how microservice work.
+# There are many service mesh library like istio , kubernetes give full microservice's options like service discovery , registration , retry , circuit-breaker .....
+# But diving into each edge of microservice problem will make you fully understanding about how microservice work. What is the functionality of each component in a microservice project
+
 ## Tech Stack
 ### Load Config
   + Viper
