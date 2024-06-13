@@ -28,8 +28,8 @@ func NewRegistry() (*Registry, error) {
 func (reg *Registry) RegisterService(instanceId string, srvName string, srvAddr string, srvPort string, checkType common.CheckType) error {
 	portInt, err := strconv.Atoi(srvPort)
 	agentServiceCheck := &consultapi.AgentServiceCheck{
-		Interval:                       "10s",
-		DeregisterCriticalServiceAfter: "5s",
+		Interval:                       "3s",
+		DeregisterCriticalServiceAfter: "3s",
 	}
 	if checkType == common.HTTP_CHECK_TYPE {
 		agentServiceCheck.HTTP = fmt.Sprintf("http://%s:%s/health", srvAddr, srvPort)

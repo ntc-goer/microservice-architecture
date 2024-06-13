@@ -32,10 +32,12 @@ Order Service — Change order state to APPROVED.
 
 ## Prerequisite
 ### consul
-   + Installing consul: https://developer.hashicorp.com/consul/docs/install#precompiled-binaries
+   + Install consul: https://developer.hashicorp.com/consul/docs/install#precompiled-binaries
    + Start consul agent : consul agent -dev
    + Visit localhost:8500 for UI
 ### fabio
-   + go install github.com/fabiolb/fabio@latest
+   + Install fabio: https://github.com/fabiolb/fabio/releases
+   + Place fabio.properties and fabio executive file in the same folder
+   + Start fabio : fabio.exe -cfg fabio.properties
 ### postgres
    + Run docker-compose: docker-compose up db db_admin

@@ -2,27 +2,27 @@ version: "3.9"
 name: microservice-examples
 services:
   # Can't be used to test services running on localhost
-  consul:
-    container_name: consul
-    image: consul:1.15.4
-    ports:
-      - "8500:8500"
-    volumes:
-      - ./consul_data/:/consul/data
-  fabio:
-    container_name: fabio
-    image: fabiolb/fabio
-    depends_on:
-      - consul
-    volumes:
-      - ./fabio.properties:/etc/fabio/fabio.properties
-    links:
-      - consul
-    ports:
-      - "9999:9999"
-      - "9998:9998"
-    environment:
-      - FABIO_OPTS=-cfg /etc/fabio/fabio.properties
+#  consul:
+#    container_name: consul
+#    image: consul:1.15.4
+#    ports:
+#      - "8500:8500"
+#    volumes:
+#      - ./consul_data/:/consul/data
+#  fabio:
+#    container_name: fabio
+#    image: fabiolb/fabio
+#    depends_on:
+#      - consul
+#    volumes:
+#      - ./fabio.properties:/etc/fabio/fabio.properties
+#    links:
+#      - consul
+#    ports:
+#      - "9999:9999"
+#      - "9998:9998"
+#    environment:
+#      - FABIO_OPTS=-cfg /etc/fabio/fabio.properties
   db:
     image: postgres
     container_name: db

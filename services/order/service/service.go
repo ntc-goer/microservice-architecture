@@ -32,7 +32,10 @@ func NewServiceImpl(srvDis common.DiscoveryI, repo *repository.Repository, cfg *
 }
 
 func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orderpb.OrderResponse, error) {
-	conn, err := grpc.NewClient(fmt.Sprintf("%s/%s", s.Config.LBServiceHost, s.Config.ConsumerServiceName), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(
+		fmt.Sprintf("%s", s.Config.LBServiceHost),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"loadBalancingPolicy": "round_robin", "healthCheckConfig": {"serviceName": "%s"}}`, s.Config.ConsumerServiceName)))
 	if err != nil {
 		return nil, err
 	}
