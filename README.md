@@ -1,9 +1,9 @@
-Order Service — Tạo một Order ở trạng thái APPROVAL_PENDING. \
-Consumer Service — Xác minh rằng người tiêu dùng có thể đặt đơn hàng. \
-Kitchen Service — Xác thực chi tiết đơn hàng và tạo một Ticket ở trạng thái CREATE_PENDING.\
-Accounting Service — Phê duyệt thẻ tín dụng của người tiêu dùng.\
-Kitchen Service — Thay đổi trạng thái của Ticket thành AWAITING_ACCEPTANCE.\
-Order Service — Thay đổi trạng thái của Order thành APPROVED.
+Order Service — Create an order with APPROVAL_PENDING state. \
+Consumer Service — Verify an user can order. \
+Kitchen Service — Verify order và create a Ticket as CREATE_PENDING state.\
+Accounting Service — Verify user's credit card.\
+Kitchen Service — Change ticket's state to AWAITING_ACCEPTANCE.\
+Order Service — Change order state to APPROVED.
 
 ## Tech Stack
 ### Load Config
@@ -24,6 +24,8 @@ Order Service — Thay đổi trạng thái của Order thành APPROVED.
   + ent ORM -> Refer https://entgo.io/
 ### Server Load Balancing / Discovery
   + fabio
+### Manage Log , Trace , Metric
+  + OpenTelemetry
 ### Resty
 ### saga
 ### circuit-breaker
