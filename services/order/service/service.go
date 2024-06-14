@@ -31,11 +31,28 @@ func NewServiceImpl(srvDis common.DiscoveryI, repo *repository.Repository, cfg *
 	}, nil
 }
 
+const _GRPC_CONFIG = `{
+			"loadBalancingPolicy": "round_robin", 
+			"healthCheckConfig": {"serviceName": "%s"}
+            "methodConfig": [{
+                "name": [{"service": "%s"}],
+                "waitForReady": true,
+                "retryPolicy": {
+                    "MaxAttempts": 2,
+                    "InitialBackoff": "1s",
+                    "MaxBackoff": "5s",
+                    "BackoffMultiplier": 1.0,
+                    "RetryableStatusCodes": [ "UNAVAILABLE" ]
+                }
+            }]
+        }`
+
 func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orderpb.OrderResponse, error) {
 	conn, err := grpc.NewClient(
 		fmt.Sprintf("%s", s.Config.LBServiceHost),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"loadBalancingPolicy": "round_robin", "healthCheckConfig": {"serviceName": "%s"}}`, s.Config.ConsumerServiceName)))
+		grpc.WithDefaultServiceConfig(
+			fmt.Sprintf(_GRPC_CONFIG, s.Config.ConsumerServiceName, s.Config.ConsumerServiceName)))
 	if err != nil {
 		return nil, err
 	}
