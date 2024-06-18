@@ -44,7 +44,7 @@ func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orde
 		// Using RequestVolumeThreshold , calculate the number of request error , if > ErrorPercentThreshold -> The circuit will open
 		ErrorPercentThreshold: 30,
 	})
-	err := hystrix.Do("order", func() error {
+	err := hystrix.Do("CREATE_ORDER", func() error {
 		conn, err := s.LoadBalance.GetConnection(s.Config.ConsumerServiceName)
 		if err != nil {
 			return err

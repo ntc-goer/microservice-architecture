@@ -1,0 +1,7 @@
+grpc_port: 50005
+
+# Service Name
+lb_service_host: "localhost:9999"
+order_service_name: order
+consumer_service_name: consumer
+orchestrator_service_name: orchestrator

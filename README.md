@@ -10,6 +10,11 @@ Kitchen Service — Verify order và create a Ticket as CREATE_PENDING state.\
 Accounting Service — Verify user's credit card.\
 Kitchen Service — Change ticket's state to AWAITING_ACCEPTANCE.\
 Order Service — Change order state to APPROVED.
+------------------
+Service Registration
+API Gateway Service 
+Discovery + Load Balancer Service
+Orchestration Service
 
 ## Tech Stack
 ### Load Config
@@ -32,11 +37,10 @@ Order Service — Change order state to APPROVED.
   + fabio
 ### Manage Log , Trace , Metric
   + OpenTelemetry
-### Resty
 ### circuit-breaker
   + hystrix-go
 
-## Design Pattern
+## Architect Pattern
 - Database per service pattern. Refer https://microservices.io/patterns/data/database-per-service.html
 - Remote procedure invocation pattern. Refer http://microservices.io/patterns/communication-style/messaging.html
 - Circuit breaker pattern. Refer http://microservices.io/patterns/reliability/circuit-breaker.html

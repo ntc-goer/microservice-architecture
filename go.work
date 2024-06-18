@@ -5,6 +5,8 @@ use (
 	./registry
 	./services/consumer
 	./services/gateway
+	./services/mail
+	./services/orchestrator
 	./services/order
 	./services/template
 )

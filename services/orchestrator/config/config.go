@@ -9,16 +9,11 @@ import (
 )
 
 type Config struct {
-	GRPCPort            string `json:"grpc_port"`
-	QueueHost           string `json:"queue_host"`
-	DatabaseServerHost  string `json:"database_server_host"`
-	DatabaseServerPort  string `json:"database_server_port"`
-	DatabaseName        string `json:"database_name"`
-	DatabaseUser        string `json:"database_user"`
-	DatabasePwd         string `json:"database_pwd"`
-	OrderServiceName    string `json:"order_service_name"`
-	ConsumerServiceName string `json:"consumer_service_name"`
-	LBServiceHost       string `json:"lb_service_host"`
+	GRPCPort                string `json:"grpc_port"`
+	OrderServiceName        string `json:"order_service_name"`
+	ConsumerServiceName     string `json:"consumer_service_name"`
+	LBServiceHost           string `json:"lb_service_host"`
+	OrchestratorServiceName string `json:"orchestrator_service_name"`
 }
 
 func getEnv(key string, defaultVal string) string {
