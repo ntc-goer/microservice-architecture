@@ -13,7 +13,6 @@ import (
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
 	"log"
-	"time"
 )
 
 type Impl struct {
@@ -46,18 +45,16 @@ func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orde
 		ErrorPercentThreshold: 30,
 	})
 	err := hystrix.Do("order", func() error {
-		log.Printf("Start Order")
-		time.Sleep(3 * time.Second)
-		//conn, err := s.LoadBalance.GetConnection(s.Config.ConsumerServiceName)
-		//if err != nil {
-		//	return err
-		//}
-		//client := consumerpb.NewConsumerServiceClient(conn)
-		//result, err = client.VerifyUser(ctx, &consumerpb.VerifyUserRequest{Id: orderReq.UserId})
-		//if err != nil {
-		//	log.Printf("Error when calling the consumer service %v", err)
-		//	return err
-		//}
+		conn, err := s.LoadBalance.GetConnection(s.Config.ConsumerServiceName)
+		if err != nil {
+			return err
+		}
+		client := consumerpb.NewConsumerServiceClient(conn)
+		result, err = client.VerifyUser(ctx, &consumerpb.VerifyUserRequest{Id: orderReq.UserId})
+		if err != nil {
+			log.Printf("Error when calling the consumer service %v", err)
+			return err
+		}
 		return nil
 	}, func(err error) error {
 		log.Printf("hystrix fallback %s", err.Error())
@@ -68,7 +65,6 @@ func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orde
 		return nil, err
 	}
 
-	log.Printf("Verify data done with result %v", result.IsOk)
 	return &orderpb.OrderResponse{
 		IsOk: result.IsOk,
 	}, nil
