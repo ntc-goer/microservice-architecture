@@ -6,4 +6,5 @@ use (
 	./services/consumer
 	./services/gateway
 	./services/order
+	./services/template
 )

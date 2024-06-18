@@ -1,11 +1,15 @@
-package sagaorchestation
+package main
 
 type StepI interface {
 	GetName() string
-	ProcessFunc() error
-	CompensatingFunc() error
 }
 
 type Step struct {
-	Name string
+	Name          string
+	ProcessF      func() error
+	CompensatingF func() error
+}
+
+func (step *Step) GetName() string {
+	return step.Name
 }

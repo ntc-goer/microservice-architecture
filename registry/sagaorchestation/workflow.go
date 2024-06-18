@@ -1,4 +1,4 @@
-package sagaorchestation
+package main
 
 type ProcessStatus string
 
@@ -17,8 +17,9 @@ type Log struct {
 }
 
 type WorkflowI interface {
-	Register(step StepI)
-	Start()
+	RegisterSteps(steps []Step)
+	Register(step Step)
+	Start() error
 	Revert()
 	GetLog() []Log
 }
@@ -28,10 +29,10 @@ type Workflow struct {
 	CurrentStep  int
 	ResultStatus ProcessStatus
 	Log          []Log
-	Steps        []StepI
+	Steps        []Step
 }
 
-func NewWorkflow(name string) WorkflowI {
+func NewWorkflow(name string) *Workflow {
 	return &Workflow{
 		Name: name,
 	}
@@ -47,31 +48,36 @@ func (wf *Workflow) initProcess() {
 	}
 }
 
-func (wf *Workflow) Register(step StepI) {
+func (wf *Workflow) Register(step Step) {
 	wf.Steps = append(wf.Steps, step)
 }
 
-func (wf *Workflow) Start() {
+func (wf *Workflow) RegisterSteps(steps []Step) {
+	wf.Steps = steps
+}
+
+func (wf *Workflow) Start() error {
 	// Init Process Log
 	wf.initProcess()
 	for index, step := range wf.Steps {
 		wf.CurrentStep = index
 		wf.Log[wf.CurrentStep].Status = PENDING
-		if err := step.ProcessFunc(); err != nil {
+		if err := step.ProcessF(); err != nil {
 			wf.Revert()
-			return
+			return err
 		}
 		wf.Log[wf.CurrentStep].Status = SUCCESS
 	}
+	return nil
 }
 
 func (wf *Workflow) Revert() {
 	for i := wf.CurrentStep; i >= 0; i-- {
-		if wf.Steps[i].CompensatingFunc == nil {
+		if wf.Steps[i].CompensatingF() == nil {
 			wf.Log[wf.CurrentStep].Status = SKIPPED
 			continue
 		}
-		if err := wf.Steps[i].CompensatingFunc(); err != nil {
+		if err := wf.Steps[i].CompensatingF(); err != nil {
 			wf.Log[wf.CurrentStep].Status = REVERT_FAILED
 		}
 		wf.Log[wf.CurrentStep].Status = REVERTED

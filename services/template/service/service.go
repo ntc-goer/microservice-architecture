@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	consumerpb "github.com/ntc-goer/microservice-examples/consumerservice/proto"
 	"github.com/ntc-goer/microservice-examples/orderservice/config"
 	"github.com/ntc-goer/microservice-examples/orderservice/pkg"
 	orderpb "github.com/ntc-goer/microservice-examples/orderservice/proto"
@@ -11,7 +10,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
-	"log"
 )
 
 type Impl struct {
@@ -28,23 +26,6 @@ func NewServiceImpl(srvDis common.DiscoveryI, repo *repository.Repository, cfg *
 		Repo:        repo,
 		Config:      cfg,
 		LoadBalance: lb,
-	}, nil
-}
-
-func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orderpb.OrderResponse, error) {
-	conn, err := s.LoadBalance.GetConnection(s.Config.ConsumerServiceName)
-	if err != nil {
-		return nil, err
-	}
-	client := consumerpb.NewConsumerServiceClient(conn)
-	result, err := client.VerifyUser(ctx, &consumerpb.VerifyUserRequest{Id: orderReq.UserId})
-	if err != nil {
-		log.Printf("Error when calling the consumer service %v", err)
-		return nil, err
-	}
-	log.Printf("Verify data done with result %v", result.IsOk)
-	return &orderpb.OrderResponse{
-		IsOk: result.IsOk,
 	}, nil
 }
 
