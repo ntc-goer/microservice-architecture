@@ -18,20 +18,20 @@ func NewLB(cfg *config.Config) *LB {
 }
 
 const _GRPC_CONFIG = `{
-			"loadBalancingPolicy": "round_robin", 
-			"healthCheckConfig": {"serviceName": "%s"}
-            "methodConfig": [{
-                "name": [{"service": "%s"}],
-                "waitForReady": true,
-                "retryPolicy": {
-                    "MaxAttempts": 2,
-                    "InitialBackoff": "1s",
-                    "MaxBackoff": "5s",
-                    "BackoffMultiplier": 1.0,
-                    "RetryableStatusCodes": [ "UNAVAILABLE" ]
-                }
-            }]
-        }`
+    "loadBalancingPolicy": "round_robin", 
+    "healthCheckConfig": {"serviceName": "%s"},
+    "methodConfig": [{
+        "name": [{"service": "%s"}],
+        "waitForReady": true,
+        "retryPolicy": {
+            "MaxAttempts": 2,
+            "InitialBackoff": "1s",
+            "MaxBackoff": "5s",
+            "BackoffMultiplier": 1.0,
+            "RetryableStatusCodes": ["UNAVAILABLE"]
+        }
+    }]
+}`
 
 func (lb *LB) GetConnection(srvName string) (*grpc.ClientConn, error) {
 	conn, err := grpc.NewClient(

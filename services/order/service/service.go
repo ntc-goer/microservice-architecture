@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/afex/hystrix-go/hystrix"
 	consumerpb "github.com/ntc-goer/microservice-examples/consumerservice/proto"
 	"github.com/ntc-goer/microservice-examples/orderservice/config"
 	"github.com/ntc-goer/microservice-examples/orderservice/pkg"
@@ -12,6 +13,7 @@ import (
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
 	"log"
+	"time"
 )
 
 type Impl struct {
@@ -32,16 +34,40 @@ func NewServiceImpl(srvDis common.DiscoveryI, repo *repository.Repository, cfg *
 }
 
 func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orderpb.OrderResponse, error) {
-	conn, err := s.LoadBalance.GetConnection(s.Config.ConsumerServiceName)
+	var result *consumerpb.VerifyUserResponse
+	hystrix.ConfigureCommand("order", hystrix.CommandConfig{
+		// The number of requests will be calculated to determine whether the circuit should be opened or not.
+		RequestVolumeThreshold: 10,
+		// The millisecond to determine the request will be timeout or not
+		Timeout: 1000,
+		// The millisecond number represent the time the circuit breaker will open until the next test.
+		SleepWindow: 60000,
+		// Using RequestVolumeThreshold , calculate the number of request error , if > ErrorPercentThreshold -> The circuit will open
+		ErrorPercentThreshold: 30,
+	})
+	err := hystrix.Do("order", func() error {
+		log.Printf("Start Order")
+		time.Sleep(3 * time.Second)
+		//conn, err := s.LoadBalance.GetConnection(s.Config.ConsumerServiceName)
+		//if err != nil {
+		//	return err
+		//}
+		//client := consumerpb.NewConsumerServiceClient(conn)
+		//result, err = client.VerifyUser(ctx, &consumerpb.VerifyUserRequest{Id: orderReq.UserId})
+		//if err != nil {
+		//	log.Printf("Error when calling the consumer service %v", err)
+		//	return err
+		//}
+		return nil
+	}, func(err error) error {
+		log.Printf("hystrix fallback %s", err.Error())
+		return err
+	})
+
 	if err != nil {
 		return nil, err
 	}
-	client := consumerpb.NewConsumerServiceClient(conn)
-	result, err := client.VerifyUser(ctx, &consumerpb.VerifyUserRequest{Id: orderReq.UserId})
-	if err != nil {
-		log.Printf("Error when calling the consumer service %v", err)
-		return nil, err
-	}
+
 	log.Printf("Verify data done with result %v", result.IsOk)
 	return &orderpb.OrderResponse{
 		IsOk: result.IsOk,
