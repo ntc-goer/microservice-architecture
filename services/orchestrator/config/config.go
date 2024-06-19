@@ -8,12 +8,26 @@ import (
 	"os"
 )
 
-type Config struct {
-	GRPCPort                string `json:"grpc_port"`
+type Queue struct {
+	Subjects Subjects `json:"subjects"`
+}
+
+type Subjects struct {
+	CreateOrderSubject string `json:"create_order_subject"`
+	TestSubject        string `json:"test_subject"`
+}
+
+type Services struct {
 	OrderServiceName        string `json:"order_service_name"`
 	ConsumerServiceName     string `json:"consumer_service_name"`
 	LBServiceHost           string `json:"lb_service_host"`
 	OrchestratorServiceName string `json:"orchestrator_service_name"`
+}
+
+type Config struct {
+	GRPCPort string   `json:"grpc_port"`
+	Queue    Queue    `json:"queue"`
+	Services Services `json:"services"`
 }
 
 func getEnv(key string, defaultVal string) string {

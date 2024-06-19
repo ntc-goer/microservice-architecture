@@ -7,10 +7,10 @@
 package main
 
 import (
-	"github.com/ntc-goer/microservice-examples/orderservice/config"
-	"github.com/ntc-goer/microservice-examples/orderservice/pkg"
-	"github.com/ntc-goer/microservice-examples/orderservice/repository"
-	"github.com/ntc-goer/microservice-examples/orderservice/service"
+	"github.com/ntc-goer/microservice-examples/orchestrator/config"
+	"github.com/ntc-goer/microservice-examples/orchestrator/pkg"
+	"github.com/ntc-goer/microservice-examples/orchestrator/service"
+	"github.com/ntc-goer/microservice-examples/registry/queue"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
 )
@@ -23,21 +23,17 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 	if err != nil {
 		return nil, err
 	}
+	lb := pkg.NewLB(configConfig)
+	msgQueue := queue.NewMsgQueue()
+	impl, err := service.NewServiceImpl(configConfig, lb, msgQueue)
+	if err != nil {
+		return nil, err
+	}
 	registry, err := consul.NewRegistry()
 	if err != nil {
 		return nil, err
 	}
-	repositoryRepository := repository.NewRepository()
-	lb := pkg.NewLB(configConfig)
-	impl, err := service.NewServiceImpl(registry, repositoryRepository, configConfig, lb)
-	if err != nil {
-		return nil, err
-	}
-	db, err := pkg.NewDB(configConfig)
-	if err != nil {
-		return nil, err
-	}
-	coreDependency := NewCoreDependency(configConfig, impl, registry, db)
+	coreDependency := NewCoreDependency(configConfig, impl, registry)
 	return coreDependency, nil
 }
 
@@ -47,14 +43,12 @@ type CoreDependency struct {
 	Config           *config.Config
 	ServiceImpl      *service.Impl
 	ServiceDiscovery common.DiscoveryI
-	DB               *pkg.DB
 }
 
-func NewCoreDependency(cfg *config.Config, srvImpl *service.Impl, srvDis common.DiscoveryI, db *pkg.DB) *CoreDependency {
+func NewCoreDependency(cfg *config.Config, srvImpl *service.Impl, srvDis common.DiscoveryI) *CoreDependency {
 	return &CoreDependency{
 		Config:           cfg,
 		ServiceImpl:      srvImpl,
 		ServiceDiscovery: srvDis,
-		DB:               db,
 	}
 }

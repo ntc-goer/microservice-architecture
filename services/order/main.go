@@ -19,7 +19,7 @@ func main() {
 	ctx := context.Background()
 
 	// Migrate database
-	err = dp.DB.MigrateDatabase()
+	err = dp.Repository.MigrateDatabase()
 	if err != nil {
 		log.Fatalf("fail to init dependency %v", err)
 	}

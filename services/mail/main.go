@@ -20,6 +20,10 @@ func main() {
 		log.Fatalf("RegisterService fail: %v", err)
 	}
 	defer dp.ServiceDiscovery.Deregister(ctx, instanceId)
+
+	if err := dp.Queue.Connect(dp.Config.QueueAddress); err != nil {
+		log.Fatalf("QueueConnect fail: %v", err)
+	}
 	defer dp.Queue.Close()
 	// Start consuming message from queue
 	for {

@@ -1,4 +1,6 @@
 service_port: 50005
+
+queue_address: localhost:4222
 mail_queue_group: MAIL_QUEUE
 mail_queue_subject: SEND_MAIL
 # Service Name

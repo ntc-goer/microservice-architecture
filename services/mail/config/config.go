@@ -10,6 +10,7 @@ import (
 
 type Config struct {
 	ServicePort         string `json:"service_port"`
+	QueueAddress        string `json:"queue_address"`
 	MailQueueGroup      string `json:"mail_queue_group"`
 	MailQueueSubject    string `json:"mail_queue_subject"`
 	MailServiceName     string `json:"mail_service_name"`

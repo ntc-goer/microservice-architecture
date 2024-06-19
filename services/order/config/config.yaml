@@ -1,10 +1,15 @@
 grpc_port: 50000
+
 database_server_host: localhost
 database_server_port: 5433
 database_name: orderdb
 database_user: orderuser
 database_pwd: orderpwd
+# Queue
+queue_address: localhost:4222
+queue_create_order_subject: CREATE_ORDER
+queue_orchestrator: ORCHESTRATOR_QUEUE
 # Service Name
-lb_service_host: "localhost:9999"
+lb_service_host: localhost:9999
 order_service_name: order
 consumer_service_name: consumer

@@ -11,6 +11,7 @@ import (
 	"github.com/ntc-goer/microservice-examples/orderservice/pkg"
 	"github.com/ntc-goer/microservice-examples/orderservice/repository"
 	"github.com/ntc-goer/microservice-examples/orderservice/service"
+	"github.com/ntc-goer/microservice-examples/registry/queue"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
 )
@@ -27,17 +28,17 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 	if err != nil {
 		return nil, err
 	}
-	repositoryRepository := repository.NewRepository()
+	repositoryRepository, err := repository.NewRepository(configConfig)
+	if err != nil {
+		return nil, err
+	}
 	lb := pkg.NewLB(configConfig)
-	impl, err := service.NewServiceImpl(registry, repositoryRepository, configConfig, lb)
+	msgQueue := queue.NewMsgQueue()
+	impl, err := service.NewServiceImpl(registry, repositoryRepository, configConfig, lb, msgQueue)
 	if err != nil {
 		return nil, err
 	}
-	db, err := pkg.NewDB(configConfig)
-	if err != nil {
-		return nil, err
-	}
-	coreDependency := NewCoreDependency(configConfig, impl, registry, db)
+	coreDependency := NewCoreDependency(configConfig, impl, registry, repositoryRepository)
 	return coreDependency, nil
 }
 
@@ -47,14 +48,14 @@ type CoreDependency struct {
 	Config           *config.Config
 	ServiceImpl      *service.Impl
 	ServiceDiscovery common.DiscoveryI
-	DB               *pkg.DB
+	Repository       *repository.Repository
 }
 
-func NewCoreDependency(cfg *config.Config, srvImpl *service.Impl, srvDis common.DiscoveryI, db *pkg.DB) *CoreDependency {
+func NewCoreDependency(cfg *config.Config, srvImpl *service.Impl, srvDis common.DiscoveryI, r *repository.Repository) *CoreDependency {
 	return &CoreDependency{
 		Config:           cfg,
 		ServiceImpl:      srvImpl,
 		ServiceDiscovery: srvDis,
-		DB:               db,
+		Repository:       r,
 	}
 }

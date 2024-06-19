@@ -2,12 +2,14 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/ntc-goer/microservice-examples/orderservice/config"
 	"github.com/ntc-goer/microservice-examples/orderservice/pkg"
 	orderpb "github.com/ntc-goer/microservice-examples/orderservice/proto"
 	"github.com/ntc-goer/microservice-examples/orderservice/repository"
+	"github.com/ntc-goer/microservice-examples/registry/queue"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/ntc"
 	"google.golang.org/grpc/codes"
@@ -21,14 +23,16 @@ type Impl struct {
 	Repo        *repository.Repository
 	Config      *config.Config
 	LoadBalance *pkg.LB
+	Queue       *queue.MsgQueue
 }
 
-func NewServiceImpl(srvDis common.DiscoveryI, repo *repository.Repository, cfg *config.Config, lb *pkg.LB) (*Impl, error) {
+func NewServiceImpl(srvDis common.DiscoveryI, repo *repository.Repository, cfg *config.Config, lb *pkg.LB, q *queue.MsgQueue) (*Impl, error) {
 	return &Impl{
 		SrvDis:      srvDis,
 		Repo:        repo,
 		Config:      cfg,
 		LoadBalance: lb,
+		Queue:       q,
 	}, nil
 }
 
@@ -95,8 +99,26 @@ func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orde
 		tx.Rollback()
 		return nil, err
 	}
+	// Publish OrderCreate Message to orchestrator
+	if err := s.Queue.Connect(s.Config.QueueAddress); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	defer s.Queue.Close()
+	msgBytes, err := json.Marshal(map[string]string{
+		"request_id": requestId.String(),
+		"order_id":   orderId.String(),
+	})
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	err = s.Queue.Publish(s.Config.QueueCreateOrderSubject, string(msgBytes))
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
 	tx.Commit()
-	// Publish Message to CREATE_ORDER queue
 	return &orderpb.OrderResponse{
 		RequestId: requestId.String(),
 		OrderId:   orderId.String(),

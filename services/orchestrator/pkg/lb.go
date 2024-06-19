@@ -2,7 +2,7 @@ package pkg
 
 import (
 	"fmt"
-	"github.com/ntc-goer/microservice-examples/orderservice/config"
+	"github.com/ntc-goer/microservice-examples/orchestrator/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -35,7 +35,7 @@ const _GRPC_CONFIG = `{
 
 func (lb *LB) GetConnection(srvName string) (*grpc.ClientConn, error) {
 	conn, err := grpc.NewClient(
-		lb.Config.LBServiceHost,
+		lb.Config.Services.LBServiceHost,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(
 			fmt.Sprintf(_GRPC_CONFIG, srvName, srvName)))
