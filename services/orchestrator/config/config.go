@@ -8,26 +8,44 @@ import (
 	"os"
 )
 
+type Database struct {
+	ServerHost string `json:"server_host"`
+	ServerPort string `json:"server_port"`
+	DBName     string `json:"db_name"`
+	UserName   string `json:"user_name"`
+	Password   string `json:"password"`
+}
+
 type Queue struct {
-	Subjects Subjects `json:"subjects"`
+	Orchestrator string `json:"orchestrator"`
+	Mail         string `json:"mail"`
 }
 
-type Subjects struct {
-	CreateOrderSubject string `json:"create_order_subject"`
-	TestSubject        string `json:"test_subject"`
+type Broker struct {
+	Address string  `json:"address"`
+	Subject Subject `json:"subject"`
+	Queue   Queue   `json:"queue"`
 }
 
-type Services struct {
+type Subject struct {
+	CreateOrder string `json:"create_order"`
+	TestSubject string `json:"test_subject"`
+	SendMail    string `json:"send_mail"`
+}
+
+type Service struct {
+	LBServiceHost           string `json:"lb_service_host"`
 	OrderServiceName        string `json:"order_service_name"`
 	ConsumerServiceName     string `json:"consumer_service_name"`
-	LBServiceHost           string `json:"lb_service_host"`
 	OrchestratorServiceName string `json:"orchestrator_service_name"`
+	MailServiceName         string `json:"mail_service_name"`
 }
 
 type Config struct {
-	GRPCPort string   `json:"grpc_port"`
-	Queue    Queue    `json:"queue"`
-	Services Services `json:"services"`
+	ServicePort string   `json:"service_port"`
+	Database    Database `json:"database"`
+	Service     Service  `json:"service"`
+	Broker      Broker   `json:"broker"`
 }
 
 func getEnv(key string, defaultVal string) string {

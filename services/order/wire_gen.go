@@ -11,7 +11,7 @@ import (
 	"github.com/ntc-goer/microservice-examples/orderservice/pkg"
 	"github.com/ntc-goer/microservice-examples/orderservice/repository"
 	"github.com/ntc-goer/microservice-examples/orderservice/service"
-	"github.com/ntc-goer/microservice-examples/registry/queue"
+	"github.com/ntc-goer/microservice-examples/registry/broker"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
 )
@@ -33,7 +33,7 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 		return nil, err
 	}
 	lb := pkg.NewLB(configConfig)
-	msgQueue := queue.NewMsgQueue()
+	msgQueue := broker.NewBroker()
 	impl, err := service.NewServiceImpl(registry, repositoryRepository, configConfig, lb, msgQueue)
 	if err != nil {
 		return nil, err

@@ -8,7 +8,7 @@ import (
 	"github.com/ntc-goer/microservice-examples/orchestrator/config"
 	"github.com/ntc-goer/microservice-examples/orchestrator/pkg"
 	"github.com/ntc-goer/microservice-examples/orchestrator/service"
-	"github.com/ntc-goer/microservice-examples/registry/queue"
+	"github.com/ntc-goer/microservice-examples/registry/broker"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
 )
@@ -37,7 +37,7 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 		wire.Bind(new(common.DiscoveryI), new(*consul.Registry)),
 		consul.NewRegistry,
 		pkg.NewLB,
-		queue.NewMsgQueue,
+		broker.NewBroker,
 		NewCoreDependency)
 	return &CoreDependency{}, nil
 }

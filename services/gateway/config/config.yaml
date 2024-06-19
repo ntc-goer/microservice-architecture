@@ -1,7 +1,29 @@
-http_port: 8080
+service_port: 8080
+
+# Database
+database:
+  server_host: localhost
+  server_port: 5433
+  db_name: orderdb
+  user_name: orderuser
+  password: orderpwd
+
+# Broker
+broker:
+  address: localhost:4222
+  subject:
+    create_order: CREATE_ORDER_SUBJECT
+    test_subject: TEST_SUBJECT
+    send_mail: SEND_MAIL_SUBJECT
+  queue:
+    orchestrator: ORCHESTRATOR_QUEUE
+    mail: MAIL_QUEUE
 
 # Service Name
-lb_service_host: "http://localhost:9999"
-gateway_service_name: gateway
-order_service_name: order
-consumer_service_name: consumer
+service:
+  lb_service_host: localhost:9999
+  order_service_name: order
+  consumer_service_name: consumer
+  orchestrator_service_name: orchestrator
+  mail_service_name: mail
+  gateway_service_name: gateway

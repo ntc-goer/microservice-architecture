@@ -1,11 +1,13 @@
 //go:build wireinject
 // +build wireinject
+
 package main
+
 import (
 	"github.com/google/wire"
 	"github.com/ntc-goer/microservice-examples/mailservice/config"
 	"github.com/ntc-goer/microservice-examples/mailservice/service"
-	"github.com/ntc-goer/microservice-examples/registry/queue"
+	"github.com/ntc-goer/microservice-examples/registry/broker"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
 )
@@ -13,16 +15,16 @@ import (
 type CoreDependency struct {
 	Config           *config.Config
 	ServiceDiscovery common.DiscoveryI
-	Queue *queue.MsgQueue
-	Service *service.Service
+	Broker           *broker.Broker
+	Service          *service.Service
 }
 
-func NewCoreDependency(cfg *config.Config, srvDis common.DiscoveryI, queue *queue.MsgQueue, srv *service.Service) *CoreDependency {
+func NewCoreDependency(cfg *config.Config, srvDis common.DiscoveryI, bk *broker.Broker, srv *service.Service) *CoreDependency {
 	return &CoreDependency{
 		Config:           cfg,
 		ServiceDiscovery: srvDis,
-		Queue: queue,
-		Service: srv,
+		Broker:            bk,
+		Service:          srv,
 	}
 }
 
@@ -35,7 +37,7 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 		wire.Bind(new(common.DiscoveryI), new(*consul.Registry)),
 		service.NewService,
 		consul.NewRegistry,
-		queue.NewMsgQueue,
+		broker.NewBroker,
 		NewCoreDependency)
 	return &CoreDependency{}, nil
 }

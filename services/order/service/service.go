@@ -9,7 +9,7 @@ import (
 	"github.com/ntc-goer/microservice-examples/orderservice/pkg"
 	orderpb "github.com/ntc-goer/microservice-examples/orderservice/proto"
 	"github.com/ntc-goer/microservice-examples/orderservice/repository"
-	"github.com/ntc-goer/microservice-examples/registry/queue"
+	"github.com/ntc-goer/microservice-examples/registry/broker"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/ntc"
 	"google.golang.org/grpc/codes"
@@ -23,10 +23,10 @@ type Impl struct {
 	Repo        *repository.Repository
 	Config      *config.Config
 	LoadBalance *pkg.LB
-	Queue       *queue.MsgQueue
+	Queue       *broker.Broker
 }
 
-func NewServiceImpl(srvDis common.DiscoveryI, repo *repository.Repository, cfg *config.Config, lb *pkg.LB, q *queue.MsgQueue) (*Impl, error) {
+func NewServiceImpl(srvDis common.DiscoveryI, repo *repository.Repository, cfg *config.Config, lb *pkg.LB, q *broker.Broker) (*Impl, error) {
 	return &Impl{
 		SrvDis:      srvDis,
 		Repo:        repo,
@@ -100,7 +100,7 @@ func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orde
 		return nil, err
 	}
 	// Publish OrderCreate Message to orchestrator
-	if err := s.Queue.Connect(s.Config.QueueAddress); err != nil {
+	if err := s.Queue.Connect(s.Config.Broker.Address); err != nil {
 		tx.Rollback()
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orde
 		tx.Rollback()
 		return nil, err
 	}
-	err = s.Queue.Publish(s.Config.QueueCreateOrderSubject, string(msgBytes))
+	err = s.Queue.Publish(s.Config.Broker.Subject.CreateOrder, string(msgBytes))
 	if err != nil {
 		tx.Rollback()
 		return nil, err

@@ -1,32 +1,57 @@
 package main
 
-//const WORKER_1 = "WORKER_1"
-//const WORKER_2 = "WORKER_2"
+import (
+	"fmt"
+	"time"
+)
+
+// const WORKER_1 = "WORKER_1"
+// const WORKER_2 = "WORKER_2"
 //
-//// WORKER_1 -> Event => WORKER_2_QUEUE =>
-//type Worker interface {
-//	Handle() error
-//}
+// // WORKER_1 -> Event => WORKER_2_QUEUE =>
 //
-//type Worker1 struct{}
+//	type Worker interface {
+//		Handle() error
+//	}
 //
-//func (wk *Worker1) Handle() {
-//	constraints.Ordered()
-//	fmt.Println("Worker 1")
-//}
-//func NewWorker1() *Worker1 {
-//	return &Worker1{}
-//}
+// type Worker1 struct{}
 //
-//type Worker2 struct{}
+//	func (wk *Worker1) Handle() {
+//		constraints.Ordered()
+//		fmt.Println("Worker 1")
+//	}
 //
-//func NewWorker2() *Worker2 {
-//	return &Worker2{}
-//}
+//	func NewWorker1() *Worker1 {
+//		return &Worker1{}
+//	}
 //
-//func main() {
+// type Worker2 struct{}
 //
-//}
+//	func NewWorker2() *Worker2 {
+//		return &Worker2{}
+//	}
+func main() {
+	channel := make(chan string, 5)
+
+	for i := 0; i < 3; i++ {
+		go func(testChan <-chan string, index int) {
+			for {
+				result, isAlive := <-testChan
+				if !isAlive {
+					break
+				}
+				fmt.Println(fmt.Sprintf("Receive from worker %d value %s --- Current Bugffer %d", index, result, len(channel)))
+				time.Sleep(50 * time.Millisecond)
+			}
+		}(channel, i+1)
+	}
+	time.Sleep(3 * time.Second)
+	for i := 0; i < 200; i++ {
+		channel <- fmt.Sprintf("Number is %d", i)
+	}
+
+	time.Sleep(5 * time.Second)
+}
 
 // interface in struct
 //type BarI interface {

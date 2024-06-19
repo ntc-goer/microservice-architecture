@@ -9,7 +9,7 @@ import (
 	"github.com/ntc-goer/microservice-examples/orderservice/pkg"
 	"github.com/ntc-goer/microservice-examples/orderservice/repository"
 	"github.com/ntc-goer/microservice-examples/orderservice/service"
-	"github.com/ntc-goer/microservice-examples/registry/queue"
+	"github.com/ntc-goer/microservice-examples/registry/broker"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
 )
@@ -18,7 +18,7 @@ type CoreDependency struct {
 	Config           *config.Config
 	ServiceImpl      *service.Impl
 	ServiceDiscovery common.DiscoveryI
-	Repository *repository.Repository
+	Repository       *repository.Repository
 }
 
 func NewCoreDependency(cfg *config.Config, srvImpl *service.Impl, srvDis common.DiscoveryI, r *repository.Repository) *CoreDependency {
@@ -26,7 +26,7 @@ func NewCoreDependency(cfg *config.Config, srvImpl *service.Impl, srvDis common.
 		Config:           cfg,
 		ServiceImpl:      srvImpl,
 		ServiceDiscovery: srvDis,
-		Repository: r,
+		Repository:       r,
 	}
 }
 
@@ -40,7 +40,7 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 		wire.Bind(new(common.DiscoveryI), new(*consul.Registry)),
 		consul.NewRegistry,
 		repository.NewRepository,
-		queue.NewMsgQueue,
+		broker.NewBroker,
 		pkg.NewLB,
 		NewCoreDependency)
 	return &CoreDependency{}, nil

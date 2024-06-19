@@ -1,18 +1,18 @@
-package queue
+package broker
 
 import (
 	"github.com/nats-io/nats.go"
 )
 
-type MsgQueue struct {
+type Broker struct {
 	Client *nats.Conn
 }
 
-func NewMsgQueue() *MsgQueue {
-	return &MsgQueue{}
+func NewBroker() *Broker {
+	return &Broker{}
 }
 
-func (q *MsgQueue) Connect(addr string) error {
+func (q *Broker) Connect(addr string) error {
 	nc, err := nats.Connect(addr)
 	if err != nil {
 		return err
@@ -21,21 +21,21 @@ func (q *MsgQueue) Connect(addr string) error {
 	return nil
 }
 
-func (q *MsgQueue) Close() {
+func (q *Broker) Close() {
 	q.Client.Close()
 }
-func (q *MsgQueue) Publish(subject string, data string) error {
+func (q *Broker) Publish(subject string, data string) error {
 	return q.Client.Publish(subject, []byte(data))
 }
 
-func (q *MsgQueue) Subscribe(subject string, handler func(msg string)) error {
+func (q *Broker) Subscribe(subject string, handler func(msg string)) error {
 	_, err := q.Client.Subscribe(subject, func(msg *nats.Msg) {
 		handler(string(msg.Data))
 	})
 	return err
 }
 
-func (q *MsgQueue) QueueSubscribe(subject string, queueName string, handler func(msg string)) error {
+func (q *Broker) QueueSubscribe(subject string, queueName string, handler func(msg string)) error {
 	_, err := q.Client.QueueSubscribe(subject, queueName, func(msg *nats.Msg) {
 		handler(string(msg.Data))
 	})

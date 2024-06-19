@@ -25,7 +25,7 @@ func main() {
 	}
 
 	// Setup grpc server
-	lis, err := net.Listen("tcp", ":"+dp.Config.GRPCPort)
+	lis, err := net.Listen("tcp", ":"+dp.Config.ServicePort)
 	if err != nil {
 		log.Fatalf("error listening port %v", err)
 	}
@@ -33,8 +33,8 @@ func main() {
 	orderpb.RegisterOrderServiceServer(grpcServer, dp.ServiceImpl)
 	grpc_health_v1.RegisterHealthServer(grpcServer, dp.ServiceImpl)
 	// Register to discovery service
-	instanceId := serviceregistration.GenerateInstanceId(dp.Config.OrderServiceName)
-	if err := dp.ServiceDiscovery.RegisterService(instanceId, dp.Config.OrderServiceName, serviceregistration.GetCurrentIP(), dp.Config.GRPCPort, common.GRPC_CHECK_TYPE); err != nil {
+	instanceId := serviceregistration.GenerateInstanceId(dp.Config.Service.OrderServiceName)
+	if err := dp.ServiceDiscovery.RegisterService(instanceId, dp.Config.Service.OrderServiceName, serviceregistration.GetCurrentIP(), dp.Config.ServicePort, common.GRPC_CHECK_TYPE); err != nil {
 		log.Fatalf("RegisterService fail: %v", err)
 	}
 	defer dp.ServiceDiscovery.Deregister(ctx, instanceId)

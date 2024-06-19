@@ -1,13 +1,20 @@
-grpc_port: 50005
+service_port: 50000
 
-queue:
-  subjects:
-    create_order_subject: CREATE_ORDER
-    test_subject: TEST
+# Broker
+broker:
+  address: localhost:4222
+  subject:
+    create_order: CREATE_ORDER_SUBJECT
+    test_subject: TEST_SUBJECT
+    send_mail: SEND_MAIL_SUBJECT
+  queue:
+    orchestrator: ORCHESTRATOR_QUEUE
+    mail: MAIL_QUEUE
 
-services:
-  # Service Name
-  lb_service_host: "localhost:9999"
+# Service Name
+service:
+  lb_service_host: localhost:9999
   order_service_name: order
   consumer_service_name: consumer
   orchestrator_service_name: orchestrator
+  mail_service_name: mail

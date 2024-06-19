@@ -32,20 +32,20 @@ func main() {
 
 	// Register to discovery service
 	serviceDiscovery, _ := serviceregistration.GetDiscovery("consul")
-	instanceId := serviceregistration.GenerateInstanceId(cfg.GatewayServiceName)
-	if err := serviceDiscovery.RegisterService(instanceId, cfg.GatewayServiceName, serviceregistration.GetCurrentIP(), cfg.HttpPort, common.HTTP_CHECK_TYPE); err != nil {
+	instanceId := serviceregistration.GenerateInstanceId(cfg.Service.GatewayServiceName)
+	if err := serviceDiscovery.RegisterService(instanceId, cfg.Service.GatewayServiceName, serviceregistration.GetCurrentIP(), cfg.ServicePort, common.HTTP_CHECK_TYPE); err != nil {
 		log.Fatalf("RegisterService fail: %v", err)
 	}
 	defer serviceDiscovery.Deregister(ctx, instanceId)
 
 	// Register endpoint
 	// OrderService
-	_ = orderpb.RegisterOrderServiceHandlerFromEndpoint(ctx, mux, fmt.Sprintf("%s/%s", cfg.LBServiceHost, cfg.OrderServiceName), []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())})
+	_ = orderpb.RegisterOrderServiceHandlerFromEndpoint(ctx, mux, fmt.Sprintf("%s/%s", cfg.Service.LBServiceHost, cfg.Service.OrderServiceName), []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())})
 	// ConsumerService
-	_ = consumerpb.RegisterConsumerServiceHandlerFromEndpoint(ctx, mux, fmt.Sprintf("%s/%s", cfg.LBServiceHost, cfg.ConsumerServiceName), []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())})
+	_ = consumerpb.RegisterConsumerServiceHandlerFromEndpoint(ctx, mux, fmt.Sprintf("%s/%s", cfg.Service.LBServiceHost, cfg.Service.ConsumerServiceName), []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())})
 
-	log.Printf("starting HTTP/JSON gateway on " + cfg.HttpPort)
-	if err := http.ListenAndServe(":"+cfg.HttpPort, mux); err != nil {
+	log.Printf("starting HTTP/JSON gateway on " + cfg.ServicePort)
+	if err := http.ListenAndServe(":"+cfg.ServicePort, mux); err != nil {
 		log.Fatalf("failed to start HTTP server: %v", err)
 	}
 }

@@ -8,19 +8,45 @@ import (
 	"os"
 )
 
-type Config struct {
-	GRPCPort                string `json:"grpc_port"`
-	DatabaseServerHost      string `json:"database_server_host"`
-	DatabaseServerPort      string `json:"database_server_port"`
-	DatabaseName            string `json:"database_name"`
-	DatabaseUser            string `json:"database_user"`
-	DatabasePwd             string `json:"database_pwd"`
+type Database struct {
+	ServerHost string `json:"server_host"`
+	ServerPort string `json:"server_port"`
+	DBName     string `json:"db_name"`
+	UserName   string `json:"user_name"`
+	Password   string `json:"password"`
+}
+
+type Queue struct {
+	Orchestrator string `json:"orchestrator"`
+	Mail         string `json:"mail"`
+}
+
+type Broker struct {
+	Address string  `json:"address"`
+	Subject Subject `json:"subject"`
+	Queue   Queue   `json:"queue"`
+}
+
+type Subject struct {
+	CreateOrder string `json:"create_order"`
+	TestSubject string `json:"test_subject"`
+	SendMail    string `json:"send_mail"`
+}
+
+type Service struct {
+	LBServiceHost           string `json:"lb_service_host"`
 	OrderServiceName        string `json:"order_service_name"`
 	ConsumerServiceName     string `json:"consumer_service_name"`
-	LBServiceHost           string `json:"lb_service_host"`
-	QueueAddress            string `json:"queue_address"`
-	QueueOrchestrator       string `json:"queue_orchestrator"`
-	QueueCreateOrderSubject string `json:"queue_create_order_subject"`
+	OrchestratorServiceName string `json:"orchestrator_service_name"`
+	MailServiceName         string `json:"mail_service_name"`
+	GatewayServiceName      string `json:"gateway_service_name"`
+}
+
+type Config struct {
+	ServicePort string   `json:"service_port"`
+	Database    Database `json:"database"`
+	Service     Service  `json:"service"`
+	Broker      Broker   `json:"broker"`
 }
 
 func getEnv(key string, defaultVal string) string {
@@ -34,11 +60,12 @@ func getEnv(key string, defaultVal string) string {
 func Load() (*Config, error) {
 	vp := viper.New()
 	appEnv := getEnv("APP_ENV", "local")
-	remoteProviderEndpoint := getEnv("REMOTE_PROVIDER_ENDPOINT", "localhost:8500")
-	remoteProviderPath := getEnv("REMOTE_PROVIDER_PATH", "env/orders")
 
 	switch appEnv {
 	case "development", "production":
+		remoteProviderEndpoint := getEnv("REMOTE_PROVIDER_ENDPOINT", "localhost:8500")
+		remoteProviderPath := getEnv("REMOTE_PROVIDER_PATH", "env/orders")
+
 		vp.AddRemoteProvider("consul", remoteProviderEndpoint, remoteProviderPath)
 		vp.SetConfigType("json") // Need to explicitly set this to json
 		if err := vp.ReadRemoteConfig(); err != nil {

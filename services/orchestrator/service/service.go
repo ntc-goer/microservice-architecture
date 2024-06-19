@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/ntc-goer/microservice-examples/orchestrator/config"
 	"github.com/ntc-goer/microservice-examples/orchestrator/pkg"
-	"github.com/ntc-goer/microservice-examples/registry/queue"
+	"github.com/ntc-goer/microservice-examples/registry/broker"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
@@ -13,14 +13,14 @@ import (
 type Impl struct {
 	Config      *config.Config
 	LoadBalance *pkg.LB
-	Queue       *queue.MsgQueue
+	Broker      *broker.Broker
 }
 
-func NewServiceImpl(cfg *config.Config, lb *pkg.LB, q *queue.MsgQueue) (*Impl, error) {
+func NewServiceImpl(cfg *config.Config, lb *pkg.LB, q *broker.Broker) (*Impl, error) {
 	return &Impl{
 		Config:      cfg,
 		LoadBalance: lb,
-		Queue:       q,
+		Broker:      q,
 	}, nil
 }
 

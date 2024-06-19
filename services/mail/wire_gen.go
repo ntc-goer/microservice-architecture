@@ -9,7 +9,7 @@ package main
 import (
 	"github.com/ntc-goer/microservice-examples/mailservice/config"
 	"github.com/ntc-goer/microservice-examples/mailservice/service"
-	"github.com/ntc-goer/microservice-examples/registry/queue"
+	"github.com/ntc-goer/microservice-examples/registry/broker"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
 )
@@ -26,9 +26,9 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 	if err != nil {
 		return nil, err
 	}
-	msgQueue := queue.NewMsgQueue()
+	brokerBroker := broker.NewBroker()
 	serviceService := service.NewService(configConfig)
-	coreDependency := NewCoreDependency(configConfig, registry, msgQueue, serviceService)
+	coreDependency := NewCoreDependency(configConfig, registry, brokerBroker, serviceService)
 	return coreDependency, nil
 }
 
@@ -37,15 +37,15 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 type CoreDependency struct {
 	Config           *config.Config
 	ServiceDiscovery common.DiscoveryI
-	Queue            *queue.MsgQueue
+	Broker           *broker.Broker
 	Service          *service.Service
 }
 
-func NewCoreDependency(cfg *config.Config, srvDis common.DiscoveryI, queue2 *queue.MsgQueue, srv *service.Service) *CoreDependency {
+func NewCoreDependency(cfg *config.Config, srvDis common.DiscoveryI, bk *broker.Broker, srv *service.Service) *CoreDependency {
 	return &CoreDependency{
 		Config:           cfg,
 		ServiceDiscovery: srvDis,
-		Queue:            queue2,
+		Broker:           bk,
 		Service:          srv,
 	}
 }
