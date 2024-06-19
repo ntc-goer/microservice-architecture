@@ -20,6 +20,8 @@ type Dish struct {
 	ID uuid.UUID `json:"id,omitempty"`
 	// OrderID holds the value of the "order_id" field.
 	OrderID uuid.UUID `json:"order_id,omitempty"`
+	// DishID holds the value of the "dish_id" field.
+	DishID string `json:"dish_id,omitempty"`
 	// DishName holds the value of the "dish_name" field.
 	DishName string `json:"dish_name,omitempty"`
 	// Quantity holds the value of the "quantity" field.
@@ -38,7 +40,7 @@ func (*Dish) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case dish.FieldQuantity:
 			values[i] = new(sql.NullInt64)
-		case dish.FieldDishName:
+		case dish.FieldDishID, dish.FieldDishName:
 			values[i] = new(sql.NullString)
 		case dish.FieldUpdateAt, dish.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -70,6 +72,12 @@ func (d *Dish) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field order_id", values[i])
 			} else if value != nil {
 				d.OrderID = *value
+			}
+		case dish.FieldDishID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field dish_id", values[i])
+			} else if value.Valid {
+				d.DishID = value.String
 			}
 		case dish.FieldDishName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -133,6 +141,9 @@ func (d *Dish) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", d.ID))
 	builder.WriteString("order_id=")
 	builder.WriteString(fmt.Sprintf("%v", d.OrderID))
+	builder.WriteString(", ")
+	builder.WriteString("dish_id=")
+	builder.WriteString(d.DishID)
 	builder.WriteString(", ")
 	builder.WriteString("dish_name=")
 	builder.WriteString(d.DishName)

@@ -16,6 +16,8 @@ const (
 	FieldID = "id"
 	// FieldOrderID holds the string denoting the order_id field in the database.
 	FieldOrderID = "order_id"
+	// FieldDishID holds the string denoting the dish_id field in the database.
+	FieldDishID = "dish_id"
 	// FieldDishName holds the string denoting the dish_name field in the database.
 	FieldDishName = "dish_name"
 	// FieldQuantity holds the string denoting the quantity field in the database.
@@ -32,6 +34,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldOrderID,
+	FieldDishID,
 	FieldDishName,
 	FieldQuantity,
 	FieldUpdateAt,
@@ -49,6 +52,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DishIDValidator is a validator for the "dish_id" field. It is called by the builders before save.
+	DishIDValidator func(string) error
 	// DishNameValidator is a validator for the "dish_name" field. It is called by the builders before save.
 	DishNameValidator func(string) error
 	// QuantityValidator is a validator for the "quantity" field. It is called by the builders before save.
@@ -72,6 +77,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByOrderID orders the results by the order_id field.
 func ByOrderID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOrderID, opts...).ToFunc()
+}
+
+// ByDishID orders the results by the dish_id field.
+func ByDishID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDishID, opts...).ToFunc()
 }
 
 // ByDishName orders the results by the dish_name field.

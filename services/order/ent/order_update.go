@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/ntc-goer/microservice-examples/orderservice/ent/order"
 	"github.com/ntc-goer/microservice-examples/orderservice/ent/predicate"
 )
@@ -25,6 +26,20 @@ type OrderUpdate struct {
 // Where appends a list predicates to the OrderUpdate builder.
 func (ou *OrderUpdate) Where(ps ...predicate.Order) *OrderUpdate {
 	ou.mutation.Where(ps...)
+	return ou
+}
+
+// SetRequestID sets the "request_id" field.
+func (ou *OrderUpdate) SetRequestID(u uuid.UUID) *OrderUpdate {
+	ou.mutation.SetRequestID(u)
+	return ou
+}
+
+// SetNillableRequestID sets the "request_id" field if the given value is not nil.
+func (ou *OrderUpdate) SetNillableRequestID(u *uuid.UUID) *OrderUpdate {
+	if u != nil {
+		ou.SetRequestID(*u)
+	}
 	return ou
 }
 
@@ -162,6 +177,9 @@ func (ou *OrderUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := ou.mutation.RequestID(); ok {
+		_spec.SetField(order.FieldRequestID, field.TypeUUID, value)
+	}
 	if value, ok := ou.mutation.UserID(); ok {
 		_spec.SetField(order.FieldUserID, field.TypeString, value)
 	}
@@ -195,6 +213,20 @@ type OrderUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *OrderMutation
+}
+
+// SetRequestID sets the "request_id" field.
+func (ouo *OrderUpdateOne) SetRequestID(u uuid.UUID) *OrderUpdateOne {
+	ouo.mutation.SetRequestID(u)
+	return ouo
+}
+
+// SetNillableRequestID sets the "request_id" field if the given value is not nil.
+func (ouo *OrderUpdateOne) SetNillableRequestID(u *uuid.UUID) *OrderUpdateOne {
+	if u != nil {
+		ouo.SetRequestID(*u)
+	}
+	return ouo
 }
 
 // SetUserID sets the "user_id" field.
@@ -360,6 +392,9 @@ func (ouo *OrderUpdateOne) sqlSave(ctx context.Context) (_node *Order, err error
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := ouo.mutation.RequestID(); ok {
+		_spec.SetField(order.FieldRequestID, field.TypeUUID, value)
 	}
 	if value, ok := ouo.mutation.UserID(); ok {
 		_spec.SetField(order.FieldUserID, field.TypeString, value)

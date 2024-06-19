@@ -27,6 +27,12 @@ func (dc *DishCreate) SetOrderID(u uuid.UUID) *DishCreate {
 	return dc
 }
 
+// SetDishID sets the "dish_id" field.
+func (dc *DishCreate) SetDishID(s string) *DishCreate {
+	dc.mutation.SetDishID(s)
+	return dc
+}
+
 // SetDishName sets the "dish_name" field.
 func (dc *DishCreate) SetDishName(s string) *DishCreate {
 	dc.mutation.SetDishName(s)
@@ -135,6 +141,14 @@ func (dc *DishCreate) check() error {
 	if _, ok := dc.mutation.OrderID(); !ok {
 		return &ValidationError{Name: "order_id", err: errors.New(`ent: missing required field "Dish.order_id"`)}
 	}
+	if _, ok := dc.mutation.DishID(); !ok {
+		return &ValidationError{Name: "dish_id", err: errors.New(`ent: missing required field "Dish.dish_id"`)}
+	}
+	if v, ok := dc.mutation.DishID(); ok {
+		if err := dish.DishIDValidator(v); err != nil {
+			return &ValidationError{Name: "dish_id", err: fmt.Errorf(`ent: validator failed for field "Dish.dish_id": %w`, err)}
+		}
+	}
 	if _, ok := dc.mutation.DishName(); !ok {
 		return &ValidationError{Name: "dish_name", err: errors.New(`ent: missing required field "Dish.dish_name"`)}
 	}
@@ -195,6 +209,10 @@ func (dc *DishCreate) createSpec() (*Dish, *sqlgraph.CreateSpec) {
 	if value, ok := dc.mutation.OrderID(); ok {
 		_spec.SetField(dish.FieldOrderID, field.TypeUUID, value)
 		_node.OrderID = value
+	}
+	if value, ok := dc.mutation.DishID(); ok {
+		_spec.SetField(dish.FieldDishID, field.TypeString, value)
+		_node.DishID = value
 	}
 	if value, ok := dc.mutation.DishName(); ok {
 		_spec.SetField(dish.FieldDishName, field.TypeString, value)

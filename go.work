@@ -8,5 +8,4 @@ use (
 	./services/mail
 	./services/orchestrator
 	./services/order
-	./services/template
 )

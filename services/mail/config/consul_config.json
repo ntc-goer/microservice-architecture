@@ -1,0 +1,6 @@
+{
+  "grpc_port": 50000,
+  "lb_service_host": "localhost:9999",
+  "order_service_name": "order",
+  "consumer_service_name": "consumer"
+}

@@ -43,6 +43,20 @@ func (du *DishUpdate) SetNillableOrderID(u *uuid.UUID) *DishUpdate {
 	return du
 }
 
+// SetDishID sets the "dish_id" field.
+func (du *DishUpdate) SetDishID(s string) *DishUpdate {
+	du.mutation.SetDishID(s)
+	return du
+}
+
+// SetNillableDishID sets the "dish_id" field if the given value is not nil.
+func (du *DishUpdate) SetNillableDishID(s *string) *DishUpdate {
+	if s != nil {
+		du.SetDishID(*s)
+	}
+	return du
+}
+
 // SetDishName sets the "dish_name" field.
 func (du *DishUpdate) SetDishName(s string) *DishUpdate {
 	du.mutation.SetDishName(s)
@@ -140,6 +154,11 @@ func (du *DishUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (du *DishUpdate) check() error {
+	if v, ok := du.mutation.DishID(); ok {
+		if err := dish.DishIDValidator(v); err != nil {
+			return &ValidationError{Name: "dish_id", err: fmt.Errorf(`ent: validator failed for field "Dish.dish_id": %w`, err)}
+		}
+	}
 	if v, ok := du.mutation.DishName(); ok {
 		if err := dish.DishNameValidator(v); err != nil {
 			return &ValidationError{Name: "dish_name", err: fmt.Errorf(`ent: validator failed for field "Dish.dish_name": %w`, err)}
@@ -167,6 +186,9 @@ func (du *DishUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := du.mutation.OrderID(); ok {
 		_spec.SetField(dish.FieldOrderID, field.TypeUUID, value)
+	}
+	if value, ok := du.mutation.DishID(); ok {
+		_spec.SetField(dish.FieldDishID, field.TypeString, value)
 	}
 	if value, ok := du.mutation.DishName(); ok {
 		_spec.SetField(dish.FieldDishName, field.TypeString, value)
@@ -213,6 +235,20 @@ func (duo *DishUpdateOne) SetOrderID(u uuid.UUID) *DishUpdateOne {
 func (duo *DishUpdateOne) SetNillableOrderID(u *uuid.UUID) *DishUpdateOne {
 	if u != nil {
 		duo.SetOrderID(*u)
+	}
+	return duo
+}
+
+// SetDishID sets the "dish_id" field.
+func (duo *DishUpdateOne) SetDishID(s string) *DishUpdateOne {
+	duo.mutation.SetDishID(s)
+	return duo
+}
+
+// SetNillableDishID sets the "dish_id" field if the given value is not nil.
+func (duo *DishUpdateOne) SetNillableDishID(s *string) *DishUpdateOne {
+	if s != nil {
+		duo.SetDishID(*s)
 	}
 	return duo
 }
@@ -327,6 +363,11 @@ func (duo *DishUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (duo *DishUpdateOne) check() error {
+	if v, ok := duo.mutation.DishID(); ok {
+		if err := dish.DishIDValidator(v); err != nil {
+			return &ValidationError{Name: "dish_id", err: fmt.Errorf(`ent: validator failed for field "Dish.dish_id": %w`, err)}
+		}
+	}
 	if v, ok := duo.mutation.DishName(); ok {
 		if err := dish.DishNameValidator(v); err != nil {
 			return &ValidationError{Name: "dish_name", err: fmt.Errorf(`ent: validator failed for field "Dish.dish_name": %w`, err)}
@@ -371,6 +412,9 @@ func (duo *DishUpdateOne) sqlSave(ctx context.Context) (_node *Dish, err error) 
 	}
 	if value, ok := duo.mutation.OrderID(); ok {
 		_spec.SetField(dish.FieldOrderID, field.TypeUUID, value)
+	}
+	if value, ok := duo.mutation.DishID(); ok {
+		_spec.SetField(dish.FieldDishID, field.TypeString, value)
 	}
 	if value, ok := duo.mutation.DishName(); ok {
 		_spec.SetField(dish.FieldDishName, field.TypeString, value)

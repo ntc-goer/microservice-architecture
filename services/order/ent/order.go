@@ -18,6 +18,8 @@ type Order struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
+	// RequestID holds the value of the "request_id" field.
+	RequestID uuid.UUID `json:"request_id,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID string `json:"user_id,omitempty"`
 	// Address holds the value of the "address" field.
@@ -40,7 +42,7 @@ func (*Order) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case order.FieldUpdateAt, order.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
-		case order.FieldID:
+		case order.FieldID, order.FieldRequestID:
 			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -62,6 +64,12 @@ func (o *Order) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
 				o.ID = *value
+			}
+		case order.FieldRequestID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field request_id", values[i])
+			} else if value != nil {
+				o.RequestID = *value
 			}
 		case order.FieldUserID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -129,6 +137,9 @@ func (o *Order) String() string {
 	var builder strings.Builder
 	builder.WriteString("Order(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", o.ID))
+	builder.WriteString("request_id=")
+	builder.WriteString(fmt.Sprintf("%v", o.RequestID))
+	builder.WriteString(", ")
 	builder.WriteString("user_id=")
 	builder.WriteString(o.UserID)
 	builder.WriteString(", ")

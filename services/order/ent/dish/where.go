@@ -60,6 +60,11 @@ func OrderID(v uuid.UUID) predicate.Dish {
 	return predicate.Dish(sql.FieldEQ(FieldOrderID, v))
 }
 
+// DishID applies equality check predicate on the "dish_id" field. It's identical to DishIDEQ.
+func DishID(v string) predicate.Dish {
+	return predicate.Dish(sql.FieldEQ(FieldDishID, v))
+}
+
 // DishName applies equality check predicate on the "dish_name" field. It's identical to DishNameEQ.
 func DishName(v string) predicate.Dish {
 	return predicate.Dish(sql.FieldEQ(FieldDishName, v))
@@ -118,6 +123,71 @@ func OrderIDLT(v uuid.UUID) predicate.Dish {
 // OrderIDLTE applies the LTE predicate on the "order_id" field.
 func OrderIDLTE(v uuid.UUID) predicate.Dish {
 	return predicate.Dish(sql.FieldLTE(FieldOrderID, v))
+}
+
+// DishIDEQ applies the EQ predicate on the "dish_id" field.
+func DishIDEQ(v string) predicate.Dish {
+	return predicate.Dish(sql.FieldEQ(FieldDishID, v))
+}
+
+// DishIDNEQ applies the NEQ predicate on the "dish_id" field.
+func DishIDNEQ(v string) predicate.Dish {
+	return predicate.Dish(sql.FieldNEQ(FieldDishID, v))
+}
+
+// DishIDIn applies the In predicate on the "dish_id" field.
+func DishIDIn(vs ...string) predicate.Dish {
+	return predicate.Dish(sql.FieldIn(FieldDishID, vs...))
+}
+
+// DishIDNotIn applies the NotIn predicate on the "dish_id" field.
+func DishIDNotIn(vs ...string) predicate.Dish {
+	return predicate.Dish(sql.FieldNotIn(FieldDishID, vs...))
+}
+
+// DishIDGT applies the GT predicate on the "dish_id" field.
+func DishIDGT(v string) predicate.Dish {
+	return predicate.Dish(sql.FieldGT(FieldDishID, v))
+}
+
+// DishIDGTE applies the GTE predicate on the "dish_id" field.
+func DishIDGTE(v string) predicate.Dish {
+	return predicate.Dish(sql.FieldGTE(FieldDishID, v))
+}
+
+// DishIDLT applies the LT predicate on the "dish_id" field.
+func DishIDLT(v string) predicate.Dish {
+	return predicate.Dish(sql.FieldLT(FieldDishID, v))
+}
+
+// DishIDLTE applies the LTE predicate on the "dish_id" field.
+func DishIDLTE(v string) predicate.Dish {
+	return predicate.Dish(sql.FieldLTE(FieldDishID, v))
+}
+
+// DishIDContains applies the Contains predicate on the "dish_id" field.
+func DishIDContains(v string) predicate.Dish {
+	return predicate.Dish(sql.FieldContains(FieldDishID, v))
+}
+
+// DishIDHasPrefix applies the HasPrefix predicate on the "dish_id" field.
+func DishIDHasPrefix(v string) predicate.Dish {
+	return predicate.Dish(sql.FieldHasPrefix(FieldDishID, v))
+}
+
+// DishIDHasSuffix applies the HasSuffix predicate on the "dish_id" field.
+func DishIDHasSuffix(v string) predicate.Dish {
+	return predicate.Dish(sql.FieldHasSuffix(FieldDishID, v))
+}
+
+// DishIDEqualFold applies the EqualFold predicate on the "dish_id" field.
+func DishIDEqualFold(v string) predicate.Dish {
+	return predicate.Dish(sql.FieldEqualFold(FieldDishID, v))
+}
+
+// DishIDContainsFold applies the ContainsFold predicate on the "dish_id" field.
+func DishIDContainsFold(v string) predicate.Dish {
+	return predicate.Dish(sql.FieldContainsFold(FieldDishID, v))
 }
 
 // DishNameEQ applies the EQ predicate on the "dish_name" field.

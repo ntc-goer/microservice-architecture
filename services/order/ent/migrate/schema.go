@@ -13,6 +13,7 @@ var (
 	DishesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
 		{Name: "order_id", Type: field.TypeUUID},
+		{Name: "dish_id", Type: field.TypeString},
 		{Name: "dish_name", Type: field.TypeString},
 		{Name: "quantity", Type: field.TypeInt},
 		{Name: "update_at", Type: field.TypeTime},
@@ -27,6 +28,7 @@ var (
 	// OrdersColumns holds the columns for the "orders" table.
 	OrdersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
+		{Name: "request_id", Type: field.TypeUUID},
 		{Name: "user_id", Type: field.TypeString},
 		{Name: "address", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"APPROVAL_PENDING", "APPROVED"}},

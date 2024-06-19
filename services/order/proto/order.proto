@@ -15,8 +15,9 @@ service OrderService {
 }
 
 message OrderItem {
-  string dish = 1;
-  int32 total = 2;
+  string dish_id = 1;
+  string dish = 2;
+  int32 total = 3;
 }
 
 message OrderRequest {
@@ -27,5 +28,7 @@ message OrderRequest {
 }
 
 message OrderResponse {
-  bool is_ok = 1;
+  string request_id = 1;
+  string order_id = 2;
+  string status = 3;
 }

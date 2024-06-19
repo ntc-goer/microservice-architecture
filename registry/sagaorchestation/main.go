@@ -1,32 +1,32 @@
 package main
 
-import "fmt"
-
-type Base interface {
-	Print()
-	Update(val string)
-}
-
-type Foo struct {
-	Value string
-}
-
-func (f Foo) Print() {
-	fmt.Println("Print Foo Value" + f.Value)
-}
-
-func (f Foo) Update(val string) {
-	f.Value = val
-}
-
-func main() {
-	foo := Foo{
-		Value: "FooVal",
-	}
-	foo.Print()
-	foo.Update("UpdatedFooVal")
-	foo.Print()
-}
+//const WORKER_1 = "WORKER_1"
+//const WORKER_2 = "WORKER_2"
+//
+//// WORKER_1 -> Event => WORKER_2_QUEUE =>
+//type Worker interface {
+//	Handle() error
+//}
+//
+//type Worker1 struct{}
+//
+//func (wk *Worker1) Handle() {
+//	constraints.Ordered()
+//	fmt.Println("Worker 1")
+//}
+//func NewWorker1() *Worker1 {
+//	return &Worker1{}
+//}
+//
+//type Worker2 struct{}
+//
+//func NewWorker2() *Worker2 {
+//	return &Worker2{}
+//}
+//
+//func main() {
+//
+//}
 
 // interface in struct
 //type BarI interface {

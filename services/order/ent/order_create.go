@@ -21,6 +21,12 @@ type OrderCreate struct {
 	hooks    []Hook
 }
 
+// SetRequestID sets the "request_id" field.
+func (oc *OrderCreate) SetRequestID(u uuid.UUID) *OrderCreate {
+	oc.mutation.SetRequestID(u)
+	return oc
+}
+
 // SetUserID sets the "user_id" field.
 func (oc *OrderCreate) SetUserID(s string) *OrderCreate {
 	oc.mutation.SetUserID(s)
@@ -132,6 +138,9 @@ func (oc *OrderCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (oc *OrderCreate) check() error {
+	if _, ok := oc.mutation.RequestID(); !ok {
+		return &ValidationError{Name: "request_id", err: errors.New(`ent: missing required field "Order.request_id"`)}
+	}
 	if _, ok := oc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Order.user_id"`)}
 	}
@@ -196,6 +205,10 @@ func (oc *OrderCreate) createSpec() (*Order, *sqlgraph.CreateSpec) {
 	if id, ok := oc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
+	}
+	if value, ok := oc.mutation.RequestID(); ok {
+		_spec.SetField(order.FieldRequestID, field.TypeUUID, value)
+		_node.RequestID = value
 	}
 	if value, ok := oc.mutation.UserID(); ok {
 		_spec.SetField(order.FieldUserID, field.TypeString, value)

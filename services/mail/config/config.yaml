@@ -1,0 +1,8 @@
+service_port: 50005
+mail_queue_group: MAIL_QUEUE
+mail_queue_subject: SEND_MAIL
+# Service Name
+lb_service_host: "localhost:9999"
+order_service_name: order
+consumer_service_name: consumer
+mail_service_name: mail

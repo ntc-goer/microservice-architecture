@@ -17,20 +17,24 @@ import (
 func init() {
 	dishFields := schema.Dish{}.Fields()
 	_ = dishFields
+	// dishDescDishID is the schema descriptor for dish_id field.
+	dishDescDishID := dishFields[2].Descriptor()
+	// dish.DishIDValidator is a validator for the "dish_id" field. It is called by the builders before save.
+	dish.DishIDValidator = dishDescDishID.Validators[0].(func(string) error)
 	// dishDescDishName is the schema descriptor for dish_name field.
-	dishDescDishName := dishFields[2].Descriptor()
+	dishDescDishName := dishFields[3].Descriptor()
 	// dish.DishNameValidator is a validator for the "dish_name" field. It is called by the builders before save.
 	dish.DishNameValidator = dishDescDishName.Validators[0].(func(string) error)
 	// dishDescQuantity is the schema descriptor for quantity field.
-	dishDescQuantity := dishFields[3].Descriptor()
+	dishDescQuantity := dishFields[4].Descriptor()
 	// dish.QuantityValidator is a validator for the "quantity" field. It is called by the builders before save.
 	dish.QuantityValidator = dishDescQuantity.Validators[0].(func(int) error)
 	// dishDescUpdateAt is the schema descriptor for update_at field.
-	dishDescUpdateAt := dishFields[4].Descriptor()
+	dishDescUpdateAt := dishFields[5].Descriptor()
 	// dish.DefaultUpdateAt holds the default value on creation for the update_at field.
 	dish.DefaultUpdateAt = dishDescUpdateAt.Default.(func() time.Time)
 	// dishDescCreatedAt is the schema descriptor for created_at field.
-	dishDescCreatedAt := dishFields[5].Descriptor()
+	dishDescCreatedAt := dishFields[6].Descriptor()
 	// dish.DefaultCreatedAt holds the default value on creation for the created_at field.
 	dish.DefaultCreatedAt = dishDescCreatedAt.Default.(func() time.Time)
 	// dishDescID is the schema descriptor for id field.
@@ -40,19 +44,19 @@ func init() {
 	orderFields := schema.Order{}.Fields()
 	_ = orderFields
 	// orderDescUserID is the schema descriptor for user_id field.
-	orderDescUserID := orderFields[1].Descriptor()
+	orderDescUserID := orderFields[2].Descriptor()
 	// order.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
 	order.UserIDValidator = orderDescUserID.Validators[0].(func(string) error)
 	// orderDescAddress is the schema descriptor for address field.
-	orderDescAddress := orderFields[2].Descriptor()
+	orderDescAddress := orderFields[3].Descriptor()
 	// order.AddressValidator is a validator for the "address" field. It is called by the builders before save.
 	order.AddressValidator = orderDescAddress.Validators[0].(func(string) error)
 	// orderDescUpdateAt is the schema descriptor for update_at field.
-	orderDescUpdateAt := orderFields[4].Descriptor()
+	orderDescUpdateAt := orderFields[5].Descriptor()
 	// order.DefaultUpdateAt holds the default value on creation for the update_at field.
 	order.DefaultUpdateAt = orderDescUpdateAt.Default.(func() time.Time)
 	// orderDescCreatedAt is the schema descriptor for created_at field.
-	orderDescCreatedAt := orderFields[5].Descriptor()
+	orderDescCreatedAt := orderFields[6].Descriptor()
 	// order.DefaultCreatedAt holds the default value on creation for the created_at field.
 	order.DefaultCreatedAt = orderDescCreatedAt.Default.(func() time.Time)
 	// orderDescID is the schema descriptor for id field.

@@ -9,12 +9,10 @@ import (
 )
 
 type Config struct {
-	GRPCPort            string `json:"grpc_port"`
-	DatabaseServerHost  string `json:"database_server_host"`
-	DatabaseServerPort  string `json:"database_server_port"`
-	DatabaseName        string `json:"database_name"`
-	DatabaseUser        string `json:"database_user"`
-	DatabasePwd         string `json:"database_pwd"`
+	ServicePort         string `json:"service_port"`
+	MailQueueGroup      string `json:"mail_queue_group"`
+	MailQueueSubject    string `json:"mail_queue_subject"`
+	MailServiceName     string `json:"mail_service_name"`
 	OrderServiceName    string `json:"order_service_name"`
 	ConsumerServiceName string `json:"consumer_service_name"`
 	LBServiceHost       string `json:"lb_service_host"`
