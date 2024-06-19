@@ -24,6 +24,10 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 	if err != nil {
 		return nil, err
 	}
+	healthService, err := service.NewHealthService()
+	if err != nil {
+		return nil, err
+	}
 	registry, err := consul.NewRegistry()
 	if err != nil {
 		return nil, err
@@ -33,12 +37,13 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 		return nil, err
 	}
 	lb := pkg.NewLB(configConfig)
-	msgQueue := broker.NewBroker()
-	impl, err := service.NewServiceImpl(registry, repositoryRepository, configConfig, lb, msgQueue)
+	brokerBroker := broker.NewBroker()
+	impl, err := service.NewServiceImpl(registry, repositoryRepository, configConfig, lb, brokerBroker)
 	if err != nil {
 		return nil, err
 	}
-	coreDependency := NewCoreDependency(configConfig, impl, registry, repositoryRepository)
+	coreService := service.NewCoreService(healthService, impl)
+	coreDependency := NewCoreDependency(configConfig, coreService, registry, repositoryRepository)
 	return coreDependency, nil
 }
 
@@ -46,15 +51,15 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 
 type CoreDependency struct {
 	Config           *config.Config
-	ServiceImpl      *service.Impl
+	CoreService      *service.CoreService
 	ServiceDiscovery common.DiscoveryI
 	Repository       *repository.Repository
 }
 
-func NewCoreDependency(cfg *config.Config, srvImpl *service.Impl, srvDis common.DiscoveryI, r *repository.Repository) *CoreDependency {
+func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis common.DiscoveryI, r *repository.Repository) *CoreDependency {
 	return &CoreDependency{
 		Config:           cfg,
-		ServiceImpl:      srvImpl,
+		CoreService:      coreSrv,
 		ServiceDiscovery: srvDis,
 		Repository:       r,
 	}

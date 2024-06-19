@@ -17,11 +17,11 @@ type Repository struct {
 func NewRepository(cfg *config.Config) (*Repository, error) {
 	client, err := ent.Open("postgres",
 		fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-			cfg.DatabaseServerHost,
-			cfg.DatabaseServerPort,
-			cfg.DatabaseUser,
-			cfg.DatabasePwd,
-			cfg.DatabaseName,
+			cfg.Database.ServerHost,
+			cfg.Database.ServerPort,
+			cfg.Database.UserName,
+			cfg.Database.Password,
+			cfg.Database.DBName,
 		))
 	if err != nil {
 		return nil, err

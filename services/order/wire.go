@@ -16,15 +16,15 @@ import (
 
 type CoreDependency struct {
 	Config           *config.Config
-	ServiceImpl      *service.Impl
+	CoreService      *service.CoreService
 	ServiceDiscovery common.DiscoveryI
 	Repository       *repository.Repository
 }
 
-func NewCoreDependency(cfg *config.Config, srvImpl *service.Impl, srvDis common.DiscoveryI, r *repository.Repository) *CoreDependency {
+func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis common.DiscoveryI, r *repository.Repository) *CoreDependency {
 	return &CoreDependency{
 		Config:           cfg,
-		ServiceImpl:      srvImpl,
+		CoreService: coreSrv,
 		ServiceDiscovery: srvDis,
 		Repository:       r,
 	}
@@ -34,7 +34,7 @@ func NewCoreDependency(cfg *config.Config, srvImpl *service.Impl, srvDis common.
 func InitializeDependency(dcType string) (*CoreDependency, error) {
 	wire.Build(
 		config.Load,
-		service.NewServiceImpl,
+		service.WireSet,
 		//wire.Bind(new(common.DiscoveryI), new(*inmem.Registry)),
 		//inmem.NewRegistry
 		wire.Bind(new(common.DiscoveryI), new(*consul.Registry)),

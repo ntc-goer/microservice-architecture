@@ -8,7 +8,6 @@ package main
 
 import (
 	"github.com/ntc-goer/microservice-examples/orchestrator/config"
-	"github.com/ntc-goer/microservice-examples/orchestrator/pkg"
 	"github.com/ntc-goer/microservice-examples/orchestrator/service"
 	"github.com/ntc-goer/microservice-examples/registry/broker"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
@@ -23,17 +22,18 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 	if err != nil {
 		return nil, err
 	}
-	lb := pkg.NewLB(configConfig)
 	brokerBroker := broker.NewBroker()
-	impl, err := service.NewServiceImpl(configConfig, lb, brokerBroker)
+	healthService, err := service.NewHealthService()
 	if err != nil {
 		return nil, err
 	}
+	createOrderService := service.NewCreateOrderService(configConfig)
+	coreService := service.NewCoreService(brokerBroker, healthService, createOrderService)
 	registry, err := consul.NewRegistry()
 	if err != nil {
 		return nil, err
 	}
-	coreDependency := NewCoreDependency(configConfig, impl, registry)
+	coreDependency := NewCoreDependency(configConfig, coreService, registry)
 	return coreDependency, nil
 }
 
@@ -41,14 +41,14 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 
 type CoreDependency struct {
 	Config           *config.Config
-	ServiceImpl      *service.Impl
+	CoreService      *service.CoreService
 	ServiceDiscovery common.DiscoveryI
 }
 
-func NewCoreDependency(cfg *config.Config, srvImpl *service.Impl, srvDis common.DiscoveryI) *CoreDependency {
+func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis common.DiscoveryI) *CoreDependency {
 	return &CoreDependency{
 		Config:           cfg,
-		ServiceImpl:      srvImpl,
 		ServiceDiscovery: srvDis,
+		CoreService:      coreSrv,
 	}
 }

@@ -1,33 +1,28 @@
 package service
 
 import (
-	"context"
-	"github.com/ntc-goer/microservice-examples/orchestrator/config"
-	"github.com/ntc-goer/microservice-examples/orchestrator/pkg"
+	"github.com/google/wire"
 	"github.com/ntc-goer/microservice-examples/registry/broker"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/health/grpc_health_v1"
-	"google.golang.org/grpc/status"
 )
 
-type Impl struct {
-	Config      *config.Config
-	LoadBalance *pkg.LB
+type CoreService struct {
 	Broker      *broker.Broker
+	Health      *HealthService
+	CreateOrder *CreateOrderService
 }
 
-func NewServiceImpl(cfg *config.Config, lb *pkg.LB, q *broker.Broker) (*Impl, error) {
-	return &Impl{
-		Config:      cfg,
-		LoadBalance: lb,
-		Broker:      q,
-	}, nil
+func NewCoreService(broker *broker.Broker, healthService *HealthService, createOrderService *CreateOrderService) *CoreService {
+	return &CoreService{
+		Broker:      broker,
+		Health:      healthService,
+		CreateOrder: createOrderService,
+	}
 }
 
-func (s *Impl) Check(context.Context, *grpc_health_v1.HealthCheckRequest) (*grpc_health_v1.HealthCheckResponse, error) {
-	return &grpc_health_v1.HealthCheckResponse{Status: grpc_health_v1.HealthCheckResponse_SERVING}, nil
+func (vs *CoreService) StartSubscribe() {
+	go func() {
+		vs.Broker.QueueSubscribe(vs.CreateOrder.Subject, vs.CreateOrder.Queue, vs.CreateOrder.Run)
+	}()
 }
 
-func (s *Impl) Watch(in *grpc_health_v1.HealthCheckRequest, stream grpc_health_v1.Health_WatchServer) error {
-	return status.Errorf(codes.Unimplemented, "health check via Watch not implemented")
-}
+var WireSet = wire.NewSet(NewHealthService, NewCreateOrderService, NewCoreService)

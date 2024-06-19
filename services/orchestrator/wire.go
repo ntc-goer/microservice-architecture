@@ -6,7 +6,6 @@ package main
 import (
 	"github.com/google/wire"
 	"github.com/ntc-goer/microservice-examples/orchestrator/config"
-	"github.com/ntc-goer/microservice-examples/orchestrator/pkg"
 	"github.com/ntc-goer/microservice-examples/orchestrator/service"
 	"github.com/ntc-goer/microservice-examples/registry/broker"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
@@ -15,15 +14,15 @@ import (
 
 type CoreDependency struct {
 	Config           *config.Config
-	ServiceImpl      *service.Impl
+	CoreService      *service.CoreService
 	ServiceDiscovery common.DiscoveryI
 }
 
-func NewCoreDependency(cfg *config.Config, srvImpl *service.Impl, srvDis common.DiscoveryI) *CoreDependency {
+func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis common.DiscoveryI) *CoreDependency {
 	return &CoreDependency{
 		Config:           cfg,
-		ServiceImpl:      srvImpl,
 		ServiceDiscovery: srvDis,
+		CoreService: coreSrv,
 	}
 }
 
@@ -31,12 +30,12 @@ func NewCoreDependency(cfg *config.Config, srvImpl *service.Impl, srvDis common.
 func InitializeDependency(dcType string) (*CoreDependency, error) {
 	wire.Build(
 		config.Load,
-		service.NewServiceImpl,
 		//wire.Bind(new(common.DiscoveryI), new(*inmem.Registry)),
 		//inmem.NewRegistry
 		wire.Bind(new(common.DiscoveryI), new(*consul.Registry)),
 		consul.NewRegistry,
-		pkg.NewLB,
+		//pkg.NewLB,
+		service.WireSet,
 		broker.NewBroker,
 		NewCoreDependency)
 	return &CoreDependency{}, nil
