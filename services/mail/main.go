@@ -21,8 +21,9 @@ func main() {
 	}
 	defer dp.ServiceDiscovery.Deregister(ctx, instanceId)
 
+	// Connect to Broker
 	if err := dp.Broker.Connect(dp.Config.Broker.Address); err != nil {
-		log.Fatalf("QueueConnect fail: %v", err)
+		log.Fatalf("BrokerConnect fail: %v", err)
 	}
 	defer dp.Broker.Close()
 	// Start consuming message from broker

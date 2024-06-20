@@ -39,6 +39,7 @@ type Service struct {
 	ConsumerServiceName     string `json:"consumer_service_name"`
 	OrchestratorServiceName string `json:"orchestrator_service_name"`
 	MailServiceName         string `json:"mail_service_name"`
+	GatewayServiceName      string `json:"gateway_service_name"`
 }
 
 type Config struct {
@@ -59,13 +60,14 @@ func getEnv(key string, defaultVal string) string {
 func Load() (*Config, error) {
 	vp := viper.New()
 	appEnv := getEnv("APP_ENV", "local")
-	remoteProviderEndpoint := getEnv("REMOTE_PROVIDER_ENDPOINT", "localhost:8500")
-	remoteProviderPath := getEnv("REMOTE_PROVIDER_PATH", "env/orders")
 
 	switch appEnv {
 	case "development", "production":
+		remoteProviderEndpoint := getEnv("REMOTE_PROVIDER_ENDPOINT", "localhost:8500")
+		remoteProviderPath := getEnv("REMOTE_PROVIDER_PATH", "env/orchestrator")
+
 		vp.AddRemoteProvider("consul", remoteProviderEndpoint, remoteProviderPath)
-		vp.SetConfigType("json") // Need to explicitly set this to json
+		vp.SetConfigType("yaml") // Need to explicitly set this to json
 		if err := vp.ReadRemoteConfig(); err != nil {
 			log.Fatalf("Error reading config file: %v", err)
 			return nil, err

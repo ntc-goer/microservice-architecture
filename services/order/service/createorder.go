@@ -55,7 +55,7 @@ func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orde
 		return nil, fmt.Errorf("starting a transaction: %w", err)
 	}
 	// Create an order with APPROVAL_PENDING state
-	err = s.Repo.Order.CreatePendingOrder(ctx, orderId, requestId, orderReq.Location, orderReq.UserId)
+	ord, err := s.Repo.Order.CreatePendingOrder(ctx, orderId, requestId, orderReq.Location, orderReq.UserId)
 	if err != nil {
 		tx.Rollback()
 		return nil, err
@@ -80,8 +80,9 @@ func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orde
 	}
 	defer s.Queue.Close()
 	msgBytes, err := json.Marshal(map[string]string{
-		"request_id": requestId.String(),
-		"order_id":   orderId.String(),
+		"user_id":    ord.UserID,
+		"request_id": ord.RequestID.String(),
+		"order_id":   ord.ID.String(),
 	})
 	if err != nil {
 		tx.Rollback()
@@ -94,7 +95,8 @@ func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orde
 	}
 	tx.Commit()
 	return &orderpb.OrderResponse{
-		RequestId: requestId.String(),
-		OrderId:   orderId.String(),
+		RequestId: ord.RequestID.String(),
+		OrderId:   ord.ID.String(),
+		Status:    string(ord.Status),
 	}, nil
 }

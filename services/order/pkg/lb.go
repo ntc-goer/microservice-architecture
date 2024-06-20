@@ -35,7 +35,7 @@ const _GRPC_CONFIG = `{
 
 func (lb *LB) GetConnection(srvName string) (*grpc.ClientConn, error) {
 	conn, err := grpc.NewClient(
-		lb.Config.LBServiceHost,
+		lb.Config.Service.LBServiceHost,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(
 			fmt.Sprintf(_GRPC_CONFIG, srvName, srvName)))

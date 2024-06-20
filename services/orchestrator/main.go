@@ -17,6 +17,12 @@ func main() {
 	}
 	ctx := context.Background()
 
+	// Connect to Broker
+	if err := dp.Broker.Connect(dp.Config.Broker.Address); err != nil {
+		log.Fatalf("BrokerConnect fail: %v", err)
+	}
+	defer dp.Broker.Close()
+
 	// Start listening broker
 	dp.CoreService.StartSubscribe()
 	// Setup grpc server

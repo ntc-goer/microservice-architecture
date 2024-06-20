@@ -28,12 +28,12 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 		return nil, err
 	}
 	createOrderService := service.NewCreateOrderService(configConfig)
-	coreService := service.NewCoreService(brokerBroker, healthService, createOrderService)
+	coreService := service.NewCoreService(brokerBroker, healthService, createOrderService, configConfig)
 	registry, err := consul.NewRegistry()
 	if err != nil {
 		return nil, err
 	}
-	coreDependency := NewCoreDependency(configConfig, coreService, registry)
+	coreDependency := NewCoreDependency(configConfig, coreService, registry, brokerBroker)
 	return coreDependency, nil
 }
 
@@ -43,12 +43,14 @@ type CoreDependency struct {
 	Config           *config.Config
 	CoreService      *service.CoreService
 	ServiceDiscovery common.DiscoveryI
+	Broker           *broker.Broker
 }
 
-func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis common.DiscoveryI) *CoreDependency {
+func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis common.DiscoveryI, br *broker.Broker) *CoreDependency {
 	return &CoreDependency{
 		Config:           cfg,
 		ServiceDiscovery: srvDis,
 		CoreService:      coreSrv,
+		Broker:           br,
 	}
 }

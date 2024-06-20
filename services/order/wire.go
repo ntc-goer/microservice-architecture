@@ -19,14 +19,16 @@ type CoreDependency struct {
 	CoreService      *service.CoreService
 	ServiceDiscovery common.DiscoveryI
 	Repository       *repository.Repository
+	Broker *broker.Broker
 }
 
-func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis common.DiscoveryI, r *repository.Repository) *CoreDependency {
+func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis common.DiscoveryI, r *repository.Repository, br *broker.Broker) *CoreDependency {
 	return &CoreDependency{
 		Config:           cfg,
 		CoreService: coreSrv,
 		ServiceDiscovery: srvDis,
 		Repository:       r,
+		Broker: br,
 	}
 }
 

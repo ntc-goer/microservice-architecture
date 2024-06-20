@@ -67,7 +67,7 @@ func Load() (*Config, error) {
 		remoteProviderPath := getEnv("REMOTE_PROVIDER_PATH", "env/orders")
 
 		vp.AddRemoteProvider("consul", remoteProviderEndpoint, remoteProviderPath)
-		vp.SetConfigType("json") // Need to explicitly set this to json
+		vp.SetConfigType("yaml") // Need to explicitly set this to json
 		if err := vp.ReadRemoteConfig(); err != nil {
 			log.Fatalf("Error reading config file: %v", err)
 			return nil, err

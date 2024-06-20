@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
+	_ "github.com/spf13/viper/remote"
 	"log"
 	"os"
 )
@@ -48,24 +49,44 @@ type Config struct {
 	Broker      Broker   `json:"broker"`
 }
 
+func getEnv(key string, defaultVal string) string {
+	val, ok := os.LookupEnv(key)
+	if !ok {
+		return defaultVal
+	}
+	return val
+}
+
 func Load() (*Config, error) {
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./config")
-	// Read the configuration file
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file: %v", err)
-		return nil, err
+	vp := viper.New()
+	appEnv := getEnv("APP_ENV", "local")
+
+	switch appEnv {
+	case "development", "production":
+		remoteProviderEndpoint := getEnv("REMOTE_PROVIDER_ENDPOINT", "localhost:8500")
+		remoteProviderPath := getEnv("REMOTE_PROVIDER_PATH", "env/orders")
+
+		vp.AddRemoteProvider("consul", remoteProviderEndpoint, remoteProviderPath)
+		vp.SetConfigType("yaml") // Need to explicitly set this to json
+		if err := vp.ReadRemoteConfig(); err != nil {
+			log.Fatalf("Error reading config file: %v", err)
+			return nil, err
+		}
+	default:
+		vp.SetConfigName("config")
+		vp.SetConfigType("yaml")
+		vp.AddConfigPath("./config")
+		// Read the configuration file
+		if err := vp.ReadInConfig(); err != nil {
+			log.Fatalf("Error reading config file: %v", err)
+			return nil, err
+		}
 	}
 	var cfg Config
-	if err := viper.Unmarshal(&cfg, func(decoderConfig *mapstructure.DecoderConfig) {
+	if err := vp.Unmarshal(&cfg, func(decoderConfig *mapstructure.DecoderConfig) {
 		decoderConfig.TagName = "json"
 	}); err != nil {
 		log.Fatalf("Unable to unmarshal config into struct: %v", err)
-	}
-	// Accept to override os env if you need
-	if port := os.Getenv("SERVICE_PORT"); port != "" {
-		cfg.ServicePort = port
 	}
 	return &cfg, nil
 }

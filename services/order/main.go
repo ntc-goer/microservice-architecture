@@ -24,6 +24,12 @@ func main() {
 		log.Fatalf("fail to init dependency %v", err)
 	}
 
+	// Connect to Broker
+	if err := dp.Broker.Connect(dp.Config.Broker.Address); err != nil {
+		log.Fatalf("BrokerConnect fail: %v", err)
+	}
+	defer dp.Broker.Close()
+
 	// Setup grpc server
 	lis, err := net.Listen("tcp", ":"+dp.Config.ServicePort)
 	if err != nil {

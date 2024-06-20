@@ -10,7 +10,7 @@ database:
 
 # Broker
 broker:
-  address: localhost:4222
+  address: nats://localhost:4222
   subject:
     create_order: CREATE_ORDER_SUBJECT
     test_subject: TEST_SUBJECT
