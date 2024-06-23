@@ -12,6 +12,7 @@ service OrderService {
       body: "*"
     };
   };
+  rpc GetOrderDish(GetOrderDishRequest) returns (GetOrderDishResponse);
 }
 
 message OrderItem {
@@ -31,4 +32,12 @@ message OrderResponse {
   string request_id = 1;
   string order_id = 2;
   string status = 3;
+}
+
+message GetOrderDishRequest {
+  string order_id = 1;
+}
+
+message GetOrderDishResponse {
+  repeated OrderItem dishes = 1;
 }

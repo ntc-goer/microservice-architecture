@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	consumerpb "github.com/ntc-goer/microservice-examples/consumerservice/proto"
+	kitchenpb "github.com/ntc-goer/microservice-examples/kitchen/proto"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"google.golang.org/grpc"
@@ -24,7 +24,7 @@ func main() {
 		log.Fatalf("Listen port fail %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	consumerpb.RegisterConsumerServiceServer(grpcServer, dp.Service.User)
+	kitchenpb.RegisterKitchenServiceServer(grpcServer, dp.Service.Kitchen)
 	grpc_health_v1.RegisterHealthServer(grpcServer, dp.Service.Health)
 
 	// Register to discovery service

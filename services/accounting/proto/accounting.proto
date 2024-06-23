@@ -1,0 +1,17 @@
+syntax="proto3";
+
+option go_package="github.com/ntc-goer/microservice-examples/accounting/proto;accountingproto";
+
+package accounting;
+
+service AccountingService {
+  rpc VerifyCreditCard(VerifyCreditCardRequest) returns (VerifyCreditCardResponse);
+}
+
+message VerifyCreditCardRequest {
+  string user_id = 1;
+}
+
+message VerifyCreditCardResponse {
+  bool is_ok = 1;
+}

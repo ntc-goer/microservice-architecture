@@ -1,78 +1,23 @@
 package main
 
-import (
-	"context"
-	"fmt"
-	"time"
-)
+import "fmt"
 
-// const WORKER_1 = "WORKER_1"
-// const WORKER_2 = "WORKER_2"
-//
-// // WORKER_1 -> Event => WORKER_2_QUEUE =>
-//
-//	type Worker interface {
-//		Handle() error
-//	}
-//
-// type Worker1 struct{}
-//
-//	func (wk *Worker1) Handle() {
-//		constraints.Ordered()
-//		fmt.Println("Worker 1")
-//	}
-//
-//	func NewWorker1() *Worker1 {
-//		return &Worker1{}
-//	}
-//
-// type Worker2 struct{}
-//
-//	func NewWorker2() *Worker2 {
-//		return &Worker2{}
-//	}
-//func main() {
-//	channel := make(chan string, 5)
-//
-//	for i := 0; i < 3; i++ {
-//		go func(testChan <-chan string, index int) {
-//			for {
-//				result, isAlive := <-testChan
-//				if !isAlive {
-//					break
-//				}
-//				fmt.Println(fmt.Sprintf("Receive from worker %d value %s --- Current Bugffer %d", index, result, len(channel)))
-//				time.Sleep(50 * time.Millisecond)
-//			}
-//		}(channel, i+1)
-//	}
-//	time.Sleep(3 * time.Second)
-//	for i := 0; i < 200; i++ {
-//		channel <- fmt.Sprintf("Number is %d", i)
-//	}
-//
-//	time.Sleep(5 * time.Second)
-//}
+var result []string
 
+func CreateBinary(preStr string) {
+	binaryNumList := []string{"0", "1"}
+	if len(preStr) == 3 {
+		result = append(result, preStr)
+		return
+	}
+	for _, s := range binaryNumList {
+		CreateBinary(preStr + s)
+	}
+}
 func main() {
-	ctx := context.TODO()
-	ctx, cancel := context.WithCancelCause(ctx, 3*time.Second)
-	defer cancel()
-
-	go func(ctx2 context.Context) {
-		for {
-			select {
-			case <-ctx2.Done():
-				fmt.Println("Context Canceled")
-				return
-			default:
-				fmt.Println("Do something")
-				time.Sleep(1 * time.Second)
-			}
-		}
-	}(ctx)
-
-	time.Sleep(5 * time.Second)
+	// 000 , 001 , 010 , 011
+	CreateBinary("")
+	fmt.Println(result)
 }
 
 // interface in struct

@@ -1,10 +1,12 @@
-go 1.21.1
+go 1.22.4
 
 use (
 	./inmem_discovery
 	./registry
+	./services/accounting
 	./services/consumer
 	./services/gateway
+	./services/kitchen
 	./services/mail
 	./services/orchestrator
 	./services/order

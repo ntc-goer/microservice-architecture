@@ -40,8 +40,6 @@ type Service struct {
 	OrchestratorServiceName string `json:"orchestrator_service_name"`
 	MailServiceName         string `json:"mail_service_name"`
 	GatewayServiceName      string `json:"gateway_service_name"`
-	KitchenServiceName      string `json:"kitchen_service_name"`
-	AccountingServiceName   string `json:"accounting_service_name"`
 }
 
 type Config struct {
@@ -66,7 +64,7 @@ func Load() (*Config, error) {
 	switch appEnv {
 	case "development", "production":
 		remoteProviderEndpoint := getEnv("REMOTE_PROVIDER_ENDPOINT", "localhost:8500")
-		remoteProviderPath := getEnv("REMOTE_PROVIDER_PATH", "env/orchestrator")
+		remoteProviderPath := getEnv("REMOTE_PROVIDER_PATH", "env/orders")
 
 		vp.AddRemoteProvider("consul", remoteProviderEndpoint, remoteProviderPath)
 		vp.SetConfigType("yaml") // Need to explicitly set this to json

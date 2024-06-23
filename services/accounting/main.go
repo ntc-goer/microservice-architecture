@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	consumerpb "github.com/ntc-goer/microservice-examples/consumerservice/proto"
+	accountingpb "github.com/ntc-goer/microservice-examples/accounting/proto"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"google.golang.org/grpc"
@@ -24,7 +24,7 @@ func main() {
 		log.Fatalf("Listen port fail %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	consumerpb.RegisterConsumerServiceServer(grpcServer, dp.Service.User)
+	accountingpb.RegisterAccountingServiceServer(grpcServer, dp.Service.Accounting)
 	grpc_health_v1.RegisterHealthServer(grpcServer, dp.Service.Health)
 
 	// Register to discovery service
@@ -32,10 +32,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error %v", err)
 	}
-	instanceId := serviceregistration.GenerateInstanceId(dp.Config.Service.ConsumerServiceName)
+	instanceId := serviceregistration.GenerateInstanceId(dp.Config.Service.AccountingServiceName)
 	defer srvDiscovery.Deregister(ctx, instanceId)
 	go func(srvd common.DiscoveryI) {
-		if err := srvd.RegisterService(instanceId, dp.Config.Service.ConsumerServiceName, serviceregistration.GetCurrentIP(), dp.Config.ServicePort, common.GRPC_CHECK_TYPE); err != nil {
+		if err := srvd.RegisterService(instanceId, dp.Config.Service.AccountingServiceName, serviceregistration.GetCurrentIP(), dp.Config.ServicePort, common.GRPC_CHECK_TYPE); err != nil {
 			log.Fatalf("RegisterService fail: %v", err)
 		}
 	}(srvDiscovery)

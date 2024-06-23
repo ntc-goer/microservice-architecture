@@ -11,12 +11,6 @@ type LB struct {
 	Config *config.Config
 }
 
-func NewLB(cfg *config.Config) *LB {
-	return &LB{
-		Config: cfg,
-	}
-}
-
 const _GRPC_CONFIG = `{
 			"loadBalancingPolicy": "round_robin", 
 			"healthCheckConfig": {"serviceName": "%s"}
@@ -33,9 +27,9 @@ const _GRPC_CONFIG = `{
             }]
         }`
 
-func (lb *LB) GetConnection(srvName string) (*grpc.ClientConn, error) {
+func GetConnection(lbHost string, srvName string) (*grpc.ClientConn, error) {
 	conn, err := grpc.NewClient(
-		lb.Config.Services.LBServiceHost,
+		lbHost,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(
 			fmt.Sprintf(_GRPC_CONFIG, srvName, srvName)))
@@ -43,4 +37,14 @@ func (lb *LB) GetConnection(srvName string) (*grpc.ClientConn, error) {
 		return nil, err
 	}
 	return conn, nil
+}
+
+func GetGRPCClient[T any](lbHost string, srvName string, f func(grpc.ClientConnInterface) T) (T, error) {
+	conn, err := GetConnection(lbHost, srvName)
+	if err != nil {
+		var zero T
+		return zero, err
+	}
+	client := f(conn)
+	return client, nil
 }

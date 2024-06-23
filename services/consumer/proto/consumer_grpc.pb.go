@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.4.0
 // - protoc             v5.27.1
-// source: consumer.proto
+// source: accounting.proto
 
 package consumerproto
 
@@ -106,5 +106,5 @@ var ConsumerService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "consumer.proto",
+	Metadata: "accounting.proto",
 }

@@ -1,4 +1,12 @@
-service_port: 50005
+service_port: 50002
+
+# Database
+database:
+  server_host: localhost
+  server_port: 5433
+  db_name: orderdb
+  user_name: orderuser
+  password: orderpwd
 
 # Broker
 broker:
@@ -15,8 +23,7 @@ broker:
 service:
   lb_service_host: localhost:9999
   order_service_name: order
-  kitchen_service_name: kitchen
   consumer_service_name: consumer
   orchestrator_service_name: orchestrator
   mail_service_name: mail
-  accounting_service_name: accounting
+  gateway_service_name: gateway

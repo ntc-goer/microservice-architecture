@@ -10,6 +10,6 @@ import (
 	_ "google.golang.org/protobuf/cmd/protoc-gen-go"
 )
 
-//go:generate protoc ./*.proto -I=.  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt paths=source_relative --grpc-gateway_out=. --grpc-gateway_opt logtostderr=true --grpc-gateway_opt paths=source_relative --grpc-gateway_opt generate_unbound_methods=true
+// go:generate protoc ./*.proto -I=.  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt paths=source_relative --grpc-gateway_out=. --grpc-gateway_opt logtostderr=true --grpc-gateway_opt paths=source_relative --grpc-gateway_opt generate_unbound_methods=true
 
-// go:generate protoc ./*.proto -I=. -I=D:\protobuf\src  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt paths=source_relative --grpc-gateway_out=. --grpc-gateway_opt logtostderr=true --grpc-gateway_opt paths=source_relative --grpc-gateway_opt generate_unbound_methods=true
+//go:generate protoc ./*.proto -I=. -I=D:\protobuf\src  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt paths=source_relative --grpc-gateway_out=. --grpc-gateway_opt logtostderr=true --grpc-gateway_opt paths=source_relative --grpc-gateway_opt generate_unbound_methods=true

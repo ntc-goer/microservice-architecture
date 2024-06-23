@@ -25,6 +25,7 @@ func main() {
 
 	// Start listening broker
 	dp.CoreService.StartSubscribe()
+
 	// Setup grpc server
 	lis, err := net.Listen("tcp", ":"+dp.Config.ServicePort)
 	if err != nil {
@@ -32,6 +33,7 @@ func main() {
 	}
 	grpcServer := grpc.NewServer()
 	grpc_health_v1.RegisterHealthServer(grpcServer, dp.CoreService.Health)
+
 	// Register to discovery service
 	instanceId := serviceregistration.GenerateInstanceId(dp.Config.Service.OrchestratorServiceName)
 	if err := dp.ServiceDiscovery.RegisterService(instanceId, dp.Config.Service.OrchestratorServiceName, serviceregistration.GetCurrentIP(), dp.Config.ServicePort, common.GRPC_CHECK_TYPE); err != nil {

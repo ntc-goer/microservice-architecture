@@ -1,12 +1,12 @@
 ## Comment
-- This project give you the specific view how microservice work.
-- There are many service mesh library like istio , kubernetes give full microservice's options like service discovery , registration , retry , circuit-breaker .....
+- This project give you the general view how microservice work.
+- There are many service mesh like Istio , HCP Consul Dedicated , Nomad and Kubernetes give full microservice's options like service discovery , registration , retry , circuit-breaker .....
 - But diving into each edge of microservice problem will make you fully understanding about how microservice work. What is the functionality of each component in a microservice project
 
 ## Project Structue
 Order Service — Create an order with APPROVAL_PENDING state. \
 Consumer Service — Verify an user can order. \
-Kitchen Service — Verify order và create a Ticket as CREATE_PENDING state.\
+Kitchen Service — Verify order and create a Ticket as CREATE_PENDING state.\
 Accounting Service — Verify user's credit card.\
 Kitchen Service — Change ticket's state to AWAITING_ACCEPTANCE.\
 Order Service — Change order state to APPROVED.

@@ -36,7 +36,6 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 		//inmem.NewRegistry
 		wire.Bind(new(common.DiscoveryI), new(*consul.Registry)),
 		consul.NewRegistry,
-		//pkg.NewLB,
 		service.WireSet,
 		broker.NewBroker,
 		NewCoreDependency)

@@ -1,4 +1,4 @@
-package main
+package sagaorchestration
 
 type ProcessStatus string
 
@@ -17,8 +17,8 @@ type Log struct {
 }
 
 type WorkflowI interface {
-	RegisterSteps(steps []Step)
-	Register(step Step)
+	RegisterSteps(steps []Step) *Workflow
+	Register(step Step) *Workflow
 	Start() error
 	Revert()
 	GetLog() []Log
@@ -48,12 +48,14 @@ func (wf *Workflow) initProcess() {
 	}
 }
 
-func (wf *Workflow) Register(step Step) {
+func (wf *Workflow) Register(step Step) *Workflow {
 	wf.Steps = append(wf.Steps, step)
+	return wf
 }
 
-func (wf *Workflow) RegisterSteps(steps []Step) {
+func (wf *Workflow) RegisterSteps(steps []Step) *Workflow {
 	wf.Steps = steps
+	return wf
 }
 
 func (wf *Workflow) Start() error {

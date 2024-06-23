@@ -7,8 +7,8 @@
 package main
 
 import (
-	"github.com/ntc-goer/microservice-examples/consumerservice/config"
-	"github.com/ntc-goer/microservice-examples/consumerservice/service"
+	"github.com/ntc-goer/microservice-examples/accounting/config"
+	"github.com/ntc-goer/microservice-examples/accounting/service"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
 )
@@ -25,11 +25,11 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 	if err != nil {
 		return nil, err
 	}
-	userService, err := service.NewUserService(configConfig)
+	accountingService, err := service.NewAccountingService(configConfig)
 	if err != nil {
 		return nil, err
 	}
-	coreService := service.NewCoreService(healthService, userService)
+	coreService := service.NewCoreService(healthService, accountingService)
 	registry, err := consul.NewRegistry()
 	if err != nil {
 		return nil, err

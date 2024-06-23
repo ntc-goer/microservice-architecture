@@ -1,26 +1,23 @@
-//go:build wireinject
-// +build wireinject
-
 package main
 
 import (
 	"github.com/google/wire"
-	"github.com/ntc-goer/microservice-examples/consumerservice/config"
-	"github.com/ntc-goer/microservice-examples/consumerservice/service"
+	"github.com/ntc-goer/microservice-examples/kitchen/config"
+	"github.com/ntc-goer/microservice-examples/kitchen/service"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
 )
 
 type CoreDependency struct {
 	Config           *config.Config
-	Service      *service.CoreService
+	Service          *service.CoreService
 	ServiceDiscovery common.DiscoveryI
 }
 
 func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis common.DiscoveryI) *CoreDependency {
 	return &CoreDependency{
 		Config:           cfg,
-		Service:      coreSrv,
+		Service:          coreSrv,
 		ServiceDiscovery: srvDis,
 	}
 }
