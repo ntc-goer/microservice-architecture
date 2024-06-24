@@ -18,6 +18,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Migrate database
+	err = dp.Repository.MigrateDatabase()
+	if err != nil {
+		log.Fatalf("fail to init dependency %v", err)
+	}
+
 	// Setup grpc server
 	lis, err := net.Listen("tcp", ":"+dp.Config.ServicePort)
 	if err != nil {

@@ -1,9 +1,9 @@
-## Comment
+## My Speaking
 - This project give you the general view how microservice work.
 - There are many service mesh like Istio , HCP Consul Dedicated , Nomad and Kubernetes give full microservice's options like service discovery , registration , retry , circuit-breaker .....
 - But diving into each edge of microservice problem will make you fully understanding about how microservice work. What is the functionality of each component in a microservice project
 
-## Project Structue
+## Project Structure
 Order Service — Create an order with APPROVAL_PENDING state. \
 Consumer Service — Verify an user can order. \
 Kitchen Service — Verify order and create a Ticket as CREATE_PENDING state.\
@@ -60,6 +60,20 @@ Orchestration Service
    + Install fabio: https://github.com/fabiolb/fabio/releases
    + Add path to environment
    + Place fabio.properties and fabio executive file in the same folder
-   + Start fabio : fabio -cfg fabio.properties
+   + Start fabio : fabio.exe -cfg fabio.properties
 ### postgres
-   + Run docker-compose: docker-compose up db db_admin
+   + Run docker-compose: docker-compose up db nats
+
+## Development
+### Local
+| **Service**  | **Port** | **Service Name** | **Database Address** | **Database Name** | **Database UserName/Password** |
+|--------------|----------|------------------|----------------------|-------------------|--------------------------------|
+| Gateway      | 8080     | gateway          | -------------        | -------------     | -------------                  |
+| Order        | 50000    | order            | localhost:5433       | orderdb           | orderuser/orderpwd             |
+| Accounting   | 50001    | accounting       | -------------        | -------------     | -------------                  |
+| Consumer     | 50002    | consumer         | -------------        | -------------     | -------------                  |
+| Kitchen      | 50003    | kitchen          | localhost:5433       | kitchendb         | kitchenuser/kitchenpwd         |
+| Mail         | 50004    | mail             | -------------        | -------------     | -------------                  |
+| Orchestrator | 50005    | orchestrator     | PENDING              | PENDING           | PENDING                        |
+| Broker       | 4222     | -------------    | -------------        | -------------     | -------------                  |
+

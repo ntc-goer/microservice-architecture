@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/google/wire"
 	"github.com/ntc-goer/microservice-examples/kitchen/config"
+	"github.com/ntc-goer/microservice-examples/kitchen/repository"
 	"github.com/ntc-goer/microservice-examples/kitchen/service"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/consul"
@@ -12,13 +13,15 @@ type CoreDependency struct {
 	Config           *config.Config
 	Service          *service.CoreService
 	ServiceDiscovery common.DiscoveryI
+	Repository *repository.Repository
 }
 
-func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis common.DiscoveryI) *CoreDependency {
+func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis common.DiscoveryI, repo *repository.Repository) *CoreDependency {
 	return &CoreDependency{
 		Config:           cfg,
 		Service:          coreSrv,
 		ServiceDiscovery: srvDis,
+		Repository: repo,
 	}
 }
 
@@ -31,6 +34,7 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 		//inmem.NewRegistry
 		wire.Bind(new(common.DiscoveryI), new(*consul.Registry)),
 		consul.NewRegistry,
+		repository.NewRepository,
 		NewCoreDependency)
 	return &CoreDependency{}, nil
 }

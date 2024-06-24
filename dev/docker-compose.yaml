@@ -32,11 +32,12 @@ services:
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+      - ./init_user.sql:/docker-entrypoint-initdb.d/init_user.sql
     ports:
       - "5433:5432"
     networks:
       - postgres
-    restart: unless-stopped
 #  pgAdmin web-based
   db_admin:
     container_name: db_admin

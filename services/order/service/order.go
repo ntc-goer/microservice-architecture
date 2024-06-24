@@ -25,38 +25,39 @@ func NewOrderService(repo *repository.Repository) *OrderService {
 	}
 }
 
+//var result *consumerpb.VerifyUserResponse
+//hystrix.ConfigureCommand("order", hystrix.CommandConfig{
+//	// The number of requests will be calculated to determine whether the circuit should be opened or not.
+//	RequestVolumeThreshold: 10,
+//	// The millisecond to determine the request will be timeout or not
+//	Timeout: 1000,
+//	// The millisecond number represent the time the circuit breaker will open until the next test.
+//	SleepWindow: 60000,
+//	// Using RequestVolumeThreshold , calculate the number of request error , if > ErrorPercentThreshold -> The circuit will open
+//	ErrorPercentThreshold: 30,
+//})
+//err := hystrix.Do("CREATE_ORDER", func() error {
+//	conn, err := s.LoadBalance.GetConnection(s.Config.ConsumerServiceName)
+//	if err != nil {
+//		return err
+//	}
+//	client := consumerpb.NewConsumerServiceClient(conn)
+//	result, err = client.VerifyUser(ctx, &consumerpb.VerifyUserRequest{Id: orderReq.UserId})
+//	if err != nil {
+//		log.Printf("Error when calling the consumer service %v", err)
+//		return err
+//	}
+//	return nil
+//}, func(err error) error {
+//	log.Printf("hystrix fallback %s", err.Error())
+//	return err
+//})
+//
+//if err != nil {
+//	return nil, err
+//}
+
 func (s *OrderService) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orderpb.OrderResponse, error) {
-	//var result *consumerpb.VerifyUserResponse
-	//hystrix.ConfigureCommand("order", hystrix.CommandConfig{
-	//	// The number of requests will be calculated to determine whether the circuit should be opened or not.
-	//	RequestVolumeThreshold: 10,
-	//	// The millisecond to determine the request will be timeout or not
-	//	Timeout: 1000,
-	//	// The millisecond number represent the time the circuit breaker will open until the next test.
-	//	SleepWindow: 60000,
-	//	// Using RequestVolumeThreshold , calculate the number of request error , if > ErrorPercentThreshold -> The circuit will open
-	//	ErrorPercentThreshold: 30,
-	//})
-	//err := hystrix.Do("CREATE_ORDER", func() error {
-	//	conn, err := s.LoadBalance.GetConnection(s.Config.ConsumerServiceName)
-	//	if err != nil {
-	//		return err
-	//	}
-	//	client := consumerpb.NewConsumerServiceClient(conn)
-	//	result, err = client.VerifyUser(ctx, &consumerpb.VerifyUserRequest{Id: orderReq.UserId})
-	//	if err != nil {
-	//		log.Printf("Error when calling the consumer service %v", err)
-	//		return err
-	//	}
-	//	return nil
-	//}, func(err error) error {
-	//	log.Printf("hystrix fallback %s", err.Error())
-	//	return err
-	//})
-	//
-	//if err != nil {
-	//	return nil, err
-	//}
 	requestId, err := uuid.NewUUID()
 	if err != nil {
 		return nil, err

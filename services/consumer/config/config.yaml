@@ -1,12 +1,12 @@
-service_port: 50001
+service_port: 50002
 
 # Database
 database:
   server_host: localhost
   server_port: 5433
-  db_name: orderdb
-  user_name: orderuser
-  password: orderpwd
+  db_name:
+  user_name:
+  password:
 
 # Broker
 broker:

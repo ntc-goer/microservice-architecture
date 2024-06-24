@@ -104,7 +104,7 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 				defer cancel()
 
 				// Get Order Dishes
-				orderC, err := pkg.GetGRPCClient(s.Config.Service.LBServiceHost, s.Config.Service.KitchenServiceName, orderpb.NewOrderServiceClient)
+				orderC, err := pkg.GetGRPCClient(s.Config.Service.LBServiceHost, s.Config.Service.KitchenServiceName, orderpb.NewDishServiceClient)
 				dishRes, err := orderC.GetOrderDish(ctx, &orderpb.GetOrderDishRequest{
 					OrderId: req.OrderId,
 				})
@@ -120,7 +120,7 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 				kitchenC, err := pkg.GetGRPCClient(s.Config.Service.LBServiceHost, s.Config.Service.KitchenServiceName, kitchenpb.NewKitchenServiceClient)
 				verifyOrderRes, err := kitchenC.VerifyOrder(ctx, &kitchenpb.VerifyOrderRequest{
 					StoreId: req.OrderId,
-					Dishes: ntc.Map(dishRes.Dishes, func(d *orderpb.OrderItem) *kitchenpb.DishItem {
+					Dishes: ntc.Map(dishRes.Dishes, func(d *orderpb.DishItem) *kitchenpb.DishItem {
 						return &kitchenpb.DishItem{
 							DishId: d.DishId,
 							Dish:   d.Dish,
