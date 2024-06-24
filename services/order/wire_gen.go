@@ -8,7 +8,6 @@ package main
 
 import (
 	"github.com/ntc-goer/microservice-examples/orderservice/config"
-	"github.com/ntc-goer/microservice-examples/orderservice/pkg"
 	"github.com/ntc-goer/microservice-examples/orderservice/repository"
 	"github.com/ntc-goer/microservice-examples/orderservice/service"
 	"github.com/ntc-goer/microservice-examples/registry/broker"
@@ -28,21 +27,18 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 	if err != nil {
 		return nil, err
 	}
-	registry, err := consul.NewRegistry()
-	if err != nil {
-		return nil, err
-	}
 	repositoryRepository, err := repository.NewRepository(configConfig)
 	if err != nil {
 		return nil, err
 	}
-	lb := pkg.NewLB(configConfig)
-	brokerBroker := broker.NewBroker()
-	impl, err := service.NewServiceImpl(registry, repositoryRepository, configConfig, lb, brokerBroker)
+	orderService := service.NewOrderService(repositoryRepository)
+	dishService := service.NewDishService(repositoryRepository)
+	coreService := service.NewCoreService(healthService, orderService, dishService)
+	registry, err := consul.NewRegistry()
 	if err != nil {
 		return nil, err
 	}
-	coreService := service.NewCoreService(healthService, impl)
+	brokerBroker := broker.NewBroker()
 	coreDependency := NewCoreDependency(configConfig, coreService, registry, repositoryRepository, brokerBroker)
 	return coreDependency, nil
 }

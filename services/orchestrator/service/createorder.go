@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	accountingpb "github.com/ntc-goer/microservice-examples/accounting/proto"
 	consumerpb "github.com/ntc-goer/microservice-examples/consumerservice/proto"
 	kitchenpb "github.com/ntc-goer/microservice-examples/kitchen/proto"
@@ -35,12 +36,16 @@ type OrderMsg struct {
 	RequestId string `json:"request_id"`
 }
 
+type CreateOrderStore struct {
+	TicketId string
+}
+
 func (s *CreateOrderService) Run(msg string) {
 	var req OrderMsg
 	if err := json.Unmarshal([]byte(msg), &req); err != nil {
 		log.Fatalf("Invalid Data Format %s", err)
 	}
-	wl := sagaorchestration.NewWorkflow("CREATE_ORDER")
+	wl := sagaorchestration.NewWorkflow[CreateOrderStore]("CREATE_ORDER", CreateOrderStore{})
 	steps := s.getSagaStep(&req)
 	err := wl.RegisterSteps(steps).Start()
 	if err != nil {
@@ -50,12 +55,12 @@ func (s *CreateOrderService) Run(msg string) {
 	return
 }
 
-func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step {
-	steps := []sagaorchestration.Step{
-		// Consumer Service — Verify an user can order. \
+func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step[CreateOrderStore] {
+	steps := []sagaorchestration.Step[CreateOrderStore]{
+		// Consumer Service — Verify user can order. \
 		{
 			Name: "VERIFY_USER",
-			ProcessF: func() error {
+			ProcessF: func(store CreateOrderStore) error {
 				ctx := context.Background()
 				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 				defer cancel()
@@ -70,6 +75,22 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 					log.Printf("Invalid user %s", req.UserId)
 					return err
 				}
+
+				// Update Order TO FAILED
+				orderC, err := pkg.GetGRPCClient(s.Config.Service.LBServiceHost, s.Config.Service.OrderServiceName, orderpb.NewOrderServiceClient)
+				// Create a Ticket as CREATE_PENDING state.
+				updateOrderStatusRes, err := orderC.UpdateOrderStatusFailed(ctx, &orderpb.UpdateOrderStatusFailedRequest{
+					OrderId:   req.OrderId,
+					RequestId: req.RequestId,
+				})
+				if err != nil {
+					log.Printf("Error when calling the service %s : %v", s.Config.Service.OrderServiceName, err)
+					return err
+				}
+				if !updateOrderStatusRes.IsOk {
+					log.Printf("UpdateOrderStatusFailed %s Fail", req.OrderId)
+					return errors.New("UpdateOrderStatusFailed Fail")
+				}
 				return nil
 			},
 		},
@@ -77,7 +98,7 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 		// Create a Ticket as CREATE_PENDING state.
 		{
 			Name: "VERIFY_ORDER",
-			ProcessF: func() error {
+			ProcessF: func(store CreateOrderStore) error {
 				ctx := context.Background()
 				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 				defer cancel()
@@ -91,10 +112,13 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 					log.Printf("Error when calling the consumer service %v", err)
 					return err
 				}
-
+				if len(dishRes.Dishes) == 0 {
+					log.Printf("Not found dishes")
+					return errors.New("not found dishes")
+				}
 				// Verify order
 				kitchenC, err := pkg.GetGRPCClient(s.Config.Service.LBServiceHost, s.Config.Service.KitchenServiceName, kitchenpb.NewKitchenServiceClient)
-				result, err := kitchenC.VerifyOrder(ctx, &kitchenpb.VerifyOrderRequest{
+				verifyOrderRes, err := kitchenC.VerifyOrder(ctx, &kitchenpb.VerifyOrderRequest{
 					StoreId: req.OrderId,
 					Dishes: ntc.Map(dishRes.Dishes, func(d *orderpb.OrderItem) *kitchenpb.DishItem {
 						return &kitchenpb.DishItem{
@@ -108,23 +132,54 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 					log.Printf("Error when calling the consumer service %v", err)
 					return err
 				}
-				if !result.IsOk {
-					log.Printf("Invalid user %s", req.UserId)
-					return err
+				if !verifyOrderRes.IsOk {
+					log.Printf("VerifyOrder %s Fail", req.OrderId)
+					return errors.New("VerifyOrder Fail")
 				}
 
 				// Create a Ticket as CREATE_PENDING state.
+				createPendingTicketResult, err := kitchenC.CreatePendingTicket(ctx, &kitchenpb.CreatePendingTicketRequest{
+					RequestId: req.RequestId,
+					OrderId:   req.OrderId,
+				})
+				if err != nil {
+					log.Printf("Error when calling the service %s : %v", s.Config.Service.KitchenServiceName, err)
+					return err
+				}
+				if !createPendingTicketResult.IsOk {
+					log.Printf("CreatePendingTicket %s Fail", store.TicketId)
+					return errors.New("CreatePendingTicket Fail")
+				}
 				return nil
 			},
-			CompensatingF: func() error {
+			CompensatingF: func(store CreateOrderStore) error {
+				ctx := context.Background()
+				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+				defer cancel()
 				// Update Ticket TO CANCELED
+				if store.TicketId != "" {
+					kitchenC, err := pkg.GetGRPCClient(s.Config.Service.LBServiceHost, s.Config.Service.KitchenServiceName, kitchenpb.NewKitchenServiceClient)
+					// Create a Ticket as CREATE_PENDING state.
+					cancelTicketResult, err := kitchenC.CancelTicket(ctx, &kitchenpb.CancelTicketRequest{
+						TicketId: store.TicketId,
+					})
+					if err != nil {
+						log.Printf("Error when calling the service %s : %v", s.Config.Service.KitchenServiceName, err)
+						return err
+					}
+					if !cancelTicketResult.IsOk {
+						log.Printf("CancelTicket %s Fail", store.TicketId)
+						return errors.New("CancelTicket Fail")
+					}
+					return nil
+				}
 				return nil
 			},
 		},
 		// Accounting Service — Verify user's credit card.
 		{
 			Name: "VERIFY_USER_CREDIT_CARD",
-			ProcessF: func() error {
+			ProcessF: func(store CreateOrderStore) error {
 				ctx := context.Background()
 				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 				defer cancel()
@@ -135,12 +190,12 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 					UserId: req.UserId,
 				})
 				if err != nil {
-					log.Printf("Error when calling the consumer service %v", err)
+					log.Printf("Error when calling the service %s : %v", s.Config.Service.AccountingServiceName, err)
 					return err
 				}
 				if !result.IsOk {
-					log.Printf("Invalid user %s", req.UserId)
-					return err
+					log.Printf("VerifyCreditCard of  %s Fail", req.UserId)
+					return errors.New("VerifyCreditCard Fail")
 				}
 
 				return nil
@@ -149,20 +204,51 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 		// Kitchen Service — Change ticket's state to AWAITING_ACCEPTANCE.\
 		{
 			Name: "UPDATE_TICKET_STATE_TO_AWAITING_ACCEPTANCE",
-			ProcessF: func() error {
-				return nil
-			},
-			CompensatingF: func() error {
+			ProcessF: func(store CreateOrderStore) error {
+				ctx := context.Background()
+				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+				defer cancel()
+				// Update Ticket TO CANCELED
+				if store.TicketId != "" {
+					kitchenC, err := pkg.GetGRPCClient(s.Config.Service.LBServiceHost, s.Config.Service.KitchenServiceName, kitchenpb.NewKitchenServiceClient)
+					// Create a Ticket as CREATE_PENDING state.
+					acceptTicketResult, err := kitchenC.AcceptTicket(ctx, &kitchenpb.AcceptTicketRequest{
+						TicketId: store.TicketId,
+					})
+					if err != nil {
+						log.Printf("Error when calling the service %s : %v", s.Config.Service.KitchenServiceName, err)
+						return err
+					}
+					if !acceptTicketResult.IsOk {
+						log.Printf("AcceptTicket %s Fail", store.TicketId)
+						return errors.New("AcceptTicket Fail")
+					}
+					return nil
+				}
 				return nil
 			},
 		},
 		// Order Service — Change order state to APPROVED.
 		{
 			Name: "UPDATE_ORDER_STATE_TO_APPROVED",
-			ProcessF: func() error {
-				return nil
-			},
-			CompensatingF: func() error {
+			ProcessF: func(store CreateOrderStore) error {
+				ctx := context.Background()
+				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+				defer cancel()
+
+				// Get Order Dishes
+				orderC, err := pkg.GetGRPCClient(s.Config.Service.LBServiceHost, s.Config.Service.KitchenServiceName, orderpb.NewOrderServiceClient)
+				approveOrderRes, err := orderC.ApproveOrder(ctx, &orderpb.ApproveOrderRequest{
+					OrderId: req.OrderId,
+				})
+				if err != nil {
+					log.Printf("Error when calling the consumer service %v", err)
+					return err
+				}
+				if !approveOrderRes.IsOk {
+					log.Printf("ApproveOrder %s Fail", req.OrderId)
+					return errors.New("ApproveOrder Fail")
+				}
 				return nil
 			},
 		},

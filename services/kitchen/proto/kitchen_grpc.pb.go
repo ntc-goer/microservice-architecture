@@ -19,7 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	KitchenService_VerifyOrder_FullMethodName = "/kitchen.KitchenService/VerifyOrder"
+	KitchenService_VerifyOrder_FullMethodName         = "/kitchen.KitchenService/VerifyOrder"
+	KitchenService_CreatePendingTicket_FullMethodName = "/kitchen.KitchenService/CreatePendingTicket"
+	KitchenService_CancelTicket_FullMethodName        = "/kitchen.KitchenService/CancelTicket"
+	KitchenService_AcceptTicket_FullMethodName        = "/kitchen.KitchenService/AcceptTicket"
 )
 
 // KitchenServiceClient is the client API for KitchenService service.
@@ -27,6 +30,9 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type KitchenServiceClient interface {
 	VerifyOrder(ctx context.Context, in *VerifyOrderRequest, opts ...grpc.CallOption) (*VerifyOrderResponse, error)
+	CreatePendingTicket(ctx context.Context, in *CreatePendingTicketRequest, opts ...grpc.CallOption) (*CreatePendingTicketResponse, error)
+	CancelTicket(ctx context.Context, in *CancelTicketRequest, opts ...grpc.CallOption) (*CancelTicketResponse, error)
+	AcceptTicket(ctx context.Context, in *AcceptTicketRequest, opts ...grpc.CallOption) (*AcceptTicketResponse, error)
 }
 
 type kitchenServiceClient struct {
@@ -47,11 +53,44 @@ func (c *kitchenServiceClient) VerifyOrder(ctx context.Context, in *VerifyOrderR
 	return out, nil
 }
 
+func (c *kitchenServiceClient) CreatePendingTicket(ctx context.Context, in *CreatePendingTicketRequest, opts ...grpc.CallOption) (*CreatePendingTicketResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreatePendingTicketResponse)
+	err := c.cc.Invoke(ctx, KitchenService_CreatePendingTicket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *kitchenServiceClient) CancelTicket(ctx context.Context, in *CancelTicketRequest, opts ...grpc.CallOption) (*CancelTicketResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CancelTicketResponse)
+	err := c.cc.Invoke(ctx, KitchenService_CancelTicket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *kitchenServiceClient) AcceptTicket(ctx context.Context, in *AcceptTicketRequest, opts ...grpc.CallOption) (*AcceptTicketResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AcceptTicketResponse)
+	err := c.cc.Invoke(ctx, KitchenService_AcceptTicket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // KitchenServiceServer is the server API for KitchenService service.
 // All implementations must embed UnimplementedKitchenServiceServer
 // for forward compatibility
 type KitchenServiceServer interface {
 	VerifyOrder(context.Context, *VerifyOrderRequest) (*VerifyOrderResponse, error)
+	CreatePendingTicket(context.Context, *CreatePendingTicketRequest) (*CreatePendingTicketResponse, error)
+	CancelTicket(context.Context, *CancelTicketRequest) (*CancelTicketResponse, error)
+	AcceptTicket(context.Context, *AcceptTicketRequest) (*AcceptTicketResponse, error)
 	mustEmbedUnimplementedKitchenServiceServer()
 }
 
@@ -61,6 +100,15 @@ type UnimplementedKitchenServiceServer struct {
 
 func (UnimplementedKitchenServiceServer) VerifyOrder(context.Context, *VerifyOrderRequest) (*VerifyOrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyOrder not implemented")
+}
+func (UnimplementedKitchenServiceServer) CreatePendingTicket(context.Context, *CreatePendingTicketRequest) (*CreatePendingTicketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreatePendingTicket not implemented")
+}
+func (UnimplementedKitchenServiceServer) CancelTicket(context.Context, *CancelTicketRequest) (*CancelTicketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelTicket not implemented")
+}
+func (UnimplementedKitchenServiceServer) AcceptTicket(context.Context, *AcceptTicketRequest) (*AcceptTicketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AcceptTicket not implemented")
 }
 func (UnimplementedKitchenServiceServer) mustEmbedUnimplementedKitchenServiceServer() {}
 
@@ -93,6 +141,60 @@ func _KitchenService_VerifyOrder_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _KitchenService_CreatePendingTicket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatePendingTicketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KitchenServiceServer).CreatePendingTicket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KitchenService_CreatePendingTicket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KitchenServiceServer).CreatePendingTicket(ctx, req.(*CreatePendingTicketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _KitchenService_CancelTicket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CancelTicketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KitchenServiceServer).CancelTicket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KitchenService_CancelTicket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KitchenServiceServer).CancelTicket(ctx, req.(*CancelTicketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _KitchenService_AcceptTicket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AcceptTicketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KitchenServiceServer).AcceptTicket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KitchenService_AcceptTicket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KitchenServiceServer).AcceptTicket(ctx, req.(*AcceptTicketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // KitchenService_ServiceDesc is the grpc.ServiceDesc for KitchenService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -103,6 +205,18 @@ var KitchenService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyOrder",
 			Handler:    _KitchenService_VerifyOrder_Handler,
+		},
+		{
+			MethodName: "CreatePendingTicket",
+			Handler:    _KitchenService_CreatePendingTicket_Handler,
+		},
+		{
+			MethodName: "CancelTicket",
+			Handler:    _KitchenService_CancelTicket_Handler,
+		},
+		{
+			MethodName: "AcceptTicket",
+			Handler:    _KitchenService_AcceptTicket_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

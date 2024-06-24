@@ -1,0 +1,22 @@
+syntax="proto3";
+option go_package="github.com/ntc-goer/microservice-examples/orderservice/proto;orderproto";
+
+package order;
+
+service DishService {
+  rpc GetOrderDish(GetOrderDishRequest) returns (GetOrderDishResponse);
+}
+
+message DishItem {
+  string dish_id = 1;
+  string dish = 2;
+  int32 total = 3;
+}
+
+message GetOrderDishRequest {
+  string order_id = 1;
+}
+
+message GetOrderDishResponse {
+  repeated DishItem dishes = 1;
+}

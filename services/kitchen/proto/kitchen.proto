@@ -6,6 +6,9 @@ package kitchen;
 
 service KitchenService {
   rpc VerifyOrder(VerifyOrderRequest) returns (VerifyOrderResponse);
+  rpc CreatePendingTicket(CreatePendingTicketRequest) returns (CreatePendingTicketResponse);
+  rpc CancelTicket(CancelTicketRequest)  returns (CancelTicketResponse);
+  rpc AcceptTicket(AcceptTicketRequest)  returns (AcceptTicketResponse);
 }
 
 message DishItem {
@@ -22,3 +25,29 @@ message VerifyOrderRequest {
 message VerifyOrderResponse {
   bool is_ok = 1;
 }
+
+message CreatePendingTicketRequest {
+  string request_id = 1;
+  string order_id = 2;
+}
+
+message CreatePendingTicketResponse {
+  bool is_ok = 1;
+}
+
+message CancelTicketRequest {
+  string ticket_id = 1;
+}
+
+message CancelTicketResponse {
+  bool is_ok = 1;
+}
+
+message AcceptTicketRequest {
+  string ticket_id = 1;
+}
+
+message AcceptTicketResponse {
+  bool is_ok = 1;
+}
+

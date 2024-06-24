@@ -4,12 +4,12 @@ type StepI interface {
 	GetName() string
 }
 
-type Step struct {
+type Step[T any] struct {
 	Name          string
-	ProcessF      func() error
-	CompensatingF func() error
+	ProcessF      func(store T) error
+	CompensatingF func(store T) error
 }
 
-func (step *Step) GetName() string {
+func (step *Step[T]) GetName() string {
 	return step.Name
 }

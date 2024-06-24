@@ -6,7 +6,6 @@ package main
 import (
 	"github.com/google/wire"
 	"github.com/ntc-goer/microservice-examples/orderservice/config"
-	"github.com/ntc-goer/microservice-examples/orderservice/pkg"
 	"github.com/ntc-goer/microservice-examples/orderservice/repository"
 	"github.com/ntc-goer/microservice-examples/orderservice/service"
 	"github.com/ntc-goer/microservice-examples/registry/broker"
@@ -43,7 +42,6 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 		consul.NewRegistry,
 		repository.NewRepository,
 		broker.NewBroker,
-		pkg.NewLB,
 		NewCoreDependency)
 	return &CoreDependency{}, nil
 }

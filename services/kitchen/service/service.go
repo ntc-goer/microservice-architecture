@@ -5,14 +5,14 @@ import (
 )
 
 type CoreService struct {
-	Health     *HealthService
-	Accounting *AccountingService
+	Health  *HealthService
+	Kitchen *KitchenService
 }
 
-func NewCoreService(healthService *HealthService, accountingService *AccountingService) *CoreService {
+func NewCoreService(healthService *HealthService, kitchenService *KitchenService) *CoreService {
 	return &CoreService{
-		Health:     healthService,
-		Accounting: accountingService,
+		Health:  healthService,
+		Kitchen: kitchenService,
 	}
 }
 

@@ -12,6 +12,7 @@ import (
 const (
 	_APPROVAL_PENDING string = "APPROVAL_PENDING"
 	_APPROVED         string = "APPROVED"
+	_FAILED           string = "FAILED"
 )
 
 // Annotations of the Order.
@@ -33,7 +34,7 @@ func (Order) Fields() []ent.Field {
 		field.UUID("request_id", uuid.UUID{}),
 		field.String("user_id").NotEmpty(),
 		field.String("address").NotEmpty(),
-		field.Enum("status").Values(_APPROVAL_PENDING, _APPROVED),
+		field.Enum("status").Values(_APPROVAL_PENDING, _APPROVED, _FAILED),
 		field.Time("update_at").
 			Default(time.Now),
 		field.Time("created_at").

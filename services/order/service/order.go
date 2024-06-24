@@ -5,12 +5,27 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/ntc-goer/microservice-examples/orderservice/config"
 	orderpb "github.com/ntc-goer/microservice-examples/orderservice/proto"
 	"github.com/ntc-goer/microservice-examples/orderservice/repository"
+	"github.com/ntc-goer/microservice-examples/registry/broker"
 	"github.com/ntc-goer/ntc"
 )
 
-func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orderpb.OrderResponse, error) {
+type OrderService struct {
+	orderpb.UnimplementedOrderServiceServer
+	Repo   *repository.Repository
+	Queue  *broker.Broker
+	Config *config.Config
+}
+
+func NewOrderService(repo *repository.Repository) *OrderService {
+	return &OrderService{
+		Repo: repo,
+	}
+}
+
+func (s *OrderService) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orderpb.OrderResponse, error) {
 	//var result *consumerpb.VerifyUserResponse
 	//hystrix.ConfigureCommand("order", hystrix.CommandConfig{
 	//	// The number of requests will be calculated to determine whether the circuit should be opened or not.
@@ -98,5 +113,41 @@ func (s *Impl) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orde
 		RequestId: ord.RequestID.String(),
 		OrderId:   ord.ID.String(),
 		Status:    string(ord.Status),
+	}, nil
+}
+
+func (s *OrderService) ApproveOrder(ctx context.Context, req *orderpb.ApproveOrderRequest) (*orderpb.ApproveOrderResponse, error) {
+	orderUUID, err := uuid.Parse(req.OrderId)
+	if err != nil {
+		return nil, err
+	}
+	requestUUID, err := uuid.Parse(req.RequestId)
+	if err != nil {
+		return nil, err
+	}
+	_, err = s.Repo.Order.ApproveOrder(ctx, orderUUID, requestUUID)
+	if err != nil {
+		return nil, err
+	}
+	return &orderpb.ApproveOrderResponse{
+		IsOk: true,
+	}, nil
+}
+
+func (s *OrderService) UpdateOrderStatusFailed(ctx context.Context, req *orderpb.UpdateOrderStatusFailedRequest) (*orderpb.UpdateOrderStatusFailedResponse, error) {
+	orderUUID, err := uuid.Parse(req.OrderId)
+	if err != nil {
+		return nil, err
+	}
+	requestUUID, err := uuid.Parse(req.RequestId)
+	if err != nil {
+		return nil, err
+	}
+	_, err = s.Repo.Order.UpdateOrderStatusFailed(ctx, orderUUID, requestUUID)
+	if err != nil {
+		return nil, err
+	}
+	return &orderpb.UpdateOrderStatusFailedResponse{
+		IsOk: true,
 	}, nil
 }

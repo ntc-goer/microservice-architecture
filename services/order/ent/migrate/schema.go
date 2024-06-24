@@ -31,7 +31,7 @@ var (
 		{Name: "request_id", Type: field.TypeUUID},
 		{Name: "user_id", Type: field.TypeString},
 		{Name: "address", Type: field.TypeString},
-		{Name: "status", Type: field.TypeEnum, Enums: []string{"APPROVAL_PENDING", "APPROVED"}},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"APPROVAL_PENDING", "APPROVED", "FAILED"}},
 		{Name: "update_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}

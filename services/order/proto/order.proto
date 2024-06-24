@@ -12,7 +12,8 @@ service OrderService {
       body: "*"
     };
   };
-  rpc GetOrderDish(GetOrderDishRequest) returns (GetOrderDishResponse);
+  rpc ApproveOrder(ApproveOrderRequest) returns (ApproveOrderResponse);
+  rpc UpdateOrderStatusFailed(UpdateOrderStatusFailedRequest) returns (UpdateOrderStatusFailedResponse);
 }
 
 message OrderItem {
@@ -34,10 +35,20 @@ message OrderResponse {
   string status = 3;
 }
 
-message GetOrderDishRequest {
-  string order_id = 1;
+message ApproveOrderRequest {
+  string request_id = 1;
+  string order_id = 2;
 }
 
-message GetOrderDishResponse {
-  repeated OrderItem dishes = 1;
+message ApproveOrderResponse {
+  bool is_ok = 1;
+}
+
+message UpdateOrderStatusFailedRequest {
+  string request_id = 1;
+  string order_id = 2;
+}
+
+message UpdateOrderStatusFailedResponse {
+  bool is_ok = 1;
 }

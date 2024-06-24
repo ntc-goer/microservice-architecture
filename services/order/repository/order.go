@@ -26,3 +26,19 @@ func (r *OrderRepo) CreatePendingOrder(ctx context.Context, orderId uuid.UUID, r
 	}
 	return ord, nil
 }
+
+func (r *OrderRepo) ApproveOrder(ctx context.Context, orderId uuid.UUID, requestId uuid.UUID) (*ent.Order, error) {
+	ord, err := r.OrderClient.UpdateOneID(orderId).Where(order.RequestID(requestId)).SetStatus(order.StatusAPPROVAL_PENDING).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return ord, nil
+}
+
+func (r *OrderRepo) UpdateOrderStatusFailed(ctx context.Context, orderId uuid.UUID, requestId uuid.UUID) (*ent.Order, error) {
+	ord, err := r.OrderClient.UpdateOneID(orderId).Where(order.RequestID(requestId)).SetStatus(order.StatusFAILED).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return ord, nil
+}

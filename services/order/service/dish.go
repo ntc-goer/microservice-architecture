@@ -4,11 +4,24 @@ import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/ntc-goer/microservice-examples/orderservice/ent"
-	orderproto "github.com/ntc-goer/microservice-examples/orderservice/proto"
+	orderpb "github.com/ntc-goer/microservice-examples/orderservice/proto"
+	"github.com/ntc-goer/microservice-examples/orderservice/repository"
 	"github.com/ntc-goer/ntc"
 )
 
-func (s *Impl) GetOrderDish(ctx context.Context, req *orderproto.GetOrderDishRequest) (*orderproto.GetOrderDishResponse, error) {
+type DishService struct {
+	orderpb.UnimplementedDishServiceServer
+	Repo *repository.Repository
+}
+
+func NewDishService(repo *repository.Repository) *DishService {
+	return &DishService{
+		Repo: repo,
+	}
+
+}
+
+func (s *DishService) GetOrderDish(ctx context.Context, req *orderpb.GetOrderDishRequest) (*orderpb.GetOrderDishResponse, error) {
 	orderId, err := uuid.Parse(req.OrderId)
 	if err != nil {
 		return nil, err
@@ -17,9 +30,9 @@ func (s *Impl) GetOrderDish(ctx context.Context, req *orderproto.GetOrderDishReq
 	if err != nil {
 		return nil, err
 	}
-	return &orderproto.GetOrderDishResponse{
-		Dishes: ntc.Map(dishes, func(d *ent.Dish) *orderproto.OrderItem {
-			return &orderproto.OrderItem{
+	return &orderpb.GetOrderDishResponse{
+		Dishes: ntc.Map(dishes, func(d *ent.Dish) *orderpb.DishItem {
+			return &orderpb.DishItem{
 				DishId: d.DishID,
 				Dish:   d.DishName,
 				Total:  int32(d.Quantity),

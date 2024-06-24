@@ -17,28 +17,28 @@ type Log struct {
 }
 
 type WorkflowI interface {
-	RegisterSteps(steps []Step) *Workflow
-	Register(step Step) *Workflow
 	Start() error
 	Revert()
 	GetLog() []Log
 }
 
-type Workflow struct {
+type Workflow[T any] struct {
+	Store        T
 	Name         string
 	CurrentStep  int
 	ResultStatus ProcessStatus
 	Log          []Log
-	Steps        []Step
+	Steps        []Step[T]
 }
 
-func NewWorkflow(name string) *Workflow {
-	return &Workflow{
-		Name: name,
+func NewWorkflow[T any](name string, initStore T) *Workflow[T] {
+	return &Workflow[T]{
+		Store: initStore,
+		Name:  name,
 	}
 }
 
-func (wf *Workflow) initProcess() {
+func (wf *Workflow[T]) initProcess() {
 	wf.Log = make([]Log, len(wf.Steps))
 	for i := range wf.Log {
 		wf.Log[i] = Log{
@@ -48,23 +48,23 @@ func (wf *Workflow) initProcess() {
 	}
 }
 
-func (wf *Workflow) Register(step Step) *Workflow {
+func (wf *Workflow[T]) Register(step Step[T]) *Workflow[T] {
 	wf.Steps = append(wf.Steps, step)
 	return wf
 }
 
-func (wf *Workflow) RegisterSteps(steps []Step) *Workflow {
+func (wf *Workflow[T]) RegisterSteps(steps []Step[T]) *Workflow[T] {
 	wf.Steps = steps
 	return wf
 }
 
-func (wf *Workflow) Start() error {
+func (wf *Workflow[T]) Start() error {
 	// Init Process Log
 	wf.initProcess()
 	for index, step := range wf.Steps {
 		wf.CurrentStep = index
 		wf.Log[wf.CurrentStep].Status = PENDING
-		if err := step.ProcessF(); err != nil {
+		if err := step.ProcessF(wf.Store); err != nil {
 			wf.Revert()
 			return err
 		}
@@ -73,19 +73,19 @@ func (wf *Workflow) Start() error {
 	return nil
 }
 
-func (wf *Workflow) Revert() {
+func (wf *Workflow[T]) Revert() {
 	for i := wf.CurrentStep; i >= 0; i-- {
-		if wf.Steps[i].CompensatingF() == nil {
+		if wf.Steps[i].CompensatingF(wf.Store) == nil {
 			wf.Log[wf.CurrentStep].Status = SKIPPED
 			continue
 		}
-		if err := wf.Steps[i].CompensatingF(); err != nil {
+		if err := wf.Steps[i].CompensatingF(wf.Store); err != nil {
 			wf.Log[wf.CurrentStep].Status = REVERT_FAILED
 		}
 		wf.Log[wf.CurrentStep].Status = REVERTED
 	}
 }
 
-func (wf *Workflow) GetLog() []Log {
+func (wf *Workflow[T]) GetLog() []Log {
 	return wf.Log
 }

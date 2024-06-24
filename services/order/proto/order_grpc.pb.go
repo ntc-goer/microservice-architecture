@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	OrderService_Order_FullMethodName        = "/order.OrderService/Order"
-	OrderService_GetOrderDish_FullMethodName = "/order.OrderService/GetOrderDish"
+	OrderService_Order_FullMethodName                   = "/order.OrderService/Order"
+	OrderService_ApproveOrder_FullMethodName            = "/order.OrderService/ApproveOrder"
+	OrderService_UpdateOrderStatusFailed_FullMethodName = "/order.OrderService/UpdateOrderStatusFailed"
 )
 
 // OrderServiceClient is the client API for OrderService service.
@@ -28,7 +29,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OrderServiceClient interface {
 	Order(ctx context.Context, in *OrderRequest, opts ...grpc.CallOption) (*OrderResponse, error)
-	GetOrderDish(ctx context.Context, in *GetOrderDishRequest, opts ...grpc.CallOption) (*GetOrderDishResponse, error)
+	ApproveOrder(ctx context.Context, in *ApproveOrderRequest, opts ...grpc.CallOption) (*ApproveOrderResponse, error)
+	UpdateOrderStatusFailed(ctx context.Context, in *UpdateOrderStatusFailedRequest, opts ...grpc.CallOption) (*UpdateOrderStatusFailedResponse, error)
 }
 
 type orderServiceClient struct {
@@ -49,10 +51,20 @@ func (c *orderServiceClient) Order(ctx context.Context, in *OrderRequest, opts .
 	return out, nil
 }
 
-func (c *orderServiceClient) GetOrderDish(ctx context.Context, in *GetOrderDishRequest, opts ...grpc.CallOption) (*GetOrderDishResponse, error) {
+func (c *orderServiceClient) ApproveOrder(ctx context.Context, in *ApproveOrderRequest, opts ...grpc.CallOption) (*ApproveOrderResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetOrderDishResponse)
-	err := c.cc.Invoke(ctx, OrderService_GetOrderDish_FullMethodName, in, out, cOpts...)
+	out := new(ApproveOrderResponse)
+	err := c.cc.Invoke(ctx, OrderService_ApproveOrder_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderServiceClient) UpdateOrderStatusFailed(ctx context.Context, in *UpdateOrderStatusFailedRequest, opts ...grpc.CallOption) (*UpdateOrderStatusFailedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOrderStatusFailedResponse)
+	err := c.cc.Invoke(ctx, OrderService_UpdateOrderStatusFailed_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +76,8 @@ func (c *orderServiceClient) GetOrderDish(ctx context.Context, in *GetOrderDishR
 // for forward compatibility
 type OrderServiceServer interface {
 	Order(context.Context, *OrderRequest) (*OrderResponse, error)
-	GetOrderDish(context.Context, *GetOrderDishRequest) (*GetOrderDishResponse, error)
+	ApproveOrder(context.Context, *ApproveOrderRequest) (*ApproveOrderResponse, error)
+	UpdateOrderStatusFailed(context.Context, *UpdateOrderStatusFailedRequest) (*UpdateOrderStatusFailedResponse, error)
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -75,8 +88,11 @@ type UnimplementedOrderServiceServer struct {
 func (UnimplementedOrderServiceServer) Order(context.Context, *OrderRequest) (*OrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Order not implemented")
 }
-func (UnimplementedOrderServiceServer) GetOrderDish(context.Context, *GetOrderDishRequest) (*GetOrderDishResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetOrderDish not implemented")
+func (UnimplementedOrderServiceServer) ApproveOrder(context.Context, *ApproveOrderRequest) (*ApproveOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApproveOrder not implemented")
+}
+func (UnimplementedOrderServiceServer) UpdateOrderStatusFailed(context.Context, *UpdateOrderStatusFailedRequest) (*UpdateOrderStatusFailedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrderStatusFailed not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}
 
@@ -109,20 +125,38 @@ func _OrderService_Order_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OrderService_GetOrderDish_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetOrderDishRequest)
+func _OrderService_ApproveOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApproveOrderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OrderServiceServer).GetOrderDish(ctx, in)
+		return srv.(OrderServiceServer).ApproveOrder(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OrderService_GetOrderDish_FullMethodName,
+		FullMethod: OrderService_ApproveOrder_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrderServiceServer).GetOrderDish(ctx, req.(*GetOrderDishRequest))
+		return srv.(OrderServiceServer).ApproveOrder(ctx, req.(*ApproveOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OrderService_UpdateOrderStatusFailed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOrderStatusFailedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).UpdateOrderStatusFailed(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OrderService_UpdateOrderStatusFailed_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).UpdateOrderStatusFailed(ctx, req.(*UpdateOrderStatusFailedRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -139,8 +173,12 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _OrderService_Order_Handler,
 		},
 		{
-			MethodName: "GetOrderDish",
-			Handler:    _OrderService_GetOrderDish_Handler,
+			MethodName: "ApproveOrder",
+			Handler:    _OrderService_ApproveOrder_Handler,
+		},
+		{
+			MethodName: "UpdateOrderStatusFailed",
+			Handler:    _OrderService_UpdateOrderStatusFailed_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
