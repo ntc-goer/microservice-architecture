@@ -27,3 +27,4 @@ service:
   orchestrator_service_name: orchestrator
   mail_service_name: mail
   gateway_service_name: gateway
+  kitchen_service_name: kitchen

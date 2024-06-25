@@ -24,7 +24,7 @@ Orchestration Service
   + wire
 ### Service Communication
   + grpc 
-  + Consider to git clone https://github.com/protocolbuffers/protobuf.git
+  + Consider to clone https://github.com/protocolbuffers/protobuf.git
   + nats
 ### Gateway
   + grpc-gateway
@@ -76,4 +76,7 @@ Orchestration Service
 | Mail         | 50004    | mail             | -------------        | -------------     | -------------                  |
 | Orchestrator | 50005    | orchestrator     | PENDING              | PENDING           | PENDING                        |
 | Broker       | 4222     | -------------    | -------------        | -------------     | -------------                  |
+| ConsulUI     | 8500     | -------------    | -------------        | -------------     | -------------                  |
+| FabioUI      | 9998     | -------------    | -------------        | -------------     | -------------                  |
+| FabioLB      | 9999     | -------------    | -------------        | -------------     | -------------                  |
 

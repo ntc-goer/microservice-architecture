@@ -19,9 +19,11 @@ type OrderService struct {
 	Config *config.Config
 }
 
-func NewOrderService(repo *repository.Repository) *OrderService {
+func NewOrderService(repo *repository.Repository, cfg *config.Config, q *broker.Broker) *OrderService {
 	return &OrderService{
-		Repo: repo,
+		Repo:   repo,
+		Config: cfg,
+		Queue:  q,
 	}
 }
 

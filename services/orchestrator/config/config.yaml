@@ -1,5 +1,13 @@
 service_port: 50005
 
+# Database
+database:
+  server_host: localhost
+  server_port: 5433
+  db_name: orchestratordb
+  user_name: orchestratoruser
+  password: orchestratorpwd
+
 # Broker
 broker:
   address: localhost:4222

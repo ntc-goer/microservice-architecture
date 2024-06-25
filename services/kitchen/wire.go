@@ -1,3 +1,6 @@
+//go:build wireinject
+// +build wireinject
+
 package main
 
 import (
@@ -13,7 +16,7 @@ type CoreDependency struct {
 	Config           *config.Config
 	Service          *service.CoreService
 	ServiceDiscovery common.DiscoveryI
-	Repository *repository.Repository
+	Repository       *repository.Repository
 }
 
 func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis common.DiscoveryI, repo *repository.Repository) *CoreDependency {
@@ -21,7 +24,7 @@ func NewCoreDependency(cfg *config.Config, coreSrv *service.CoreService, srvDis 
 		Config:           cfg,
 		Service:          coreSrv,
 		ServiceDiscovery: srvDis,
-		Repository: repo,
+		Repository:       repo,
 	}
 }
 

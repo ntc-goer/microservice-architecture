@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"fmt"
 	"github.com/ntc-goer/microservice-examples/orchestrator/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -14,7 +13,7 @@ type LB struct {
 
 const _GRPC_CONFIG = `{
 			"loadBalancingPolicy": "round_robin", 
-			"healthCheckConfig": {"serviceName": "%s"}
+			"healthCheckConfig": {"serviceName": "%s"},
             "methodConfig": [{
                 "name": [{"service": "%s"}],
                 "waitForReady": true,
@@ -31,9 +30,7 @@ const _GRPC_CONFIG = `{
 func GetConnection(lbHost string, srvName string) (*grpc.ClientConn, error) {
 	conn, err := grpc.NewClient(
 		lbHost,
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithDefaultServiceConfig(
-			fmt.Sprintf(_GRPC_CONFIG, srvName, srvName)))
+		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}

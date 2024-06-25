@@ -31,14 +31,14 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 	if err != nil {
 		return nil, err
 	}
-	orderService := service.NewOrderService(repositoryRepository)
+	brokerBroker := broker.NewBroker()
+	orderService := service.NewOrderService(repositoryRepository, configConfig, brokerBroker)
 	dishService := service.NewDishService(repositoryRepository)
 	coreService := service.NewCoreService(healthService, orderService, dishService)
 	registry, err := consul.NewRegistry()
 	if err != nil {
 		return nil, err
 	}
-	brokerBroker := broker.NewBroker()
 	coreDependency := NewCoreDependency(configConfig, coreService, registry, repositoryRepository, brokerBroker)
 	return coreDependency, nil
 }

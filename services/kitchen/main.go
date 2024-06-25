@@ -38,10 +38,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error %v", err)
 	}
-	instanceId := serviceregistration.GenerateInstanceId(dp.Config.Service.ConsumerServiceName)
+	instanceId := serviceregistration.GenerateInstanceId(dp.Config.Service.KitchenServiceName)
 	defer srvDiscovery.Deregister(ctx, instanceId)
 	go func(srvd common.DiscoveryI) {
-		if err := srvd.RegisterService(instanceId, dp.Config.Service.ConsumerServiceName, serviceregistration.GetCurrentIP(), dp.Config.ServicePort, common.GRPC_CHECK_TYPE); err != nil {
+		if err := srvd.RegisterService(instanceId, dp.Config.Service.KitchenServiceName, serviceregistration.GetCurrentIP(), dp.Config.ServicePort, common.GRPC_CHECK_TYPE); err != nil {
 			log.Fatalf("RegisterService fail: %v", err)
 		}
 	}(srvDiscovery)

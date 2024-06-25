@@ -1,5 +1,11 @@
 package sagaorchestration
 
+import (
+	"fmt"
+	uuid2 "github.com/google/uuid"
+	"github.com/ntc-goer/microservice-examples/registry/sagaorchestation/ent"
+)
+
 type ProcessStatus string
 
 const (
@@ -23,19 +29,59 @@ type WorkflowI interface {
 }
 
 type Workflow[T any] struct {
-	Store        T
-	Name         string
-	CurrentStep  int
-	ResultStatus ProcessStatus
-	Log          []Log
-	Steps        []Step[T]
+	ID               uuid2.UUID
+	Store            T
+	Name             string
+	CurrentStep      int
+	ResultStatus     ProcessStatus
+	Log              []Log
+	Steps            []Step[T]
+	TrackingDB       *DB
+	TrackingDBClient *ent.Client
 }
 
-func NewWorkflow[T any](name string, initStore T) *Workflow[T] {
-	return &Workflow[T]{
-		Store: initStore,
-		Name:  name,
+type DB struct {
+	DriverName string
+	Address    string
+	Port       string
+	DBName     string
+	UserName   string
+	Password   string
+}
+
+type WorkflowConfig[T any] struct {
+	Store      T
+	TrackingDB *DB
+}
+
+func NewWorkflow[T any](name string, cfg WorkflowConfig[T]) (*Workflow[T], error) {
+	id := uuid2.New()
+	wl := &Workflow[T]{
+		ID:         id,
+		Store:      cfg.Store,
+		Name:       name,
+		TrackingDB: cfg.TrackingDB,
 	}
+	// Migrate DB
+	if cfg.TrackingDB != nil {
+		client, err := ent.Open(cfg.TrackingDB.DriverName,
+			fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+				cfg.TrackingDB.Address,
+				cfg.TrackingDB.Port,
+				cfg.TrackingDB.UserName,
+				cfg.TrackingDB.Password,
+				cfg.TrackingDB.DBName,
+			))
+		if err != nil {
+			return nil, err
+		}
+		wl.TrackingDBClient = client
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return wl, nil
 }
 
 func (wf *Workflow[T]) initProcess() {

@@ -45,9 +45,22 @@ func (s *CreateOrderService) Run(msg string) {
 	if err := json.Unmarshal([]byte(msg), &req); err != nil {
 		log.Fatalf("Invalid Data Format %s", err)
 	}
-	wl := sagaorchestration.NewWorkflow[CreateOrderStore]("CREATE_ORDER", CreateOrderStore{})
+	wl, err := sagaorchestration.NewWorkflow[CreateOrderStore]("CREATE_ORDER",
+		sagaorchestration.WorkflowConfig[CreateOrderStore]{
+			TrackingDB: &sagaorchestration.DB{
+				DriverName: "postgres",
+				Address:    s.Config.Database.ServerHost,
+				Port:       s.Config.Database.ServerPort,
+				DBName:     s.Config.Database.DBName,
+				UserName:   s.Config.Database.UserName,
+				Password:   s.Config.Database.Password,
+			},
+		})
+	if err != nil {
+		return
+	}
 	steps := s.getSagaStep(&req)
-	err := wl.RegisterSteps(steps).Start()
+	err = wl.RegisterSteps(steps).Start()
 	if err != nil {
 		// TODO Handle workflow fail
 	}
@@ -62,7 +75,7 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 			Name: "VERIFY_USER",
 			ProcessF: func(store CreateOrderStore) error {
 				ctx := context.Background()
-				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+				ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 				defer cancel()
 
 				client, err := pkg.GetGRPCClient(s.Config.Service.LBServiceHost, s.Config.Service.ConsumerServiceName, consumerpb.NewConsumerServiceClient)
@@ -100,7 +113,7 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 			Name: "VERIFY_ORDER",
 			ProcessF: func(store CreateOrderStore) error {
 				ctx := context.Background()
-				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+				ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 				defer cancel()
 
 				// Get Order Dishes
@@ -154,7 +167,7 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 			},
 			CompensatingF: func(store CreateOrderStore) error {
 				ctx := context.Background()
-				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+				ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 				defer cancel()
 				// Update Ticket TO CANCELED
 				if store.TicketId != "" {
@@ -181,7 +194,7 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 			Name: "VERIFY_USER_CREDIT_CARD",
 			ProcessF: func(store CreateOrderStore) error {
 				ctx := context.Background()
-				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+				ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 				defer cancel()
 
 				// Verify credit card
@@ -206,7 +219,7 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 			Name: "UPDATE_TICKET_STATE_TO_AWAITING_ACCEPTANCE",
 			ProcessF: func(store CreateOrderStore) error {
 				ctx := context.Background()
-				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+				ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 				defer cancel()
 				// Update Ticket TO CANCELED
 				if store.TicketId != "" {
@@ -233,7 +246,7 @@ func (s *CreateOrderService) getSagaStep(req *OrderMsg) []sagaorchestration.Step
 			Name: "UPDATE_ORDER_STATE_TO_APPROVED",
 			ProcessF: func(store CreateOrderStore) error {
 				ctx := context.Background()
-				ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+				ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 				defer cancel()
 
 				// Get Order Dishes

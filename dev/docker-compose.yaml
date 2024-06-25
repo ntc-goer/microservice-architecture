@@ -60,7 +60,6 @@ services:
     ports:
       - "4222:4222"
       - "8222:8222"
-    restart: always
 networks:
   postgres:
     driver: bridge

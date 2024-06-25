@@ -40,6 +40,7 @@ type Service struct {
 	OrchestratorServiceName string `json:"orchestrator_service_name"`
 	MailServiceName         string `json:"mail_service_name"`
 	GatewayServiceName      string `json:"gateway_service_name"`
+	KitchenServiceName      string `json:"kitchen_service_name"`
 }
 
 type Config struct {
