@@ -15,10 +15,18 @@ const (
 	FieldID = "id"
 	// FieldWorkflowID holds the string denoting the workflow_id field in the database.
 	FieldWorkflowID = "workflow_id"
+	// FieldRequestID holds the string denoting the request_id field in the database.
+	FieldRequestID = "request_id"
 	// FieldWorkflowName holds the string denoting the workflow_name field in the database.
 	FieldWorkflowName = "workflow_name"
 	// FieldStepName holds the string denoting the step_name field in the database.
 	FieldStepName = "step_name"
+	// FieldStepOrder holds the string denoting the step_order field in the database.
+	FieldStepOrder = "step_order"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
+	// FieldMessage holds the string denoting the message field in the database.
+	FieldMessage = "message"
 	// FieldUpdateAt holds the string denoting the update_at field in the database.
 	FieldUpdateAt = "update_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -31,8 +39,12 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldWorkflowID,
+	FieldRequestID,
 	FieldWorkflowName,
 	FieldStepName,
+	FieldStepOrder,
+	FieldStatus,
+	FieldMessage,
 	FieldUpdateAt,
 	FieldCreatedAt,
 }
@@ -50,10 +62,16 @@ func ValidColumn(column string) bool {
 var (
 	// WorkflowIDValidator is a validator for the "workflow_id" field. It is called by the builders before save.
 	WorkflowIDValidator func(string) error
+	// RequestIDValidator is a validator for the "request_id" field. It is called by the builders before save.
+	RequestIDValidator func(string) error
 	// WorkflowNameValidator is a validator for the "workflow_name" field. It is called by the builders before save.
 	WorkflowNameValidator func(string) error
 	// StepNameValidator is a validator for the "step_name" field. It is called by the builders before save.
 	StepNameValidator func(string) error
+	// StatusValidator is a validator for the "status" field. It is called by the builders before save.
+	StatusValidator func(string) error
+	// MessageValidator is a validator for the "message" field. It is called by the builders before save.
+	MessageValidator func(string) error
 	// DefaultUpdateAt holds the default value on creation for the "update_at" field.
 	DefaultUpdateAt func() time.Time
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
@@ -73,6 +91,11 @@ func ByWorkflowID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldWorkflowID, opts...).ToFunc()
 }
 
+// ByRequestID orders the results by the request_id field.
+func ByRequestID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRequestID, opts...).ToFunc()
+}
+
 // ByWorkflowName orders the results by the workflow_name field.
 func ByWorkflowName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldWorkflowName, opts...).ToFunc()
@@ -81,6 +104,21 @@ func ByWorkflowName(opts ...sql.OrderTermOption) OrderOption {
 // ByStepName orders the results by the step_name field.
 func ByStepName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStepName, opts...).ToFunc()
+}
+
+// ByStepOrder orders the results by the step_order field.
+func ByStepOrder(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStepOrder, opts...).ToFunc()
+}
+
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByMessage orders the results by the message field.
+func ByMessage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMessage, opts...).ToFunc()
 }
 
 // ByUpdateAt orders the results by the update_at field.

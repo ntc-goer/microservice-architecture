@@ -15,9 +15,10 @@ type KitchenService struct {
 	Repo   *repository.Repository
 }
 
-func NewKitchenService(cfg *config.Config) (*KitchenService, error) {
+func NewKitchenService(cfg *config.Config, repo *repository.Repository) (*KitchenService, error) {
 	return &KitchenService{
 		Config: cfg,
+		Repo:   repo,
 	}, nil
 }
 

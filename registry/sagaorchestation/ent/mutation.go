@@ -34,8 +34,13 @@ type SagaLogsMutation struct {
 	typ           string
 	id            *int
 	workflow_id   *string
+	request_id    *string
 	workflow_name *string
 	step_name     *string
+	step_order    *int
+	addstep_order *int
+	status        *string
+	message       *string
 	update_at     *time.Time
 	created_at    *time.Time
 	clearedFields map[string]struct{}
@@ -184,6 +189,42 @@ func (m *SagaLogsMutation) ResetWorkflowID() {
 	m.workflow_id = nil
 }
 
+// SetRequestID sets the "request_id" field.
+func (m *SagaLogsMutation) SetRequestID(s string) {
+	m.request_id = &s
+}
+
+// RequestID returns the value of the "request_id" field in the mutation.
+func (m *SagaLogsMutation) RequestID() (r string, exists bool) {
+	v := m.request_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRequestID returns the old "request_id" field's value of the SagaLogs entity.
+// If the SagaLogs object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SagaLogsMutation) OldRequestID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRequestID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRequestID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRequestID: %w", err)
+	}
+	return oldValue.RequestID, nil
+}
+
+// ResetRequestID resets all changes to the "request_id" field.
+func (m *SagaLogsMutation) ResetRequestID() {
+	m.request_id = nil
+}
+
 // SetWorkflowName sets the "workflow_name" field.
 func (m *SagaLogsMutation) SetWorkflowName(s string) {
 	m.workflow_name = &s
@@ -254,6 +295,134 @@ func (m *SagaLogsMutation) OldStepName(ctx context.Context) (v string, err error
 // ResetStepName resets all changes to the "step_name" field.
 func (m *SagaLogsMutation) ResetStepName() {
 	m.step_name = nil
+}
+
+// SetStepOrder sets the "step_order" field.
+func (m *SagaLogsMutation) SetStepOrder(i int) {
+	m.step_order = &i
+	m.addstep_order = nil
+}
+
+// StepOrder returns the value of the "step_order" field in the mutation.
+func (m *SagaLogsMutation) StepOrder() (r int, exists bool) {
+	v := m.step_order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStepOrder returns the old "step_order" field's value of the SagaLogs entity.
+// If the SagaLogs object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SagaLogsMutation) OldStepOrder(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStepOrder is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStepOrder requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStepOrder: %w", err)
+	}
+	return oldValue.StepOrder, nil
+}
+
+// AddStepOrder adds i to the "step_order" field.
+func (m *SagaLogsMutation) AddStepOrder(i int) {
+	if m.addstep_order != nil {
+		*m.addstep_order += i
+	} else {
+		m.addstep_order = &i
+	}
+}
+
+// AddedStepOrder returns the value that was added to the "step_order" field in this mutation.
+func (m *SagaLogsMutation) AddedStepOrder() (r int, exists bool) {
+	v := m.addstep_order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetStepOrder resets all changes to the "step_order" field.
+func (m *SagaLogsMutation) ResetStepOrder() {
+	m.step_order = nil
+	m.addstep_order = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *SagaLogsMutation) SetStatus(s string) {
+	m.status = &s
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *SagaLogsMutation) Status() (r string, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the SagaLogs entity.
+// If the SagaLogs object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SagaLogsMutation) OldStatus(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *SagaLogsMutation) ResetStatus() {
+	m.status = nil
+}
+
+// SetMessage sets the "message" field.
+func (m *SagaLogsMutation) SetMessage(s string) {
+	m.message = &s
+}
+
+// Message returns the value of the "message" field in the mutation.
+func (m *SagaLogsMutation) Message() (r string, exists bool) {
+	v := m.message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMessage returns the old "message" field's value of the SagaLogs entity.
+// If the SagaLogs object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SagaLogsMutation) OldMessage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMessage: %w", err)
+	}
+	return oldValue.Message, nil
+}
+
+// ResetMessage resets all changes to the "message" field.
+func (m *SagaLogsMutation) ResetMessage() {
+	m.message = nil
 }
 
 // SetUpdateAt sets the "update_at" field.
@@ -362,15 +531,27 @@ func (m *SagaLogsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SagaLogsMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 9)
 	if m.workflow_id != nil {
 		fields = append(fields, sagalogs.FieldWorkflowID)
+	}
+	if m.request_id != nil {
+		fields = append(fields, sagalogs.FieldRequestID)
 	}
 	if m.workflow_name != nil {
 		fields = append(fields, sagalogs.FieldWorkflowName)
 	}
 	if m.step_name != nil {
 		fields = append(fields, sagalogs.FieldStepName)
+	}
+	if m.step_order != nil {
+		fields = append(fields, sagalogs.FieldStepOrder)
+	}
+	if m.status != nil {
+		fields = append(fields, sagalogs.FieldStatus)
+	}
+	if m.message != nil {
+		fields = append(fields, sagalogs.FieldMessage)
 	}
 	if m.update_at != nil {
 		fields = append(fields, sagalogs.FieldUpdateAt)
@@ -388,10 +569,18 @@ func (m *SagaLogsMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case sagalogs.FieldWorkflowID:
 		return m.WorkflowID()
+	case sagalogs.FieldRequestID:
+		return m.RequestID()
 	case sagalogs.FieldWorkflowName:
 		return m.WorkflowName()
 	case sagalogs.FieldStepName:
 		return m.StepName()
+	case sagalogs.FieldStepOrder:
+		return m.StepOrder()
+	case sagalogs.FieldStatus:
+		return m.Status()
+	case sagalogs.FieldMessage:
+		return m.Message()
 	case sagalogs.FieldUpdateAt:
 		return m.UpdateAt()
 	case sagalogs.FieldCreatedAt:
@@ -407,10 +596,18 @@ func (m *SagaLogsMutation) OldField(ctx context.Context, name string) (ent.Value
 	switch name {
 	case sagalogs.FieldWorkflowID:
 		return m.OldWorkflowID(ctx)
+	case sagalogs.FieldRequestID:
+		return m.OldRequestID(ctx)
 	case sagalogs.FieldWorkflowName:
 		return m.OldWorkflowName(ctx)
 	case sagalogs.FieldStepName:
 		return m.OldStepName(ctx)
+	case sagalogs.FieldStepOrder:
+		return m.OldStepOrder(ctx)
+	case sagalogs.FieldStatus:
+		return m.OldStatus(ctx)
+	case sagalogs.FieldMessage:
+		return m.OldMessage(ctx)
 	case sagalogs.FieldUpdateAt:
 		return m.OldUpdateAt(ctx)
 	case sagalogs.FieldCreatedAt:
@@ -431,6 +628,13 @@ func (m *SagaLogsMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetWorkflowID(v)
 		return nil
+	case sagalogs.FieldRequestID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRequestID(v)
+		return nil
 	case sagalogs.FieldWorkflowName:
 		v, ok := value.(string)
 		if !ok {
@@ -444,6 +648,27 @@ func (m *SagaLogsMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStepName(v)
+		return nil
+	case sagalogs.FieldStepOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStepOrder(v)
+		return nil
+	case sagalogs.FieldStatus:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	case sagalogs.FieldMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMessage(v)
 		return nil
 	case sagalogs.FieldUpdateAt:
 		v, ok := value.(time.Time)
@@ -466,13 +691,21 @@ func (m *SagaLogsMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *SagaLogsMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addstep_order != nil {
+		fields = append(fields, sagalogs.FieldStepOrder)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *SagaLogsMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case sagalogs.FieldStepOrder:
+		return m.AddedStepOrder()
+	}
 	return nil, false
 }
 
@@ -481,6 +714,13 @@ func (m *SagaLogsMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *SagaLogsMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case sagalogs.FieldStepOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddStepOrder(v)
+		return nil
 	}
 	return fmt.Errorf("unknown SagaLogs numeric field %s", name)
 }
@@ -511,11 +751,23 @@ func (m *SagaLogsMutation) ResetField(name string) error {
 	case sagalogs.FieldWorkflowID:
 		m.ResetWorkflowID()
 		return nil
+	case sagalogs.FieldRequestID:
+		m.ResetRequestID()
+		return nil
 	case sagalogs.FieldWorkflowName:
 		m.ResetWorkflowName()
 		return nil
 	case sagalogs.FieldStepName:
 		m.ResetStepName()
+		return nil
+	case sagalogs.FieldStepOrder:
+		m.ResetStepOrder()
+		return nil
+	case sagalogs.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case sagalogs.FieldMessage:
+		m.ResetMessage()
 		return nil
 	case sagalogs.FieldUpdateAt:
 		m.ResetUpdateAt()

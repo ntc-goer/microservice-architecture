@@ -42,6 +42,20 @@ func (slu *SagaLogsUpdate) SetNillableWorkflowID(s *string) *SagaLogsUpdate {
 	return slu
 }
 
+// SetRequestID sets the "request_id" field.
+func (slu *SagaLogsUpdate) SetRequestID(s string) *SagaLogsUpdate {
+	slu.mutation.SetRequestID(s)
+	return slu
+}
+
+// SetNillableRequestID sets the "request_id" field if the given value is not nil.
+func (slu *SagaLogsUpdate) SetNillableRequestID(s *string) *SagaLogsUpdate {
+	if s != nil {
+		slu.SetRequestID(*s)
+	}
+	return slu
+}
+
 // SetWorkflowName sets the "workflow_name" field.
 func (slu *SagaLogsUpdate) SetWorkflowName(s string) *SagaLogsUpdate {
 	slu.mutation.SetWorkflowName(s)
@@ -66,6 +80,55 @@ func (slu *SagaLogsUpdate) SetStepName(s string) *SagaLogsUpdate {
 func (slu *SagaLogsUpdate) SetNillableStepName(s *string) *SagaLogsUpdate {
 	if s != nil {
 		slu.SetStepName(*s)
+	}
+	return slu
+}
+
+// SetStepOrder sets the "step_order" field.
+func (slu *SagaLogsUpdate) SetStepOrder(i int) *SagaLogsUpdate {
+	slu.mutation.ResetStepOrder()
+	slu.mutation.SetStepOrder(i)
+	return slu
+}
+
+// SetNillableStepOrder sets the "step_order" field if the given value is not nil.
+func (slu *SagaLogsUpdate) SetNillableStepOrder(i *int) *SagaLogsUpdate {
+	if i != nil {
+		slu.SetStepOrder(*i)
+	}
+	return slu
+}
+
+// AddStepOrder adds i to the "step_order" field.
+func (slu *SagaLogsUpdate) AddStepOrder(i int) *SagaLogsUpdate {
+	slu.mutation.AddStepOrder(i)
+	return slu
+}
+
+// SetStatus sets the "status" field.
+func (slu *SagaLogsUpdate) SetStatus(s string) *SagaLogsUpdate {
+	slu.mutation.SetStatus(s)
+	return slu
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (slu *SagaLogsUpdate) SetNillableStatus(s *string) *SagaLogsUpdate {
+	if s != nil {
+		slu.SetStatus(*s)
+	}
+	return slu
+}
+
+// SetMessage sets the "message" field.
+func (slu *SagaLogsUpdate) SetMessage(s string) *SagaLogsUpdate {
+	slu.mutation.SetMessage(s)
+	return slu
+}
+
+// SetNillableMessage sets the "message" field if the given value is not nil.
+func (slu *SagaLogsUpdate) SetNillableMessage(s *string) *SagaLogsUpdate {
+	if s != nil {
+		slu.SetMessage(*s)
 	}
 	return slu
 }
@@ -137,6 +200,11 @@ func (slu *SagaLogsUpdate) check() error {
 			return &ValidationError{Name: "workflow_id", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.workflow_id": %w`, err)}
 		}
 	}
+	if v, ok := slu.mutation.RequestID(); ok {
+		if err := sagalogs.RequestIDValidator(v); err != nil {
+			return &ValidationError{Name: "request_id", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.request_id": %w`, err)}
+		}
+	}
 	if v, ok := slu.mutation.WorkflowName(); ok {
 		if err := sagalogs.WorkflowNameValidator(v); err != nil {
 			return &ValidationError{Name: "workflow_name", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.workflow_name": %w`, err)}
@@ -145,6 +213,16 @@ func (slu *SagaLogsUpdate) check() error {
 	if v, ok := slu.mutation.StepName(); ok {
 		if err := sagalogs.StepNameValidator(v); err != nil {
 			return &ValidationError{Name: "step_name", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.step_name": %w`, err)}
+		}
+	}
+	if v, ok := slu.mutation.Status(); ok {
+		if err := sagalogs.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.status": %w`, err)}
+		}
+	}
+	if v, ok := slu.mutation.Message(); ok {
+		if err := sagalogs.MessageValidator(v); err != nil {
+			return &ValidationError{Name: "message", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.message": %w`, err)}
 		}
 	}
 	return nil
@@ -165,11 +243,26 @@ func (slu *SagaLogsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := slu.mutation.WorkflowID(); ok {
 		_spec.SetField(sagalogs.FieldWorkflowID, field.TypeString, value)
 	}
+	if value, ok := slu.mutation.RequestID(); ok {
+		_spec.SetField(sagalogs.FieldRequestID, field.TypeString, value)
+	}
 	if value, ok := slu.mutation.WorkflowName(); ok {
 		_spec.SetField(sagalogs.FieldWorkflowName, field.TypeString, value)
 	}
 	if value, ok := slu.mutation.StepName(); ok {
 		_spec.SetField(sagalogs.FieldStepName, field.TypeString, value)
+	}
+	if value, ok := slu.mutation.StepOrder(); ok {
+		_spec.SetField(sagalogs.FieldStepOrder, field.TypeInt, value)
+	}
+	if value, ok := slu.mutation.AddedStepOrder(); ok {
+		_spec.AddField(sagalogs.FieldStepOrder, field.TypeInt, value)
+	}
+	if value, ok := slu.mutation.Status(); ok {
+		_spec.SetField(sagalogs.FieldStatus, field.TypeString, value)
+	}
+	if value, ok := slu.mutation.Message(); ok {
+		_spec.SetField(sagalogs.FieldMessage, field.TypeString, value)
 	}
 	if value, ok := slu.mutation.UpdateAt(); ok {
 		_spec.SetField(sagalogs.FieldUpdateAt, field.TypeTime, value)
@@ -211,6 +304,20 @@ func (sluo *SagaLogsUpdateOne) SetNillableWorkflowID(s *string) *SagaLogsUpdateO
 	return sluo
 }
 
+// SetRequestID sets the "request_id" field.
+func (sluo *SagaLogsUpdateOne) SetRequestID(s string) *SagaLogsUpdateOne {
+	sluo.mutation.SetRequestID(s)
+	return sluo
+}
+
+// SetNillableRequestID sets the "request_id" field if the given value is not nil.
+func (sluo *SagaLogsUpdateOne) SetNillableRequestID(s *string) *SagaLogsUpdateOne {
+	if s != nil {
+		sluo.SetRequestID(*s)
+	}
+	return sluo
+}
+
 // SetWorkflowName sets the "workflow_name" field.
 func (sluo *SagaLogsUpdateOne) SetWorkflowName(s string) *SagaLogsUpdateOne {
 	sluo.mutation.SetWorkflowName(s)
@@ -235,6 +342,55 @@ func (sluo *SagaLogsUpdateOne) SetStepName(s string) *SagaLogsUpdateOne {
 func (sluo *SagaLogsUpdateOne) SetNillableStepName(s *string) *SagaLogsUpdateOne {
 	if s != nil {
 		sluo.SetStepName(*s)
+	}
+	return sluo
+}
+
+// SetStepOrder sets the "step_order" field.
+func (sluo *SagaLogsUpdateOne) SetStepOrder(i int) *SagaLogsUpdateOne {
+	sluo.mutation.ResetStepOrder()
+	sluo.mutation.SetStepOrder(i)
+	return sluo
+}
+
+// SetNillableStepOrder sets the "step_order" field if the given value is not nil.
+func (sluo *SagaLogsUpdateOne) SetNillableStepOrder(i *int) *SagaLogsUpdateOne {
+	if i != nil {
+		sluo.SetStepOrder(*i)
+	}
+	return sluo
+}
+
+// AddStepOrder adds i to the "step_order" field.
+func (sluo *SagaLogsUpdateOne) AddStepOrder(i int) *SagaLogsUpdateOne {
+	sluo.mutation.AddStepOrder(i)
+	return sluo
+}
+
+// SetStatus sets the "status" field.
+func (sluo *SagaLogsUpdateOne) SetStatus(s string) *SagaLogsUpdateOne {
+	sluo.mutation.SetStatus(s)
+	return sluo
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (sluo *SagaLogsUpdateOne) SetNillableStatus(s *string) *SagaLogsUpdateOne {
+	if s != nil {
+		sluo.SetStatus(*s)
+	}
+	return sluo
+}
+
+// SetMessage sets the "message" field.
+func (sluo *SagaLogsUpdateOne) SetMessage(s string) *SagaLogsUpdateOne {
+	sluo.mutation.SetMessage(s)
+	return sluo
+}
+
+// SetNillableMessage sets the "message" field if the given value is not nil.
+func (sluo *SagaLogsUpdateOne) SetNillableMessage(s *string) *SagaLogsUpdateOne {
+	if s != nil {
+		sluo.SetMessage(*s)
 	}
 	return sluo
 }
@@ -319,6 +475,11 @@ func (sluo *SagaLogsUpdateOne) check() error {
 			return &ValidationError{Name: "workflow_id", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.workflow_id": %w`, err)}
 		}
 	}
+	if v, ok := sluo.mutation.RequestID(); ok {
+		if err := sagalogs.RequestIDValidator(v); err != nil {
+			return &ValidationError{Name: "request_id", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.request_id": %w`, err)}
+		}
+	}
 	if v, ok := sluo.mutation.WorkflowName(); ok {
 		if err := sagalogs.WorkflowNameValidator(v); err != nil {
 			return &ValidationError{Name: "workflow_name", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.workflow_name": %w`, err)}
@@ -327,6 +488,16 @@ func (sluo *SagaLogsUpdateOne) check() error {
 	if v, ok := sluo.mutation.StepName(); ok {
 		if err := sagalogs.StepNameValidator(v); err != nil {
 			return &ValidationError{Name: "step_name", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.step_name": %w`, err)}
+		}
+	}
+	if v, ok := sluo.mutation.Status(); ok {
+		if err := sagalogs.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.status": %w`, err)}
+		}
+	}
+	if v, ok := sluo.mutation.Message(); ok {
+		if err := sagalogs.MessageValidator(v); err != nil {
+			return &ValidationError{Name: "message", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.message": %w`, err)}
 		}
 	}
 	return nil
@@ -364,11 +535,26 @@ func (sluo *SagaLogsUpdateOne) sqlSave(ctx context.Context) (_node *SagaLogs, er
 	if value, ok := sluo.mutation.WorkflowID(); ok {
 		_spec.SetField(sagalogs.FieldWorkflowID, field.TypeString, value)
 	}
+	if value, ok := sluo.mutation.RequestID(); ok {
+		_spec.SetField(sagalogs.FieldRequestID, field.TypeString, value)
+	}
 	if value, ok := sluo.mutation.WorkflowName(); ok {
 		_spec.SetField(sagalogs.FieldWorkflowName, field.TypeString, value)
 	}
 	if value, ok := sluo.mutation.StepName(); ok {
 		_spec.SetField(sagalogs.FieldStepName, field.TypeString, value)
+	}
+	if value, ok := sluo.mutation.StepOrder(); ok {
+		_spec.SetField(sagalogs.FieldStepOrder, field.TypeInt, value)
+	}
+	if value, ok := sluo.mutation.AddedStepOrder(); ok {
+		_spec.AddField(sagalogs.FieldStepOrder, field.TypeInt, value)
+	}
+	if value, ok := sluo.mutation.Status(); ok {
+		_spec.SetField(sagalogs.FieldStatus, field.TypeString, value)
+	}
+	if value, ok := sluo.mutation.Message(); ok {
+		_spec.SetField(sagalogs.FieldMessage, field.TypeString, value)
 	}
 	if value, ok := sluo.mutation.UpdateAt(); ok {
 		_spec.SetField(sagalogs.FieldUpdateAt, field.TypeTime, value)

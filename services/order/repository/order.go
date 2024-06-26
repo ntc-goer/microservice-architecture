@@ -28,7 +28,7 @@ func (r *OrderRepo) CreatePendingOrder(ctx context.Context, orderId uuid.UUID, r
 }
 
 func (r *OrderRepo) ApproveOrder(ctx context.Context, orderId uuid.UUID, requestId uuid.UUID) (*ent.Order, error) {
-	ord, err := r.OrderClient.UpdateOneID(orderId).Where(order.RequestID(requestId)).SetStatus(order.StatusAPPROVAL_PENDING).Save(ctx)
+	ord, err := r.OrderClient.UpdateOneID(orderId).Where(order.RequestID(requestId)).SetStatus(order.StatusAPPROVED).Save(ctx)
 	if err != nil {
 		return nil, err
 	}

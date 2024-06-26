@@ -19,7 +19,7 @@ func NewAccountingService(cfg *config.Config) (*AccountingService, error) {
 	}, nil
 }
 
-func (s *AccountingService) VerifyOrder(ctx context.Context, req *accountingpb.VerifyCreditCardRequest) (*accountingpb.VerifyCreditCardResponse, error) {
+func (s *AccountingService) VerifyCreditCard(ctx context.Context, req *accountingpb.VerifyCreditCardRequest) (*accountingpb.VerifyCreditCardResponse, error) {
 	fmt.Println("Verifying creadit card of user ", req.UserId)
 	time.Sleep(5 * time.Second)
 	return &accountingpb.VerifyCreditCardResponse{

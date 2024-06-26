@@ -26,16 +26,16 @@ func InitializeDependency(dcType string) (*CoreDependency, error) {
 	if err != nil {
 		return nil, err
 	}
-	kitchenService, err := service.NewKitchenService(configConfig)
+	repositoryRepository, err := repository.NewRepository(configConfig)
+	if err != nil {
+		return nil, err
+	}
+	kitchenService, err := service.NewKitchenService(configConfig, repositoryRepository)
 	if err != nil {
 		return nil, err
 	}
 	coreService := service.NewCoreService(healthService, kitchenService)
 	registry, err := consul.NewRegistry()
-	if err != nil {
-		return nil, err
-	}
-	repositoryRepository, err := repository.NewRepository(configConfig)
 	if err != nil {
 		return nil, err
 	}

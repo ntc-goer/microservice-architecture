@@ -25,8 +25,12 @@ func (SagaLogs) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("id"),
 		field.String("workflow_id").NotEmpty(),
-		field.String("workflow_name").NotEmpty(),
+		field.String("request_id").NotEmpty(),
 		field.String("step_name").NotEmpty(),
+		field.String("workflow_name").NotEmpty(),
+		field.Int("step_order"),
+		field.String("status").NotEmpty(),
+		field.String("message").NotEmpty(),
 		field.Time("update_at").
 			Default(time.Now),
 		field.Time("created_at").

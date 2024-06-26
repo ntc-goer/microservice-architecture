@@ -26,6 +26,12 @@ func (slc *SagaLogsCreate) SetWorkflowID(s string) *SagaLogsCreate {
 	return slc
 }
 
+// SetRequestID sets the "request_id" field.
+func (slc *SagaLogsCreate) SetRequestID(s string) *SagaLogsCreate {
+	slc.mutation.SetRequestID(s)
+	return slc
+}
+
 // SetWorkflowName sets the "workflow_name" field.
 func (slc *SagaLogsCreate) SetWorkflowName(s string) *SagaLogsCreate {
 	slc.mutation.SetWorkflowName(s)
@@ -35,6 +41,24 @@ func (slc *SagaLogsCreate) SetWorkflowName(s string) *SagaLogsCreate {
 // SetStepName sets the "step_name" field.
 func (slc *SagaLogsCreate) SetStepName(s string) *SagaLogsCreate {
 	slc.mutation.SetStepName(s)
+	return slc
+}
+
+// SetStepOrder sets the "step_order" field.
+func (slc *SagaLogsCreate) SetStepOrder(i int) *SagaLogsCreate {
+	slc.mutation.SetStepOrder(i)
+	return slc
+}
+
+// SetStatus sets the "status" field.
+func (slc *SagaLogsCreate) SetStatus(s string) *SagaLogsCreate {
+	slc.mutation.SetStatus(s)
+	return slc
+}
+
+// SetMessage sets the "message" field.
+func (slc *SagaLogsCreate) SetMessage(s string) *SagaLogsCreate {
+	slc.mutation.SetMessage(s)
 	return slc
 }
 
@@ -127,6 +151,14 @@ func (slc *SagaLogsCreate) check() error {
 			return &ValidationError{Name: "workflow_id", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.workflow_id": %w`, err)}
 		}
 	}
+	if _, ok := slc.mutation.RequestID(); !ok {
+		return &ValidationError{Name: "request_id", err: errors.New(`ent: missing required field "SagaLogs.request_id"`)}
+	}
+	if v, ok := slc.mutation.RequestID(); ok {
+		if err := sagalogs.RequestIDValidator(v); err != nil {
+			return &ValidationError{Name: "request_id", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.request_id": %w`, err)}
+		}
+	}
 	if _, ok := slc.mutation.WorkflowName(); !ok {
 		return &ValidationError{Name: "workflow_name", err: errors.New(`ent: missing required field "SagaLogs.workflow_name"`)}
 	}
@@ -141,6 +173,25 @@ func (slc *SagaLogsCreate) check() error {
 	if v, ok := slc.mutation.StepName(); ok {
 		if err := sagalogs.StepNameValidator(v); err != nil {
 			return &ValidationError{Name: "step_name", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.step_name": %w`, err)}
+		}
+	}
+	if _, ok := slc.mutation.StepOrder(); !ok {
+		return &ValidationError{Name: "step_order", err: errors.New(`ent: missing required field "SagaLogs.step_order"`)}
+	}
+	if _, ok := slc.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "SagaLogs.status"`)}
+	}
+	if v, ok := slc.mutation.Status(); ok {
+		if err := sagalogs.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.status": %w`, err)}
+		}
+	}
+	if _, ok := slc.mutation.Message(); !ok {
+		return &ValidationError{Name: "message", err: errors.New(`ent: missing required field "SagaLogs.message"`)}
+	}
+	if v, ok := slc.mutation.Message(); ok {
+		if err := sagalogs.MessageValidator(v); err != nil {
+			return &ValidationError{Name: "message", err: fmt.Errorf(`ent: validator failed for field "SagaLogs.message": %w`, err)}
 		}
 	}
 	if _, ok := slc.mutation.UpdateAt(); !ok {
@@ -185,6 +236,10 @@ func (slc *SagaLogsCreate) createSpec() (*SagaLogs, *sqlgraph.CreateSpec) {
 		_spec.SetField(sagalogs.FieldWorkflowID, field.TypeString, value)
 		_node.WorkflowID = value
 	}
+	if value, ok := slc.mutation.RequestID(); ok {
+		_spec.SetField(sagalogs.FieldRequestID, field.TypeString, value)
+		_node.RequestID = value
+	}
 	if value, ok := slc.mutation.WorkflowName(); ok {
 		_spec.SetField(sagalogs.FieldWorkflowName, field.TypeString, value)
 		_node.WorkflowName = value
@@ -192,6 +247,18 @@ func (slc *SagaLogsCreate) createSpec() (*SagaLogs, *sqlgraph.CreateSpec) {
 	if value, ok := slc.mutation.StepName(); ok {
 		_spec.SetField(sagalogs.FieldStepName, field.TypeString, value)
 		_node.StepName = value
+	}
+	if value, ok := slc.mutation.StepOrder(); ok {
+		_spec.SetField(sagalogs.FieldStepOrder, field.TypeInt, value)
+		_node.StepOrder = value
+	}
+	if value, ok := slc.mutation.Status(); ok {
+		_spec.SetField(sagalogs.FieldStatus, field.TypeString, value)
+		_node.Status = value
+	}
+	if value, ok := slc.mutation.Message(); ok {
+		_spec.SetField(sagalogs.FieldMessage, field.TypeString, value)
+		_node.Message = value
 	}
 	if value, ok := slc.mutation.UpdateAt(); ok {
 		_spec.SetField(sagalogs.FieldUpdateAt, field.TypeTime, value)

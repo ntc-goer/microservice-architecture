@@ -19,10 +19,18 @@ type SagaLogs struct {
 	ID int `json:"id,omitempty"`
 	// WorkflowID holds the value of the "workflow_id" field.
 	WorkflowID string `json:"workflow_id,omitempty"`
+	// RequestID holds the value of the "request_id" field.
+	RequestID string `json:"request_id,omitempty"`
 	// WorkflowName holds the value of the "workflow_name" field.
 	WorkflowName string `json:"workflow_name,omitempty"`
 	// StepName holds the value of the "step_name" field.
 	StepName string `json:"step_name,omitempty"`
+	// StepOrder holds the value of the "step_order" field.
+	StepOrder int `json:"step_order,omitempty"`
+	// Status holds the value of the "status" field.
+	Status string `json:"status,omitempty"`
+	// Message holds the value of the "message" field.
+	Message string `json:"message,omitempty"`
 	// UpdateAt holds the value of the "update_at" field.
 	UpdateAt time.Time `json:"update_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -35,9 +43,9 @@ func (*SagaLogs) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case sagalogs.FieldID:
+		case sagalogs.FieldID, sagalogs.FieldStepOrder:
 			values[i] = new(sql.NullInt64)
-		case sagalogs.FieldWorkflowID, sagalogs.FieldWorkflowName, sagalogs.FieldStepName:
+		case sagalogs.FieldWorkflowID, sagalogs.FieldRequestID, sagalogs.FieldWorkflowName, sagalogs.FieldStepName, sagalogs.FieldStatus, sagalogs.FieldMessage:
 			values[i] = new(sql.NullString)
 		case sagalogs.FieldUpdateAt, sagalogs.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -68,6 +76,12 @@ func (sl *SagaLogs) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				sl.WorkflowID = value.String
 			}
+		case sagalogs.FieldRequestID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field request_id", values[i])
+			} else if value.Valid {
+				sl.RequestID = value.String
+			}
 		case sagalogs.FieldWorkflowName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field workflow_name", values[i])
@@ -79,6 +93,24 @@ func (sl *SagaLogs) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field step_name", values[i])
 			} else if value.Valid {
 				sl.StepName = value.String
+			}
+		case sagalogs.FieldStepOrder:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field step_order", values[i])
+			} else if value.Valid {
+				sl.StepOrder = int(value.Int64)
+			}
+		case sagalogs.FieldStatus:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				sl.Status = value.String
+			}
+		case sagalogs.FieldMessage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field message", values[i])
+			} else if value.Valid {
+				sl.Message = value.String
 			}
 		case sagalogs.FieldUpdateAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -131,11 +163,23 @@ func (sl *SagaLogs) String() string {
 	builder.WriteString("workflow_id=")
 	builder.WriteString(sl.WorkflowID)
 	builder.WriteString(", ")
+	builder.WriteString("request_id=")
+	builder.WriteString(sl.RequestID)
+	builder.WriteString(", ")
 	builder.WriteString("workflow_name=")
 	builder.WriteString(sl.WorkflowName)
 	builder.WriteString(", ")
 	builder.WriteString("step_name=")
 	builder.WriteString(sl.StepName)
+	builder.WriteString(", ")
+	builder.WriteString("step_order=")
+	builder.WriteString(fmt.Sprintf("%v", sl.StepOrder))
+	builder.WriteString(", ")
+	builder.WriteString("status=")
+	builder.WriteString(sl.Status)
+	builder.WriteString(", ")
+	builder.WriteString("message=")
+	builder.WriteString(sl.Message)
 	builder.WriteString(", ")
 	builder.WriteString("update_at=")
 	builder.WriteString(sl.UpdateAt.Format(time.ANSIC))

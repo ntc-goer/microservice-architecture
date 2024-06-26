@@ -19,20 +19,32 @@ func init() {
 	sagalogsDescWorkflowID := sagalogsFields[1].Descriptor()
 	// sagalogs.WorkflowIDValidator is a validator for the "workflow_id" field. It is called by the builders before save.
 	sagalogs.WorkflowIDValidator = sagalogsDescWorkflowID.Validators[0].(func(string) error)
+	// sagalogsDescRequestID is the schema descriptor for request_id field.
+	sagalogsDescRequestID := sagalogsFields[2].Descriptor()
+	// sagalogs.RequestIDValidator is a validator for the "request_id" field. It is called by the builders before save.
+	sagalogs.RequestIDValidator = sagalogsDescRequestID.Validators[0].(func(string) error)
 	// sagalogsDescWorkflowName is the schema descriptor for workflow_name field.
-	sagalogsDescWorkflowName := sagalogsFields[2].Descriptor()
+	sagalogsDescWorkflowName := sagalogsFields[3].Descriptor()
 	// sagalogs.WorkflowNameValidator is a validator for the "workflow_name" field. It is called by the builders before save.
 	sagalogs.WorkflowNameValidator = sagalogsDescWorkflowName.Validators[0].(func(string) error)
 	// sagalogsDescStepName is the schema descriptor for step_name field.
-	sagalogsDescStepName := sagalogsFields[3].Descriptor()
+	sagalogsDescStepName := sagalogsFields[4].Descriptor()
 	// sagalogs.StepNameValidator is a validator for the "step_name" field. It is called by the builders before save.
 	sagalogs.StepNameValidator = sagalogsDescStepName.Validators[0].(func(string) error)
+	// sagalogsDescStatus is the schema descriptor for status field.
+	sagalogsDescStatus := sagalogsFields[6].Descriptor()
+	// sagalogs.StatusValidator is a validator for the "status" field. It is called by the builders before save.
+	sagalogs.StatusValidator = sagalogsDescStatus.Validators[0].(func(string) error)
+	// sagalogsDescMessage is the schema descriptor for message field.
+	sagalogsDescMessage := sagalogsFields[7].Descriptor()
+	// sagalogs.MessageValidator is a validator for the "message" field. It is called by the builders before save.
+	sagalogs.MessageValidator = sagalogsDescMessage.Validators[0].(func(string) error)
 	// sagalogsDescUpdateAt is the schema descriptor for update_at field.
-	sagalogsDescUpdateAt := sagalogsFields[4].Descriptor()
+	sagalogsDescUpdateAt := sagalogsFields[8].Descriptor()
 	// sagalogs.DefaultUpdateAt holds the default value on creation for the update_at field.
 	sagalogs.DefaultUpdateAt = sagalogsDescUpdateAt.Default.(func() time.Time)
 	// sagalogsDescCreatedAt is the schema descriptor for created_at field.
-	sagalogsDescCreatedAt := sagalogsFields[5].Descriptor()
+	sagalogsDescCreatedAt := sagalogsFields[9].Descriptor()
 	// sagalogs.DefaultCreatedAt holds the default value on creation for the created_at field.
 	sagalogs.DefaultCreatedAt = sagalogsDescCreatedAt.Default.(func() time.Time)
 }
