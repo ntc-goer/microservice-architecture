@@ -11,10 +11,12 @@ Accounting Service — Verify user's credit card.\
 Kitchen Service — Change ticket's state to AWAITING_ACCEPTANCE.\
 Order Service — Change order state to APPROVED.
 ------------------
-Service Registration
-API Gateway Service 
-Discovery
+Service Registration\
+API Gateway Service  \
+Discovery \
 Orchestration Service
+
+[![Project Structure](./docs/img_3.png)](./docs/img_3.png)
 
 ## Tech Stack
 ### Load Config
@@ -84,6 +86,7 @@ Orchestration Service
 | FabioUI      | 9998     | -------------    | -------------        | -------------     | -------------                    |
 | FabioLB      | 9999     | -------------    | -------------        | -------------     | -------------                    |
 | JaegerUI     | 16686    | -------------    | -------------        | -------------     | -------------                    |
+
 
 
 ## Demo
