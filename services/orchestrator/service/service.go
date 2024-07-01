@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"github.com/google/wire"
 	"github.com/ntc-goer/microservice-examples/orchestrator/config"
 	"github.com/ntc-goer/microservice-examples/registry/broker"
@@ -23,9 +24,9 @@ func NewCoreService(broker *broker.Broker, healthService *HealthService, createO
 	}
 }
 
-func (vs *CoreService) StartSubscribe() {
+func (vs *CoreService) StartSubscribe(ctx context.Context) {
 	go func() {
-		if err := vs.Broker.QueueSubscribe(vs.CreateOrder.Subject, vs.CreateOrder.Queue, vs.CreateOrder.Run); err != nil {
+		if err := vs.Broker.QueueSubscribe(ctx, vs.CreateOrder.Subject, vs.CreateOrder.Queue, vs.CreateOrder.Run); err != nil {
 			log.Printf("Subscribe FAIL %s", err)
 		}
 		// Keep the connection alive

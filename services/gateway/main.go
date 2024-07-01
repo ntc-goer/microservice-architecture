@@ -40,9 +40,15 @@ func main() {
 
 	// Register endpoint
 	// OrderService
-	_ = orderpb.RegisterOrderServiceHandlerFromEndpoint(ctx, mux, fmt.Sprintf("%s/%s", cfg.Service.LBServiceHost, cfg.Service.OrderServiceName), []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())})
+	err = orderpb.RegisterOrderServiceHandlerFromEndpoint(ctx, mux, fmt.Sprintf("%s", cfg.Service.LBServiceHost), []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())})
+	if err != nil {
+		return
+	}
 	// ConsumerService
-	_ = consumerpb.RegisterConsumerServiceHandlerFromEndpoint(ctx, mux, fmt.Sprintf("%s/%s", cfg.Service.LBServiceHost, cfg.Service.ConsumerServiceName), []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())})
+	_ = consumerpb.RegisterConsumerServiceHandlerFromEndpoint(ctx, mux, fmt.Sprintf("%s", cfg.Service.LBServiceHost), []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())})
+	if err != nil {
+		return
+	}
 
 	log.Printf("starting HTTP/JSON gateway on " + cfg.ServicePort)
 	if err := http.ListenAndServe(":"+cfg.ServicePort, mux); err != nil {

@@ -5,6 +5,9 @@ import (
 	kitchenpb "github.com/ntc-goer/microservice-examples/kitchen/proto"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"log"
@@ -18,6 +21,15 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Init tracing
+	tp, err := initTraceProvider(ctx, dp.Config.Service.KitchenServiceName, "0.1.1", "http://localhost:14268/api/traces")
+	if err != nil {
+		log.Fatalf("initTraceProvider fail: %v", err)
+	}
+	defer tp.Shutdown(ctx)
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
+
 	// Migrate database
 	err = dp.Repository.MigrateDatabase()
 	if err != nil {
@@ -29,7 +41,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("Listen port fail %v", err)
 	}
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.StatsHandler(otelgrpc.NewServerHandler()))
 	kitchenpb.RegisterKitchenServiceServer(grpcServer, dp.Service.Kitchen)
 	grpc_health_v1.RegisterHealthServer(grpcServer, dp.Service.Health)
 

@@ -1,6 +1,9 @@
 package service
 
-import "github.com/ntc-goer/microservice-examples/mailservice/config"
+import (
+	"context"
+	"github.com/ntc-goer/microservice-examples/mailservice/config"
+)
 
 type Service struct {
 	Config *config.Config
@@ -12,6 +15,6 @@ func NewService(cfg *config.Config) *Service {
 	}
 }
 
-func (s *Service) Handle(data string) {
+func (s *Service) Handle(ctx context.Context, data string) {
 
 }

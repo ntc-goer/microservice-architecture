@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"github.com/ntc-goer/microservice-examples/orchestrator/config"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"os"
@@ -27,9 +28,10 @@ const _GRPC_CONFIG = `{
             }]
         }`
 
-func GetConnection(lbHost string, srvName string) (*grpc.ClientConn, error) {
+func GetConnection(addr string, srvName string) (*grpc.ClientConn, error) {
 	conn, err := grpc.NewClient(
-		lbHost,
+		addr,
+		grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err

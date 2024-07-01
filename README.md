@@ -13,7 +13,7 @@ Order Service — Change order state to APPROVED.
 ------------------
 Service Registration
 API Gateway Service 
-Discovery + Load Balancer Service
+Discovery
 Orchestration Service
 
 ## Tech Stack
@@ -37,8 +37,12 @@ Orchestration Service
   + fabio
 ### Manage Log , Trace , Metric
   + OpenTelemetry
+  + Jaeger
+  + Prometheus
 ### circuit-breaker
   + hystrix-go
+### Deployment
+  + Kubernetes
 
 ## Architect Pattern
 - Database per service pattern. Refer https://microservices.io/patterns/data/database-per-service.html
@@ -61,22 +65,29 @@ Orchestration Service
    + Add path to environment
    + Place fabio.properties and fabio executive file in the same folder
    + Start fabio : fabio.exe -cfg fabio.properties
-### postgres
-   + Run docker-compose: docker-compose up db nats
+### postgres-nats-jaeger
+   + Run docker-compose: docker-compose up db nats jaeger
 
 ## Development
 ### Local
-| **Service**  | **Port** | **Service Name** | **Database Address** | **Database Name** | **Database UserName/Password** |
-|--------------|----------|------------------|----------------------|-------------------|--------------------------------|
-| Gateway      | 8080     | gateway          | -------------        | -------------     | -------------                  |
-| Order        | 50000    | order            | localhost:5433       | orderdb           | orderuser/orderpwd             |
-| Accounting   | 50001    | accounting       | -------------        | -------------     | -------------                  |
-| Consumer     | 50002    | consumer         | -------------        | -------------     | -------------                  |
-| Kitchen      | 50003    | kitchen          | localhost:5433       | kitchendb         | kitchenuser/kitchenpwd         |
-| Mail         | 50004    | mail             | -------------        | -------------     | -------------                  |
-| Orchestrator | 50005    | orchestrator     | PENDING              | PENDING           | PENDING                        |
-| Broker       | 4222     | -------------    | -------------        | -------------     | -------------                  |
-| ConsulUI     | 8500     | -------------    | -------------        | -------------     | -------------                  |
-| FabioUI      | 9998     | -------------    | -------------        | -------------     | -------------                  |
-| FabioLB      | 9999     | -------------    | -------------        | -------------     | -------------                  |
+| **Service**  | **Port** | **Service Name** | **Database Address** | **Database Name** | **Database UserName/Password**   |
+|--------------|----------|------------------|----------------------|-------------------|----------------------------------|
+| Gateway      | 8080     | gateway          | -------------        | -------------     | -------------                    |
+| Order        | 50000    | order            | localhost:5433       | orderdb           | orderuser/orderpwd               |
+| Accounting   | 50001    | accounting       | -------------        | -------------     | -------------                    |
+| Consumer     | 50002    | consumer         | -------------        | -------------     | -------------                    |
+| Kitchen      | 50003    | kitchen          | localhost:5433       | kitchendb         | kitchenuser/kitchenpwd           |
+| Mail         | 50004    | mail             | -------------        | -------------     | -------------                    |
+| Orchestrator | 50005    | orchestrator     | localhost:5433       | orchestratordb    | orchestratoruser/orchestratorpwd |
+| Broker       | 4222     | -------------    | -------------        | -------------     | -------------                    |
+| ConsulUI     | 8500     | -------------    | -------------        | -------------     | -------------                    |
+| FabioUI      | 9998     | -------------    | -------------        | -------------     | -------------                    |
+| FabioLB      | 9999     | -------------    | -------------        | -------------     | -------------                    |
+| JaegerUI     | 16686    | -------------    | -------------        | -------------     | -------------                    |
 
+
+## Demo
+### Send CreateOrder Request Using Postman
+[![Create Order](./docs/img_2.png)](./docs/img_2.png)
+### Tracing Request Through Service
+[![Tracing Request](./docs/img_1.png)](./docs/img_1.png)

@@ -10,6 +10,8 @@ import (
 	"github.com/ntc-goer/microservice-examples/orderservice/repository"
 	"github.com/ntc-goer/microservice-examples/registry/broker"
 	"github.com/ntc-goer/ntc"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type OrderService struct {
@@ -17,6 +19,7 @@ type OrderService struct {
 	Repo   *repository.Repository
 	Queue  *broker.Broker
 	Config *config.Config
+	Trace  trace.Tracer
 }
 
 func NewOrderService(repo *repository.Repository, cfg *config.Config, q *broker.Broker) *OrderService {
@@ -24,6 +27,7 @@ func NewOrderService(repo *repository.Repository, cfg *config.Config, q *broker.
 		Repo:   repo,
 		Config: cfg,
 		Queue:  q,
+		Trace:  otel.Tracer("OrderService"),
 	}
 }
 
@@ -60,6 +64,10 @@ func NewOrderService(repo *repository.Repository, cfg *config.Config, q *broker.
 //}
 
 func (s *OrderService) Order(ctx context.Context, orderReq *orderpb.OrderRequest) (*orderpb.OrderResponse, error) {
+	ctx, span := s.Trace.Start(ctx, "OrderService.StartOrder")
+	defer span.End()
+	traceId := span.SpanContext().TraceID()
+
 	requestId, err := uuid.NewUUID()
 	if err != nil {
 		return nil, err
@@ -106,7 +114,7 @@ func (s *OrderService) Order(ctx context.Context, orderReq *orderpb.OrderRequest
 		tx.Rollback()
 		return nil, err
 	}
-	err = s.Queue.Publish(s.Config.Broker.Subject.CreateOrder, string(msgBytes))
+	err = s.Queue.Publish(ctx, s.Config.Broker.Subject.CreateOrder, msgBytes)
 	if err != nil {
 		tx.Rollback()
 		return nil, err
@@ -116,10 +124,14 @@ func (s *OrderService) Order(ctx context.Context, orderReq *orderpb.OrderRequest
 		RequestId: ord.RequestID.String(),
 		OrderId:   ord.ID.String(),
 		Status:    string(ord.Status),
+		TraceId:   traceId.String(),
 	}, nil
 }
 
 func (s *OrderService) ApproveOrder(ctx context.Context, req *orderpb.ApproveOrderRequest) (*orderpb.ApproveOrderResponse, error) {
+	ctx, span := s.Trace.Start(ctx, "OrderService.ApproveOrder")
+	defer span.End()
+
 	orderUUID, err := uuid.Parse(req.OrderId)
 	if err != nil {
 		return nil, err
@@ -138,6 +150,9 @@ func (s *OrderService) ApproveOrder(ctx context.Context, req *orderpb.ApproveOrd
 }
 
 func (s *OrderService) UpdateOrderStatusFailed(ctx context.Context, req *orderpb.UpdateOrderStatusFailedRequest) (*orderpb.UpdateOrderStatusFailedResponse, error) {
+	ctx, span := s.Trace.Start(ctx, "OrderService.UpdateOrderStatusFailed")
+	defer span.End()
+
 	orderUUID, err := uuid.Parse(req.OrderId)
 	if err != nil {
 		return nil, err

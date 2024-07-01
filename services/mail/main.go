@@ -28,7 +28,7 @@ func main() {
 	defer dp.Broker.Close()
 	// Start consuming message from broker
 	for {
-		if err := dp.Broker.QueueSubscribe(dp.Config.Broker.Subject.SendMail, dp.Config.Broker.Queue.Mail, dp.Service.Handle); err != nil {
+		if err := dp.Broker.QueueSubscribe(ctx, dp.Config.Broker.Subject.SendMail, dp.Config.Broker.Queue.Mail, dp.Service.Handle); err != nil {
 			log.Fatal(err)
 		}
 	}

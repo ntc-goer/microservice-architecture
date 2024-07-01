@@ -57,17 +57,16 @@ type DB struct {
 	Password   string
 }
 
-type WorkflowConfig[T any] struct {
-	Store      T
+type WorkflowConfig struct {
 	TrackingDB *DB
 	RequestID  string
 }
 
-func NewWorkflow[T any](name string, cfg WorkflowConfig[T]) (*Workflow[T], error) {
+func NewWorkflow[T any](name string, cfg WorkflowConfig, initStore T) (*Workflow[T], error) {
 	id := uuid2.New()
 	wl := &Workflow[T]{
 		ID:         id,
-		Store:      cfg.Store,
+		Store:      initStore,
 		Name:       name,
 		TrackingDB: cfg.TrackingDB,
 		RequestID:  cfg.RequestID,
@@ -199,9 +198,6 @@ func (wf *Workflow[T]) Start() error {
 	wf.initProcess()
 	for index, step := range wf.Steps {
 		wf.CurrentStep = index
-		wf.Log[wf.CurrentStep].Status = PENDING
-		wf.Log[wf.CurrentStep].Message = "Ready"
-		wf.CreateTrackingStep()
 		if err := step.ProcessF(wf.Store); err != nil {
 			wf.Log[wf.CurrentStep].Status = ERROR
 			wf.Log[wf.CurrentStep].Message = fmt.Sprintf("Error: %s", err.Error())

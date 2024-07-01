@@ -5,6 +5,8 @@ import (
 	orderpb "github.com/ntc-goer/microservice-examples/orderservice/proto"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration"
 	"github.com/ntc-goer/microservice-examples/registry/serviceregistration/common"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"log"
@@ -29,6 +31,15 @@ func main() {
 		log.Fatalf("BrokerConnect fail: %v", err)
 	}
 	defer dp.Broker.Close()
+
+	// Init tracing
+	tp, err := initTraceProvider(ctx, dp.Config.Service.OrderServiceName, "0.1.1", "http://localhost:14268/api/traces")
+	if err != nil {
+		log.Fatalf("initTraceProvider fail: %v", err)
+	}
+	defer tp.Shutdown(ctx)
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 
 	// Setup grpc server
 	lis, err := net.Listen("tcp", ":"+dp.Config.ServicePort)

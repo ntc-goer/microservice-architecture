@@ -33,6 +33,7 @@ message CreatePendingTicketRequest {
 
 message CreatePendingTicketResponse {
   bool is_ok = 1;
+  string ticket_id = 2;
 }
 
 message CancelTicketRequest {
